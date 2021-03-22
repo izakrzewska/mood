@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { availableMoods } from '../../constants';
 import { Card } from 'react-native-paper';
 import { auth, db } from '../../firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import firebase from 'firebase';
+
+import { StackNavigationProp } from '@react-navigation/stack';
+import { DashboardStackParamList } from '../../navigation/DashboardStack';
+
+type NewMoodScreenNavigationProp = StackNavigationProp<
+  DashboardStackParamList,
+  'NewMood'
+>;
+
+type NewMoodScreenProps = {
+  navigation: NewMoodScreenNavigationProp;
+};
 
 const styles = StyleSheet.create({
   moodsTabContainer: {
@@ -27,9 +39,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export const NewMood = ({ navigation }) => {
-  const onMoodSelected = async (value) => {
-    const user = auth.currentUser;
+export const NewMood: FC<NewMoodScreenProps> = ({ navigation }) => {
+  const onMoodSelected = async (value: number) => {
+    const user = auth.currentUser!;
     try {
       const moodData = {
         value: value,
@@ -38,7 +50,7 @@ export const NewMood = ({ navigation }) => {
       };
       const ref = db.collection('moods');
       await ref.add(moodData);
-      navigation.push('moodsStatistics');
+      navigation.push('MoodsStatistics');
     } catch (err) {
       console.log(err);
     }

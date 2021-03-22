@@ -1,17 +1,21 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import { MoodsStatistics } from './MoodsStatistics';
-import { History } from './History';
-import { NewMood } from './NewMood';
-import { forFade } from '../utils';
+import { MoodsStatistics, History, NewMood } from '../screens/dashboardScreens';
+import { forFade } from '../screens/utils';
 
-export const DashboardTab = () => {
-  const Stack = createStackNavigator();
+export type DashboardStackParamList = {
+  MoodsStatistics: undefined;
+  History: undefined;
+  NewMood: undefined;
+};
+
+export const DashboardStack = () => {
+  const Stack = createStackNavigator<DashboardStackParamList>();
 
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name='moodsStatistics'
+        name='MoodsStatistics'
         component={MoodsStatistics}
         options={{
           headerShown: false,
@@ -20,7 +24,7 @@ export const DashboardTab = () => {
         }}
       />
       <Stack.Screen
-        name='history'
+        name='History'
         component={History}
         options={{
           title: 'History',
@@ -33,7 +37,7 @@ export const DashboardTab = () => {
         }}
       />
       <Stack.Screen
-        name='newMood'
+        name='NewMood'
         component={NewMood}
         options={{
           title: 'New Mood',

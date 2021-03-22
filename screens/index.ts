@@ -3,5 +3,5 @@ export {
   RegisterScreen,
   ResetPasswordScreen,
 } from './userManagementScreens';
-export { DashboardTab, History, MoodsStatistics } from './dashboardTabScreens';
+export { History, MoodsStatistics } from './dashboardScreens';
 export { SettingsTab } from './settingsTabScreens';

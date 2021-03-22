@@ -13,14 +13,14 @@ const styles = StyleSheet.create({
   submitButton: {
     margin: 10,
     height: 50,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   errorMsg: {
     marginLeft: 10,
     marginBottom: 10,
   },
   errorText: {
-    color: 'red'
+    color: 'red',
   },
   switchScreenText: {
     paddingTop: 20,

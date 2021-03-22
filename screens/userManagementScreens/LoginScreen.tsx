@@ -1,15 +1,32 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { View, Text } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { TextInput, Button } from 'react-native-paper';
 import styles from './styles';
 import { auth } from '../../firebase';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
 
-export const LoginScreen = ({ navigation }) => {
-  const { control, handleSubmit, errors } = useForm();
+type LoginScreenNavigationProp = StackNavigationProp<
+  UserManagementStackParamList,
+  'Login'
+>;
 
-  const onSubmit = (data) => {
+type LoginScreenProps = {
+  navigation: LoginScreenNavigationProp;
+};
+
+type LoginFormData = {
+  email: string;
+  password: string;
+};
+
+export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
+  const { control, handleSubmit, errors } = useForm<LoginFormData>();
+
+  const onSubmit = (data: LoginFormData) => {
     const { email, password } = data;
+
     auth.signInWithEmailAndPassword(email.trim().toLowerCase(), password);
   };
 
@@ -77,7 +94,7 @@ export const LoginScreen = ({ navigation }) => {
         style={styles.switchBtn}
         icon='account-plus'
         compact
-        onPress={() => navigation.navigate('register')}
+        onPress={() => navigation.navigate('Register')}
       >
         Register Account
       </Button>
@@ -89,7 +106,7 @@ export const LoginScreen = ({ navigation }) => {
         style={styles.switchBtn}
         icon='key'
         compact
-        onPress={() => navigation.navigate('resetPassword')}
+        onPress={() => navigation.navigate('ResetPassword')}
       >
         Reset password
       </Button>

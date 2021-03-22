@@ -1,41 +1,38 @@
-import React, { useRef, useState } from 'react';
+import React, { FC, useRef } from 'react';
 import { View, Text } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { TextInput, Button } from 'react-native-paper';
 import styles from './styles';
 import { auth } from '../../firebase';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
 
-export const ResetPasswordScreen = ({ navigation }) => {
-  const { control, handleSubmit, errors, watch, register } = useForm();
-  const [error, setError] = useState({ code: '', text: '' });
+type RegisterScreenNavigationProp = StackNavigationProp<
+  UserManagementStackParamList,
+  'Register'
+>;
+
+type RegisterScreenProps = {
+  navigation: RegisterScreenNavigationProp;
+};
+
+type RegisterFormData = {
+  email: string;
+  password: string;
+  passwordConf: string;
+};
+
+export const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
+  const { control, handleSubmit, errors, watch, register } = useForm<
+    RegisterFormData
+  >();
   const password = useRef({});
   password.current = watch('password', '');
 
-  const onSubmit = async (data) => {
-    setError();
-    try {
-      const { email } = data;
-      await auth.sendPasswordResetEmail(email.trim().toLowerCase());
-      navigation.goBack();
-    } catch (error) {
-      setError(error);
-    }
+  const onSubmit = (data: RegisterFormData) => {
+    const { email, password } = data;
+    auth.createUserWithEmailAndPassword(email.trim().toLowerCase(), password);
   };
-
-  const getErrorText = (error) => {
-    let errorText;
-    switch (error.code) {
-      case 'auth/user-not-found': {
-        errorText = 'Email not found in database';
-        break;
-      }
-      default: {
-        errorText = error.message;
-      }
-    }
-    return errorText;
-  };
-
   return (
     <View style={styles.authFormContainer}>
       <Controller
@@ -57,12 +54,7 @@ export const ResetPasswordScreen = ({ navigation }) => {
       <View style={styles.errorMsg}>
         {errors.email && <Text>You must enter your email</Text>}
       </View>
-      {error && (
-        <View style={styles.errorMsg}>
-          <Text>{getErrorText(error)}</Text>
-        </View>
-      )}
-      {/* <Controller
+      <Controller
         control={control}
         render={({ onChange, onBlur, value }) => (
           <TextInput
@@ -105,21 +97,20 @@ export const ResetPasswordScreen = ({ navigation }) => {
       />
       <View style={styles.errorMsg}>
         {errors.passwordConf && <Text>{errors.passwordConf.message}</Text>}
-      </View> */}
-      <View style={styles.button}>
+      </View>
+      <View>
         <Button
           style={styles.submitButton}
           mode='contained'
           compact={false}
           onPress={handleSubmit(onSubmit)}
-          contentStyle={styles.button}
-          icon='key'
+          icon='account-plus'
         >
-          Reset password
+          Register Account
         </Button>
       </View>
       <View style={styles.switchScreenText}>
-        <Text>Go back to login Screen</Text>
+        <Text>Do you already have an account?</Text>
       </View>
       <Button
         mode='outlined'
@@ -128,7 +119,7 @@ export const ResetPasswordScreen = ({ navigation }) => {
         compact
         onPress={() => navigation.goBack()}
       >
-        Log in
+        Sign in
       </Button>
     </View>
   );
