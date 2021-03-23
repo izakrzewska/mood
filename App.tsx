@@ -1,19 +1,35 @@
 import React, { useState } from 'react';
-import { Loader } from './components/';
 import { auth } from './firebase';
-import { MainNavigationContainer } from './navigation';
-import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
+import {
+  Provider as PaperProvider,
+  DefaultTheme as PaperDefaultTheme,
+} from 'react-native-paper';
+import {
+  DefaultTheme as NavigationDefaultTheme,
+  NavigationContainer,
+} from '@react-navigation/native';
+import { TabNavigation, UserManagementStackNavigation } from './navigation';
 
 export default function App() {
   const [signedIn, setSignedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
-  const theme = {
-    ...DefaultTheme,
+  const paperTheme = {
+    ...PaperDefaultTheme,
     roundness: 2,
     colors: {
-      ...DefaultTheme.colors,
+      ...PaperDefaultTheme.colors,
       primary: '#A37774',
+    },
+  };
+
+  const navigationTheme = {
+    ...NavigationDefaultTheme,
+    colors: {
+      ...NavigationDefaultTheme.colors,
+      primary: '#A37774',
+      border: '#A37774',
+      text: '#fff',
+      background: '#fff',
     },
   };
 
@@ -23,12 +39,13 @@ export default function App() {
     } else {
       setSignedIn(false);
     }
-    setIsLoading(false);
   });
 
   return (
-    <PaperProvider theme={theme}>
-      {isLoading ? <Loader /> : <MainNavigationContainer signedIn={signedIn} />}
+    <PaperProvider theme={paperTheme}>
+      <NavigationContainer theme={navigationTheme}>
+        {signedIn ? <TabNavigation /> : <UserManagementStackNavigation />}
+      </NavigationContainer>
     </PaperProvider>
   );
 }

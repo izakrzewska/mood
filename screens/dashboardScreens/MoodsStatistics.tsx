@@ -48,8 +48,6 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
       const ref = db
         .collection('moods')
         .where('belongsTo', '==', user.uid)
-        .where('createdAt', '>=', startDate)
-        .where('createdAt', '<=', endDate)
         .orderBy('createdAt', 'asc');
       ref.onSnapshot((query) => {
         const moodsDataArray: MoodFetched[] = [];
@@ -99,22 +97,10 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
         text='Rate your today mood'
         onPress={onNewMoodPress}
       />
-      <ScrollView>
-        <Text>Current times shown:</Text>
-        <MoodsDatePicker
-          date={startDate}
-          onChange={onStartDateSelected}
-          maximumDate={endDate < today ? endDate : today}
-        />
-        <MoodsDatePicker
-          date={endDate}
-          onChange={onEndDateSelected}
-          maximumDate={today}
-          minimumDate={startDate}
-        />
+      <View>
         <Text>your moods {moodsData.length}</Text>
         <MoodChart moods={moodsData} />
-      </ScrollView>
+      </View>
     </View>
   );
 

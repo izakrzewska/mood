@@ -2,6 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import { MoodsStatistics, History, NewMood } from '../screens/dashboardScreens';
 import { forFade } from '../screens/utils';
+import { useTheme } from '@react-navigation/native';
 
 export type DashboardStackParamList = {
   MoodsStatistics: undefined;
@@ -10,17 +11,27 @@ export type DashboardStackParamList = {
 };
 
 export const DashboardStack = () => {
+  const { colors } = useTheme();
   const Stack = createStackNavigator<DashboardStackParamList>();
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors.primary,
+        },
+        headerTintColor: colors.text,
+        headerBackTitleVisible: false,
+        headerLeftContainerStyle: { marginLeft: 5 },
+        cardStyleInterpolator: forFade,
+      }}
+    >
       <Stack.Screen
         name='MoodsStatistics'
         component={MoodsStatistics}
         options={{
           headerShown: false,
           title: 'Mood Statictics',
-          cardStyleInterpolator: forFade,
         }}
       />
       <Stack.Screen
@@ -28,12 +39,6 @@ export const DashboardStack = () => {
         component={History}
         options={{
           title: 'History',
-          headerStyle: {
-            backgroundColor: '#29434e',
-            borderBottomColor: '#29434e',
-          },
-          headerTintColor: '#fff',
-          cardStyleInterpolator: forFade,
         }}
       />
       <Stack.Screen
@@ -41,12 +46,6 @@ export const DashboardStack = () => {
         component={NewMood}
         options={{
           title: 'New Mood',
-          headerStyle: {
-            backgroundColor: '#29434e',
-            borderBottomColor: '#29434e',
-          },
-          headerTintColor: '#fff',
-          cardStyleInterpolator: forFade,
         }}
       />
     </Stack.Navigator>

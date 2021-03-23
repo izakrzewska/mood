@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
+import { View } from 'react-native';
 
 export const Loader = () => {
   return (
     <View>
-      <Text>Loading...</Text>
+      <ActivityIndicator animating size='large' />
     </View>
   );
 };

@@ -6,6 +6,7 @@ import { SettingsTab } from '../screens';
 import { DashboardStack } from './DashboardStack';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { DashboardStackParamList } from './DashboardStack';
+import { useTheme } from '@react-navigation/native';
 
 type TabParamList = {
   Dashboard: NavigatorScreenParams<DashboardStackParamList>;
@@ -15,8 +16,9 @@ type TabParamList = {
 const Tab = createBottomTabNavigator<TabParamList>();
 
 export const TabNavigation = () => {
+  const { colors } = useTheme();
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#29434e' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.primary }}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
@@ -29,10 +31,10 @@ export const TabNavigation = () => {
           },
         })}
         tabBarOptions={{
-          activeTintColor: 'white',
-          inactiveTintColor: '#819ca9',
+          activeTintColor: colors.text,
+          inactiveTintColor: colors.text,
           style: {
-            backgroundColor: '#29434e',
+            backgroundColor: colors.primary,
           },
         }}
       >

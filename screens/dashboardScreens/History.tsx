@@ -1,12 +1,12 @@
-import React, { FC, useEffect, useState } from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { auth, db } from '../../firebase';
-import { MoodFetched } from '../../types';
-import { NoDataImage } from '../../components';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React, { FC, useEffect, useState } from 'react';
+import { Text, View, StyleSheet } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
+import { MoodCard, NoDataImage } from '../../components';
+import { auth, db } from '../../firebase';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
-import styles from './styles';
+import { MoodFetched } from '../../types';
+import Constants from 'expo-constants';
 
 type HistoryScreenNavigationProp = StackNavigationProp<
   DashboardStackParamList,
@@ -16,6 +16,21 @@ type HistoryScreenNavigationProp = StackNavigationProp<
 type HistoryScreenProps = {
   navigation: HistoryScreenNavigationProp;
 };
+
+const styles = StyleSheet.create({
+  historyScreenContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    paddingTop: Constants.statusBarHeight,
+    paddingBottom: Constants.statusBarHeight,
+    paddingHorizontal: 20,
+  },
+  historyListContainer: {
+    paddingHorizontal: 20,
+  },
+});
+
+export default styles;
 
 export const History: FC<HistoryScreenProps> = ({ navigation }) => {
   const [historyData, setHistoryData] = useState<MoodFetched[]>([]);
@@ -41,7 +56,7 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
     });
   }, []);
 
-  const onDelete = async (mood: MoodFetched) => {
+  const onMoodDelete = async (mood: MoodFetched) => {
     const ref = db.collection('moods').doc(mood.id);
     try {
       await ref.delete();
@@ -50,19 +65,18 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
     }
   };
 
+  const renderItem = ({ item }: any) => (
+    <MoodCard mood={item} onMoodDelete={onMoodDelete} />
+  );
+
   return (
     <View style={styles.historyScreenContainer}>
       {historyData.length > 0 ? (
-        historyData.map((mood) => {
-          return (
-            <TouchableOpacity key={mood.id} onLongPress={() => onDelete(mood)}>
-              <View style={{ borderWidth: 1, borderColor: 'blue' }}>
-                <Text>{mood.value}</Text>
-                <Text>{mood.date.toLocaleString()}</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })
+        <FlatList
+          data={historyData}
+          renderItem={renderItem}
+          style={styles.historyListContainer}
+        />
       ) : (
         <View>
           <Text>No history data</Text>

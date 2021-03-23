@@ -7,6 +7,7 @@ import {
   VictoryTheme,
   VictoryScatter,
   VictoryTooltip,
+  VictoryZoomContainer,
 } from 'victory-native';
 import { MoodFetched } from '../../types';
 
@@ -15,9 +16,6 @@ interface MoodChartProps {
 }
 
 export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
-  const timeLabel = `${moods[0].date.toLocaleDateString()} - ${moods[
-    moods.length - 1
-  ].date.toLocaleDateString()}`;
   const chartData = moods.map((mood) => {
     return {
       x: mood.date && mood.date.getUTCDate(),
@@ -27,7 +25,16 @@ export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
 
   return (
     <View>
-      <VictoryChart theme={VictoryTheme.material}>
+      <VictoryChart
+        theme={VictoryTheme.material}
+        containerComponent={
+          <VictoryZoomContainer
+            allowZoom={false}
+            zoomDimension='x'
+            zoomDomain={{ x: [0, 6] }}
+          />
+        }
+      >
         <VictoryLine
           interpolation='linear'
           style={{
@@ -55,8 +62,8 @@ export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
           }}
         />
         <VictoryAxis
-          label={timeLabel}
-          fixLabelOverlap
+          label='time'
+          // fixLabelOverlap
           tickFormat={(tick) => `${tick}.`}
           style={{
             axisLabel: { padding: 30 },
