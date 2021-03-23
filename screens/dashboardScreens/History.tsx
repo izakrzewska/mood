@@ -3,8 +3,10 @@ import { View, Text, ScrollView } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { auth, db } from '../../firebase';
 import { MoodFetched } from '../../types';
+import { NoDataImage } from '../../components';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
+import styles from './styles';
 
 type HistoryScreenNavigationProp = StackNavigationProp<
   DashboardStackParamList,
@@ -43,16 +45,15 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
     const ref = db.collection('moods').doc(mood.id);
     try {
       await ref.delete();
-      navigation.push('MoodsStatistics');
     } catch (err) {
       console.error(err);
     }
   };
 
   return (
-    <ScrollView>
-      <View>
-        {historyData.map((mood) => {
+    <View style={styles.historyScreenContainer}>
+      {historyData.length > 0 ? (
+        historyData.map((mood) => {
           return (
             <TouchableOpacity key={mood.id} onLongPress={() => onDelete(mood)}>
               <View style={{ borderWidth: 1, borderColor: 'blue' }}>
@@ -61,8 +62,13 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
               </View>
             </TouchableOpacity>
           );
-        })}
-      </View>
-    </ScrollView>
+        })
+      ) : (
+        <View>
+          <Text>No history data</Text>
+          <NoDataImage />
+        </View>
+      )}
+    </View>
   );
 };

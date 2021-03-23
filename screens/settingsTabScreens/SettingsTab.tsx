@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
+import { MainButton } from '../../components';
 import { auth } from '../../firebase';
-import { Button } from 'react-native-paper';
 
 export const SettingsTab = () => {
   const onSubmit = () => {
@@ -10,18 +10,11 @@ export const SettingsTab = () => {
 
   return (
     <View>
-      <Text>Settings</Text>
       <View>
-        <Button
-          mode='contained'
-          compact={false}
-          onPress={onSubmit}
-          icon='account-arrow-right'
-        >
-          Sign out
-        </Button>
+        <MainButton mode='outlined' onPress={onSubmit} text='Sign out' />
       </View>
     </View>
   );
 };
+
 export default SettingsTab;

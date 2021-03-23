@@ -15,7 +15,7 @@ const Stack = createStackNavigator<UserManagementStackParamList>();
 export const UserManagementStackNavigation = () => {
   return (
     <>
-      <StatusBar style='light' />
+      <StatusBar style='dark' />
       <Stack.Navigator
         mode='card'
         screenOptions={{

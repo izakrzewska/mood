@@ -1,11 +1,18 @@
 import React, { useEffect, useState, FC, ChangeEvent } from 'react';
-import { Text, View, Button, ScrollView } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
 import { auth, db } from '../../firebase';
-import { MoodChart, Loader, MoodsDatePicker } from '../../components';
+import {
+  MoodChart,
+  Loader,
+  MoodsDatePicker,
+  AddDataImage,
+  MainButton,
+} from '../../components';
 import { useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
 import { MoodFetched } from '../../types';
+import styles from './styles';
 
 type MoodStatisticsScreenNavigationProp = StackNavigationProp<
   DashboardStackParamList,
@@ -71,8 +78,12 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
 
   const noMoodsContent = (
     <View>
-      <Text>No moods</Text>
-      <Button title='Add your first mood' onPress={onNoMoodsPress} />
+      <AddDataImage />
+      <MainButton
+        mode='contained'
+        onPress={onNoMoodsPress}
+        text='Start tracking your mood'
+      />
     </View>
   );
 
@@ -82,8 +93,12 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
 
   const moodsContent = (
     <View>
-      <Button title='history' onPress={showHistory} />
-      <Button title='add mood' onPress={onNewMoodPress} />
+      <MainButton text='History' mode='text' onPress={showHistory} />
+      <MainButton
+        mode='contained'
+        text='Rate your today mood'
+        onPress={onNewMoodPress}
+      />
       <ScrollView>
         <Text>Current times shown:</Text>
         <MoodsDatePicker
@@ -104,8 +119,7 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
   );
 
   return (
-    <View>
-      <Text>moods dashboard</Text>
+    <View style={styles.staticticsScreenContainer}>
       {!isDataLoaded ? (
         <Loader />
       ) : moodsData.length > 0 ? (

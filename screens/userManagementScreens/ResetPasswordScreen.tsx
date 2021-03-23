@@ -1,12 +1,12 @@
-import React, { FC, useRef, useState } from 'react';
-import { View, Text } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import { TextInput, Button } from 'react-native-paper';
-import styles from './styles';
-import { auth } from '../../firebase';
-
 import { StackNavigationProp } from '@react-navigation/stack';
+import React, { FC, useRef } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Text, View } from 'react-native';
+import { TextInput } from 'react-native-paper';
+import { ForgotPasswordImage, MainButton, FormError } from '../../components';
+import { auth } from '../../firebase';
 import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
+import styles from './styles';
 
 type ResetPasswordScreenNavigationProp = StackNavigationProp<
   UserManagementStackParamList,
@@ -30,14 +30,13 @@ export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
   const password = useRef({});
   password.current = watch('password', '');
 
-  const onSubmit = async (data: ResetPasswordFormData) => {
-    try {
-      const { email } = data;
-      await auth.sendPasswordResetEmail(email.trim().toLowerCase());
-      navigation.goBack();
-    } catch (error) {
-      console.log(error);
-    }
+  const onSubmit = (data: ResetPasswordFormData) => {
+    const { email } = data;
+
+    auth
+      .sendPasswordResetEmail(email.trim().toLowerCase())
+      .then((response) => console.log(response)) // TODO: add notification that send and clear inputs
+      .catch((error) => console.log(error)); // TODO: add notifiaction than not send and display error
   };
 
   return (
@@ -46,7 +45,7 @@ export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
         control={control}
         render={({ onChange, onBlur, value }) => (
           <TextInput
-            label='Email'
+            label='E-mail'
             mode='outlined'
             style={styles.formInput}
             onBlur={onBlur}
@@ -55,35 +54,32 @@ export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
           />
         )}
         name='email'
-        rules={{ required: true }}
+        rules={{
+          required: { value: true, message: 'This field is required' },
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: 'Invalid e-mail address',
+          },
+        }}
         defaultValue=''
       />
-      <View style={styles.errorMsg}>
-        {errors.email && <Text>You must enter your email</Text>}
-      </View>
-      <View>
-        <Button
-          style={styles.submitButton}
-          mode='contained'
-          compact={false}
-          onPress={handleSubmit(onSubmit)}
-          icon='key'
-        >
-          Reset password
-        </Button>
+      <FormError error={errors.email} />
+      <MainButton
+        mode='contained'
+        onPress={handleSubmit(onSubmit)}
+        text='Reset password'
+      />
+      <View style={styles.imageContainer}>
+        <ForgotPasswordImage />
       </View>
       <View style={styles.switchScreenText}>
-        <Text>Go back to login Screen</Text>
+        <Text>Back to login page?</Text>
       </View>
-      <Button
+      <MainButton
+        text='Sign in'
         mode='outlined'
-        style={styles.switchBtn}
-        icon='account-arrow-right'
-        compact
         onPress={() => navigation.goBack()}
-      >
-        Log in
-      </Button>
+      />
     </View>
   );
 };

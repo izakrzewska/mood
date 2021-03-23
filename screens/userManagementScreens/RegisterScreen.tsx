@@ -1,11 +1,12 @@
-import React, { FC, useRef } from 'react';
-import { View, Text } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import { TextInput, Button } from 'react-native-paper';
-import styles from './styles';
-import { auth } from '../../firebase';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React, { FC, useRef } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Text, View } from 'react-native';
+import { TextInput } from 'react-native-paper';
+import { FormError, MainButton, LoginImage } from '../../components';
+import { auth } from '../../firebase';
 import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
+import styles from './styles';
 
 type RegisterScreenNavigationProp = StackNavigationProp<
   UserManagementStackParamList,
@@ -39,7 +40,7 @@ export const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
         control={control}
         render={({ onChange, onBlur, value }) => (
           <TextInput
-            label='Email'
+            label='E-mail'
             mode='outlined'
             style={styles.formInput}
             onBlur={onBlur}
@@ -48,12 +49,16 @@ export const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
           />
         )}
         name='email'
-        rules={{ required: true }}
+        rules={{
+          required: { value: true, message: 'This field is required' },
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: 'Invalid e-mail address',
+          },
+        }}
         defaultValue=''
       />
-      <View style={styles.errorMsg}>
-        {errors.email && <Text>You must enter your email</Text>}
-      </View>
+      <FormError error={errors.email} />
       <Controller
         control={control}
         render={({ onChange, onBlur, value }) => (
@@ -68,12 +73,16 @@ export const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
           />
         )}
         name='password'
-        rules={{ required: true }}
+        rules={{
+          required: { value: true, message: 'This field is required' },
+          minLength: {
+            value: 6,
+            message: 'Password must have at least 6 characters',
+          },
+        }}
         defaultValue=''
       />
-      <View style={styles.errorMsg}>
-        {errors.password && <Text>You must enter your password</Text>}
-      </View>
+      <FormError error={errors.password} />
       <Controller
         control={control}
         render={({ onChange, onBlur, value }) => (
@@ -89,38 +98,29 @@ export const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
         )}
         name='passwordConf'
         rules={{
-          required: true,
+          required: { value: true, message: 'This field is required' },
           validate: (value) =>
             value === password.current || 'The passwords does not match',
         }}
         defaultValue=''
       />
-      <View style={styles.errorMsg}>
-        {errors.passwordConf && <Text>{errors.passwordConf.message}</Text>}
-      </View>
-      <View>
-        <Button
-          style={styles.submitButton}
-          mode='contained'
-          compact={false}
-          onPress={handleSubmit(onSubmit)}
-          icon='account-plus'
-        >
-          Register Account
-        </Button>
+      <FormError error={errors.passwordConf} />
+      <MainButton
+        mode='contained'
+        onPress={handleSubmit(onSubmit)}
+        text='Register account'
+      />
+      <View style={styles.imageContainer}>
+        <LoginImage />
       </View>
       <View style={styles.switchScreenText}>
         <Text>Do you already have an account?</Text>
       </View>
-      <Button
+      <MainButton
         mode='outlined'
-        style={styles.switchBtn}
-        icon='account-arrow-right'
-        compact
         onPress={() => navigation.goBack()}
-      >
-        Sign in
-      </Button>
+        text='Sign in'
+      />
     </View>
   );
 };

@@ -1,11 +1,13 @@
-import React, { FC } from 'react';
-import { View, Text } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import { TextInput, Button } from 'react-native-paper';
-import styles from './styles';
-import { auth } from '../../firebase';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React, { FC } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Text, View } from 'react-native';
+import { TextInput } from 'react-native-paper';
+import { LoginImage, MainButton, FormError } from '../../components';
+import { auth } from '../../firebase';
 import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
+import styles from './styles';
+import { useIsFocused } from '@react-navigation/native';
 
 type LoginScreenNavigationProp = StackNavigationProp<
   UserManagementStackParamList,
@@ -22,12 +24,19 @@ type LoginFormData = {
 };
 
 export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
-  const { control, handleSubmit, errors } = useForm<LoginFormData>();
+  const isFocused = useIsFocused();
+  const { control, handleSubmit, trigger, errors, reset } = useForm<
+    LoginFormData
+  >({
+    reValidateMode: 'onBlur',
+  });
 
   const onSubmit = (data: LoginFormData) => {
     const { email, password } = data;
-
-    auth.signInWithEmailAndPassword(email.trim().toLowerCase(), password);
+    auth
+      .signInWithEmailAndPassword(email.trim().toLowerCase(), password)
+      .then((response) => console.log(response)) // TODO: notification
+      .catch((error) => console.log(error)); // TODO: notification
   };
 
   return (
@@ -36,7 +45,7 @@ export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
         control={control}
         render={({ onChange, onBlur, value }) => (
           <TextInput
-            label='Email'
+            label='E-mail'
             mode='outlined'
             onBlur={onBlur}
             onChangeText={(value) => onChange(value)}
@@ -45,14 +54,16 @@ export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
           />
         )}
         name='email'
-        rules={{ required: true }}
+        rules={{
+          required: { value: true, message: 'This field is required' },
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: 'Invalid e-mail address',
+          },
+        }}
         defaultValue=''
       />
-      <View style={styles.errorMsg}>
-        {errors.email && (
-          <Text style={styles.errorText}>You must fill in your email</Text>
-        )}
-      </View>
+      <FormError error={errors.email} />
       <Controller
         control={control}
         render={({ onChange, onBlur, value }) => (
@@ -67,49 +78,42 @@ export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
           />
         )}
         name='password'
-        rules={{ required: true }}
+        rules={{
+          required: { value: true, message: 'This field is required' },
+          minLength: {
+            value: 6,
+            message: 'Password must have at least 6 characters',
+          },
+        }}
         defaultValue=''
       />
-      <View style={styles.errorMsg}>
-        {errors.password && (
-          <Text style={styles.errorText}>You must fill in your password</Text>
-        )}
+      <FormError error={errors.password} />
+      <MainButton
+        mode='contained'
+        onPress={handleSubmit(onSubmit)}
+        text='Sign in'
+      />
+      <View style={styles.imageContainer}>
+        <LoginImage />
       </View>
-      <View>
-        <Button
-          mode='contained'
-          compact={false}
-          onPress={handleSubmit(onSubmit)}
-          icon='account-arrow-right'
-          style={styles.submitButton}
-        >
-          Sign in
-        </Button>
-      </View>
-      <View style={styles.switchScreenText}>
-        <Text>Don't have an account yet?</Text>
-      </View>
-      <Button
-        mode='outlined'
-        style={styles.switchBtn}
-        icon='account-plus'
-        compact
-        onPress={() => navigation.navigate('Register')}
-      >
-        Register Account
-      </Button>
       <View style={styles.switchScreenText}>
         <Text>Forgot password?</Text>
       </View>
-      <Button
+      <MainButton
         mode='outlined'
-        style={styles.switchBtn}
-        icon='key'
-        compact
-        onPress={() => navigation.navigate('ResetPassword')}
-      >
-        Reset password
-      </Button>
+        onPress={() => {
+          navigation.navigate('ResetPassword');
+        }}
+        text='Reset password'
+      />
+      <View style={styles.switchScreenText}>
+        <Text>Don't have an account yet?</Text>
+      </View>
+      <MainButton
+        mode='outlined'
+        onPress={() => navigation.navigate('Register')}
+        text='Register account'
+      />
     </View>
   );
 };
