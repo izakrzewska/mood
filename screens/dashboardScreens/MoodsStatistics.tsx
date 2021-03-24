@@ -5,12 +5,15 @@ import { MoodChart, Loader, AddDataImage, MainButton } from '../../components';
 import { useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
-import { MoodFetched } from '../../types';
+import { IMoodFetched } from '../../types';
 import Constants from 'expo-constants';
+import { IconButton } from 'react-native-paper';
+import { colors } from '../../themes';
 
 const styles = StyleSheet.create({
   staticticsScreenContainer: {
     flex: 1,
+    marginBottom: 20,
   },
   noStatisticsContainer: {
     flex: 1,
@@ -49,7 +52,7 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
 }) => {
   const isFocused = useIsFocused();
   const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
-  const [moodsData, setMoodsData] = useState<MoodFetched[]>([]);
+  const [moodsData, setMoodsData] = useState<IMoodFetched[]>([]);
   const user = auth.currentUser!;
 
   useEffect(() => {
@@ -59,10 +62,12 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
         .where('belongsTo', '==', user.uid)
         .orderBy('createdAt', 'asc');
       ref.onSnapshot((query) => {
-        const moodsDataArray: MoodFetched[] = [];
+        const moodsDataArray: IMoodFetched[] = [];
         query.forEach((doc) => {
           const date =
-            doc.data() && doc.data().createdAt && doc.data().createdAt.toDate();
+            doc.data() &&
+            doc.data().createdAt &&
+            doc.data().createdAt.toDate().setHours(0, 0, 0, 0);
           moodsDataArray.push({
             id: doc.id,
             date,
@@ -107,11 +112,17 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
         <MoodChart moods={moodsData} />
       </View>
       <View style={styles.rateMoodButtonContainer}>
+        {/* <IconButton
+          animated
+          size={52}
+          color={colors.main}
+          icon='plus'
+          style={{ alignSelf: 'center' }}
+        /> */}
         <MainButton
-          mode='contained'
+          mode='text'
           text='Rate your today mood'
           onPress={onNewMoodPress}
-          extraStyles={{ marginTop: 40 }}
         />
       </View>
     </View>

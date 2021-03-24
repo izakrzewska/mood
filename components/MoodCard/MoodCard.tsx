@@ -3,11 +3,13 @@ import { Animated, StyleSheet, Dimensions } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Card, IconButton, Title } from 'react-native-paper';
-import { MoodFetched } from '../../types';
+import { IMoodFetched } from '../../types';
+import { colors } from '../../themes';
+import { useNavigation } from '@react-navigation/native';
 
 interface MoodCardProps {
-  mood: MoodFetched;
-  onMoodDelete: (mood: MoodFetched) => void;
+  mood: IMoodFetched;
+  onMoodDelete: (mood: IMoodFetched) => void;
 }
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -29,6 +31,7 @@ const styles = StyleSheet.create({
 });
 
 export const MoodCard: FC<MoodCardProps> = ({ mood, onMoodDelete }) => {
+  const navigation = useNavigation();
   const formattedTime = mood.date.toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit',
@@ -58,22 +61,30 @@ export const MoodCard: FC<MoodCardProps> = ({ mood, onMoodDelete }) => {
             ...styles.deleteIconContainer,
           }}
         >
-          <IconButton icon='delete' size={16} />
+          <IconButton icon='delete' size={16} color={colors.grey} />
         </Animated.View>
       </TouchableOpacity>
     );
   };
 
+  const onMoodEntrySelect = () => {
+    navigation.navigate('MoodDetails', {
+      moodId: mood.id,
+    });
+  };
+
   return (
     <Swipeable renderRightActions={onRightSwipe}>
-      <Card style={styles.card}>
-        <Card.Title
-          title={formattedDate}
-          subtitle={formattedTime}
-          right={() => <Title>{mood.value}</Title>}
-          rightStyle={styles.valueContainer}
-        />
-      </Card>
+      <TouchableOpacity onPress={onMoodEntrySelect}>
+        <Card style={styles.card}>
+          <Card.Title
+            title={formattedDate}
+            subtitle={formattedTime}
+            right={() => <Title>{mood.value}</Title>}
+            rightStyle={styles.valueContainer}
+          />
+        </Card>
+      </TouchableOpacity>
     </Swipeable>
   );
 };

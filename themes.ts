@@ -3,6 +3,7 @@ import { DefaultTheme as NavigationDefaultTheme } from '@react-navigation/native
 
 export const colors = {
   main: '#A37774',
+  grey: '#8d99ae',
   white: '#fff',
 };
 

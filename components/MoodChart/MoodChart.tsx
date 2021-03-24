@@ -6,27 +6,36 @@ import {
   VictoryLine,
   VictoryTheme,
   VictoryScatter,
+  VictoryBar,
   VictoryTooltip,
   VictoryZoomContainer,
 } from 'victory-native';
-import { MoodFetched } from '../../types';
+import { IMoodFetched } from '../../types';
+import { colors } from '../../themes';
+import { DefaultTheme } from 'react-native-paper';
 
 interface MoodChartProps {
-  moods: MoodFetched[];
+  moods: IMoodFetched[];
 }
 
 export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
   const chartData = moods.map((mood) => {
     return {
-      // x: mood.date && mood.date.getUTCDate(),
       x: mood.date,
       y: mood.value,
     };
   });
 
+  const formatDate = (date: Date) =>
+    date.toLocaleDateString(undefined, {
+      month: 'numeric',
+      day: 'numeric',
+    });
+
   return (
     <View>
       <VictoryChart
+        domainPadding={5}
         scale={{ x: 'time' }}
         theme={VictoryTheme.material}
         containerComponent={
@@ -34,45 +43,48 @@ export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
             allowZoom={false}
             zoomDimension='x'
             zoomDomain={{
-              x: [new Date().getTime() - 6.048e8, new Date().getTime()],
+              x: [new Date().getTime() - 6.048e8, new Date().getTime()], // today minus one week in miliseconds - today
+              y: [0, 10],
             }}
           />
         }
       >
-        <VictoryLine
-          interpolation='linear'
+        <VictoryBar
+          data={chartData}
+          alignment='middle'
           style={{
-            data: { stroke: '#c43a31' },
-            parent: { border: '1px solid #ccc' },
+            data: { strokeWidth: 10, fill: colors.main },
+          }}
+        />
+        {/* <VictoryLine
+          interpolation='natural'
+          style={{
+            data: { stroke: colors.main, width: 0.7 },
           }}
           data={chartData}
-          animate={{
-            duration: 2000,
-            onLoad: { duration: 1000 },
-          }}
         />
         <VictoryScatter
           data={chartData}
-          size={5}
-          style={{ data: { fill: '#c43a31' } }}
-        />
+          size={6}
+          style={{ data: { fill: colors.main } }}
+        /> */}
         <VictoryAxis
           dependentAxis
-          label='mood level'
-          domain={[0, 10]}
           style={{
-            axisLabel: { padding: 30 },
-            grid: { stroke: 'grey', opacity: 0.3 },
+            grid: { stroke: 'grey', opacity: 0.3, strokeWidth: 0.8 },
           }}
         />
         <VictoryAxis
-          label='time'
-          fixLabelOverlap
-          tickFormat={(tick) => `${tick}.`}
+          tickFormat={(tick) => formatDate(tick)}
           style={{
-            axisLabel: { padding: 30 },
-            tickLabels: { padding: 10, angle: 70, fontSize: 8 },
-            grid: { stroke: 'grey', opacity: 0.3 },
+            tickLabels: {
+              angle: 40,
+              padding: 10,
+              fontSize: 12,
+            },
+            grid: {
+              strokeWidth: 0,
+            },
           }}
         />
       </VictoryChart>

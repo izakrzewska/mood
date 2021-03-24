@@ -6,7 +6,7 @@ import { Text } from 'react-native-paper';
 import { MoodCard, NoDataImage } from '../../components';
 import { auth, db } from '../../firebase';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
-import { MoodFetched } from '../../types';
+import { IMoodFetched } from '../../types';
 
 type HistoryScreenNavigationProp = StackNavigationProp<
   DashboardStackParamList,
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
 export default styles;
 
 export const History: FC<HistoryScreenProps> = ({ navigation }) => {
-  const [historyData, setHistoryData] = useState<MoodFetched[]>([]);
+  const [historyData, setHistoryData] = useState<IMoodFetched[]>([]);
   const user = auth.currentUser!;
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
       .where('belongsTo', '==', user.uid)
       .orderBy('createdAt', 'desc');
     ref.onSnapshot((query) => {
-      const historyDataArray: MoodFetched[] = [];
+      const historyDataArray: IMoodFetched[] = [];
       query.forEach((doc) => {
         const date =
           doc.data() && doc.data().createdAt && doc.data().createdAt.toDate();
@@ -58,7 +58,7 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
     });
   }, []);
 
-  const onMoodDelete = async (mood: MoodFetched) => {
+  const onMoodDelete = async (mood: IMoodFetched) => {
     const ref = db.collection('moods').doc(mood.id);
     try {
       await ref.delete();
