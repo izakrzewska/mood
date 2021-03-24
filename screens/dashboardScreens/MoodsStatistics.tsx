@@ -1,18 +1,39 @@
-import React, { useEffect, useState, FC, ChangeEvent } from 'react';
-import { Text, View, ScrollView } from 'react-native';
+import React, { useEffect, useState, FC } from 'react';
+import { Text, View, StyleSheet } from 'react-native';
 import { auth, db } from '../../firebase';
-import {
-  MoodChart,
-  Loader,
-  MoodsDatePicker,
-  AddDataImage,
-  MainButton,
-} from '../../components';
+import { MoodChart, Loader, AddDataImage, MainButton } from '../../components';
 import { useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
 import { MoodFetched } from '../../types';
-import styles from './styles';
+import Constants from 'expo-constants';
+
+const styles = StyleSheet.create({
+  staticticsScreenContainer: {
+    flex: 1,
+  },
+  noStatisticsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noStatisticsButton: {
+    marginTop: 50,
+  },
+  historyButton: {
+    alignSelf: 'flex-end',
+    marginTop: 20,
+  },
+  moodChartContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  rateMoodButtonContainer: {
+    marginTop: 'auto',
+    marginHorizontal: 30,
+    marginBottom: 15,
+  },
+});
 
 type MoodStatisticsScreenNavigationProp = StackNavigationProp<
   DashboardStackParamList,
@@ -26,22 +47,10 @@ type MoodStatisticsScreenProps = {
 export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
   navigation,
 }) => {
-  const today = new Date(Date.now());
   const isFocused = useIsFocused();
   const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
-  const twoWeeksEarlier = new Date(today.getTime() - 12096e5); // minus two weeks in miliseconds
   const [moodsData, setMoodsData] = useState<MoodFetched[]>([]);
-  const [startDate, setStartDate] = useState<Date>(twoWeeksEarlier);
-  const [endDate, setEndDate] = useState<Date>(today);
   const user = auth.currentUser!;
-
-  const onStartDateSelected = (event: ChangeEvent, selectedDate: Date) => {
-    setStartDate(selectedDate);
-  };
-
-  const onEndDateSelected = (event: ChangeEvent, selectedDate: Date) => {
-    setEndDate(selectedDate);
-  };
 
   useEffect(() => {
     if (isFocused) {
@@ -64,55 +73,55 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
         setIsDataLoaded(true);
       });
     }
-  }, [startDate, endDate, isFocused]);
+  }, [isFocused]);
 
   const showHistory = () => {
     navigation.push('History');
   };
 
-  const onNoMoodsPress = () => {
-    navigation.navigate('NewMood');
-  };
-
-  const noMoodsContent = (
-    <View>
-      <AddDataImage />
-      <MainButton
-        mode='contained'
-        onPress={onNoMoodsPress}
-        text='Start tracking your mood'
-      />
-    </View>
-  );
-
   const onNewMoodPress = () => {
     navigation.push('NewMood');
   };
 
-  const moodsContent = (
-    <View>
-      <MainButton text='History' mode='text' onPress={showHistory} />
+  const noMoodsContent = (
+    <View style={styles.noStatisticsContainer}>
+      <AddDataImage />
       <MainButton
         mode='contained'
-        text='Rate your today mood'
         onPress={onNewMoodPress}
+        text='Start tracking your mood'
+        extraStyles={styles.noStatisticsButton}
       />
-      <View>
-        <Text>your moods {moodsData.length}</Text>
+    </View>
+  );
+
+  const moodsContent = (
+    <View style={styles.staticticsScreenContainer}>
+      <MainButton
+        text='History'
+        mode='text'
+        onPress={showHistory}
+        extraStyles={styles.historyButton}
+      />
+      <View style={styles.moodChartContainer}>
         <MoodChart moods={moodsData} />
+      </View>
+      <View style={styles.rateMoodButtonContainer}>
+        <MainButton
+          mode='contained'
+          text='Rate your today mood'
+          onPress={onNewMoodPress}
+          extraStyles={{ marginTop: 40 }}
+        />
       </View>
     </View>
   );
 
-  return (
-    <View style={styles.staticticsScreenContainer}>
-      {!isDataLoaded ? (
-        <Loader />
-      ) : moodsData.length > 0 ? (
-        moodsContent
-      ) : (
-        noMoodsContent
-      )}
-    </View>
+  return !isDataLoaded ? (
+    <Loader />
+  ) : moodsData.length > 0 ? (
+    moodsContent
+  ) : (
+    noMoodsContent
   );
 };

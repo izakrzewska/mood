@@ -18,7 +18,8 @@ interface MoodChartProps {
 export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
   const chartData = moods.map((mood) => {
     return {
-      x: mood.date && mood.date.getUTCDate(),
+      // x: mood.date && mood.date.getUTCDate(),
+      x: mood.date,
       y: mood.value,
     };
   });
@@ -26,12 +27,15 @@ export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
   return (
     <View>
       <VictoryChart
+        scale={{ x: 'time' }}
         theme={VictoryTheme.material}
         containerComponent={
           <VictoryZoomContainer
             allowZoom={false}
             zoomDimension='x'
-            zoomDomain={{ x: [0, 6] }}
+            zoomDomain={{
+              x: [new Date().getTime() - 6.048e8, new Date().getTime()],
+            }}
           />
         }
       >
@@ -63,7 +67,7 @@ export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
         />
         <VictoryAxis
           label='time'
-          // fixLabelOverlap
+          fixLabelOverlap
           tickFormat={(tick) => `${tick}.`}
           style={{
             axisLabel: { padding: 30 },

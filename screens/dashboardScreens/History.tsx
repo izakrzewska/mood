@@ -1,12 +1,12 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC, useEffect, useState } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import { Text } from 'react-native-paper';
 import { MoodCard, NoDataImage } from '../../components';
 import { auth, db } from '../../firebase';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
 import { MoodFetched } from '../../types';
-import Constants from 'expo-constants';
 
 type HistoryScreenNavigationProp = StackNavigationProp<
   DashboardStackParamList,
@@ -21,12 +21,14 @@ const styles = StyleSheet.create({
   historyScreenContainer: {
     flex: 1,
     justifyContent: 'flex-start',
-    paddingTop: Constants.statusBarHeight,
-    paddingBottom: Constants.statusBarHeight,
-    paddingHorizontal: 20,
   },
-  historyListContainer: {
-    paddingHorizontal: 20,
+  noHistoryContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noHistoryText: {
+    marginBottom: 30,
   },
 });
 
@@ -69,19 +71,19 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
     <MoodCard mood={item} onMoodDelete={onMoodDelete} />
   );
 
+  const noHistoryContent = (
+    <View style={styles.noHistoryContainer}>
+      <Text style={styles.noHistoryText}>No history data</Text>
+      <NoDataImage />
+    </View>
+  );
+
   return (
     <View style={styles.historyScreenContainer}>
       {historyData.length > 0 ? (
-        <FlatList
-          data={historyData}
-          renderItem={renderItem}
-          style={styles.historyListContainer}
-        />
+        <FlatList data={historyData} renderItem={renderItem} />
       ) : (
-        <View>
-          <Text>No history data</Text>
-          <NoDataImage />
-        </View>
+        noHistoryContent
       )}
     </View>
   );

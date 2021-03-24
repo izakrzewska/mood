@@ -16,16 +16,26 @@ interface MainButtonProps {
   onPress: any;
   text: string;
   mode: 'contained' | 'outlined' | 'text';
+  extraStyles?: any;
 }
 
-export const MainButton: FC<MainButtonProps> = ({ onPress, text, mode }) => {
+export const MainButton: FC<MainButtonProps> = ({
+  onPress,
+  text,
+  mode,
+  extraStyles,
+}) => {
   const containedButton = mode === 'contained';
   const labelStyle = containedButton ? { color: 'white' } : null;
   return (
     <Button
       mode={mode}
       onPress={onPress}
-      style={[styles.button, containedButton && styles.containedButton]}
+      style={[
+        styles.button,
+        containedButton && styles.containedButton,
+        extraStyles && { ...extraStyles },
+      ]}
       labelStyle={labelStyle}
     >
       {text}
