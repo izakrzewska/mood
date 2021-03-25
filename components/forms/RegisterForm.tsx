@@ -34,6 +34,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {
         mode='contained'
         onPress={handleSubmit(onSubmit)}
         text='Register account'
+        extraStyles={{ marginTop: 20 }}
       />
     </View>
   );

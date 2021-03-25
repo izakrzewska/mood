@@ -9,6 +9,9 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingLeft: 10,
   },
+  button: {
+    marginTop: 15,
+  },
 });
 
 interface AuthNavigationBoxProps {
@@ -27,7 +30,12 @@ export const AuthNavigationBox: FC<AuthNavigationBoxProps> = ({
       <View style={styles.switchScreenText}>
         <Text>{questionText}</Text>
       </View>
-      <MainButton text={buttonText} mode='outlined' onPress={onButtonPress} />
+      <MainButton
+        text={buttonText}
+        mode='outlined'
+        onPress={onButtonPress}
+        extraStyles={styles.button}
+      />
     </View>
   );
 };

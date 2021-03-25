@@ -26,6 +26,7 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = ({ onSubmit }) => {
         mode='contained'
         onPress={handleSubmit(onSubmit)}
         text='Reset password'
+        extraStyles={{ marginTop: 20 }}
       />
     </View>
   );

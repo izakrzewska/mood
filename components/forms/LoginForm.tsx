@@ -23,6 +23,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmit }) => {
         mode='contained'
         onPress={handleSubmit(onSubmit)}
         text='Sign in'
+        extraStyles={{ marginTop: 20 }}
       />
     </View>
   );

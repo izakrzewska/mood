@@ -6,7 +6,7 @@ import { colors } from '../../../themes';
 
 const styles = StyleSheet.create({
   errorContainer: {
-    marginLeft: 10,
+    paddingTop: 5,
   },
 });
 
