@@ -1,13 +1,16 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { FC } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { Text, View } from 'react-native';
-import { TextInput } from 'react-native-paper';
-import { LoginImage, MainButton, FormError } from '../../components';
+import React, { FC, useState } from 'react';
+import { Keyboard, Text, View } from 'react-native';
+import {
+  ErrorNotification,
+  LoginForm,
+  LoginImage,
+  MainButton,
+} from '../../components';
 import { auth } from '../../firebase';
 import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
+import { LoginFormData } from '../../types';
 import styles from './styles';
-import { useIsFocused } from '@react-navigation/native';
 
 type LoginScreenNavigationProp = StackNavigationProp<
   UserManagementStackParamList,
@@ -18,81 +21,22 @@ type LoginScreenProps = {
   navigation: LoginScreenNavigationProp;
 };
 
-type LoginFormData = {
-  email: string;
-  password: string;
-};
-
 export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
-  const isFocused = useIsFocused();
-  const { control, handleSubmit, trigger, errors, reset } = useForm<
-    LoginFormData
-  >({
-    reValidateMode: 'onBlur',
-  });
+  const [error, setError] = useState();
 
   const onSubmit = (data: LoginFormData) => {
+    Keyboard.dismiss();
     const { email, password } = data;
     auth
       .signInWithEmailAndPassword(email.trim().toLowerCase(), password)
-      .then((response) => console.log(response)) // TODO: notification
-      .catch((error) => console.log(error)); // TODO: notification
+      .catch((error) => {
+        setError(error);
+      });
   };
 
   return (
     <View style={styles.authFormContainer}>
-      <Controller
-        control={control}
-        render={({ onChange, onBlur, value }) => (
-          <TextInput
-            label='E-mail'
-            mode='outlined'
-            onBlur={onBlur}
-            onChangeText={(value) => onChange(value)}
-            value={value}
-            style={styles.formInput}
-          />
-        )}
-        name='email'
-        rules={{
-          required: { value: true, message: 'This field is required' },
-          pattern: {
-            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            message: 'Invalid e-mail address',
-          },
-        }}
-        defaultValue=''
-      />
-      <FormError error={errors.email} />
-      <Controller
-        control={control}
-        render={({ onChange, onBlur, value }) => (
-          <TextInput
-            label='Password'
-            mode='outlined'
-            secureTextEntry
-            onBlur={onBlur}
-            onChangeText={(value) => onChange(value)}
-            value={value}
-            style={styles.formInput}
-          />
-        )}
-        name='password'
-        rules={{
-          required: { value: true, message: 'This field is required' },
-          minLength: {
-            value: 6,
-            message: 'Password must have at least 6 characters',
-          },
-        }}
-        defaultValue=''
-      />
-      <FormError error={errors.password} />
-      <MainButton
-        mode='contained'
-        onPress={handleSubmit(onSubmit)}
-        text='Sign in'
-      />
+      <LoginForm onSubmit={onSubmit} />
       <View style={styles.imageContainer}>
         <LoginImage />
       </View>
@@ -114,6 +58,7 @@ export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
         onPress={() => navigation.navigate('Register')}
         text='Register account'
       />
+      <ErrorNotification error={error} />
     </View>
   );
 };

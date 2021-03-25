@@ -3,7 +3,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Text } from 'react-native-paper';
-import { MoodCard, NoDataImage } from '../../components';
+import { Loader, MoodCard, NoDataImage } from '../../components';
 import { auth, db } from '../../firebase';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
 import { IMoodFetched } from '../../types';
@@ -36,6 +36,7 @@ export default styles;
 
 export const History: FC<HistoryScreenProps> = ({ navigation }) => {
   const [historyData, setHistoryData] = useState<IMoodFetched[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const user = auth.currentUser!;
 
   useEffect(() => {
@@ -52,9 +53,11 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
           id: doc.id,
           date,
           value: doc.data().value,
+          hasNote: doc.data().note !== '',
         });
       });
       setHistoryData(historyDataArray);
+      setIsLoading(false);
     });
   }, []);
 
@@ -80,7 +83,9 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
 
   return (
     <View style={styles.historyScreenContainer}>
-      {historyData.length > 0 ? (
+      {isLoading ? (
+        <Loader />
+      ) : historyData.length > 0 ? (
         <FlatList data={historyData} renderItem={renderItem} />
       ) : (
         noHistoryContent

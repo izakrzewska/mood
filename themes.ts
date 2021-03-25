@@ -5,6 +5,7 @@ export const colors = {
   main: '#A37774',
   grey: '#8d99ae',
   white: '#fff',
+  error: '#EE6364',
 };
 
 export const paperTheme = {
@@ -13,6 +14,7 @@ export const paperTheme = {
   colors: {
     ...PaperDefaultTheme.colors,
     primary: colors.main,
+    error: colors.error,
   },
 };
 

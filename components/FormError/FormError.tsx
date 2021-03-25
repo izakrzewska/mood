@@ -1,13 +1,12 @@
 import React, { FC } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Text } from 'react-native-paper';
 import { FieldError } from 'react-hook-form';
+import { colors } from '../../themes';
 
 const styles = StyleSheet.create({
   errorContainer: {
     marginLeft: 10,
-  },
-  errorMessage: {
-    color: '#EE6364',
   },
 });
 
@@ -18,7 +17,9 @@ interface FormErrorProps {
 export const FormError: FC<FormErrorProps> = ({ error }) => {
   return (
     <View style={styles.errorContainer}>
-      {error && <Text style={styles.errorMessage}>{error.message}</Text>}
+      {error && (
+        <Text theme={{ colors: { text: colors.error } }}>{error.message}</Text>
+      )}
     </View>
   );
 };

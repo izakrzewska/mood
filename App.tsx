@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { auth } from './firebase';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { Provider as PaperProvider, Snackbar, Text } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { paperTheme, navigationTheme } from './themes';
 import { TabNavigation, UserManagementStackNavigation } from './navigation';

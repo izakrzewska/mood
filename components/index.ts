@@ -9,3 +9,5 @@ export {
 export { MainButton } from './MainButton/MainButton';
 export { FormError } from './FormError/FormError';
 export { MoodCard } from './MoodCard/MoodCard';
+export { ErrorNotification } from './ErrorNotification/ErrorNotification';
+export { LoginForm, RegisterForm, ResetPasswordForm } from './forms';

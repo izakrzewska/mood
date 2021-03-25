@@ -6,6 +6,7 @@ import { Card, IconButton, Title } from 'react-native-paper';
 import { IMoodFetched } from '../../types';
 import { colors } from '../../themes';
 import { useNavigation } from '@react-navigation/native';
+import { FontAwesome } from '@expo/vector-icons';
 
 interface MoodCardProps {
   mood: IMoodFetched;
@@ -82,6 +83,11 @@ export const MoodCard: FC<MoodCardProps> = ({ mood, onMoodDelete }) => {
             subtitle={formattedTime}
             right={() => <Title>{mood.value}</Title>}
             rightStyle={styles.valueContainer}
+            left={() =>
+              mood.hasNote ? (
+                <FontAwesome name='file' size={20} color={colors.grey} />
+              ) : null
+            }
           />
         </Card>
       </TouchableOpacity>
