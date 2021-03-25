@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import { FieldError } from 'react-hook-form';
-import { colors } from '../../themes';
+import { colors } from '../../../themes';
 
 const styles = StyleSheet.create({
   errorContainer: {

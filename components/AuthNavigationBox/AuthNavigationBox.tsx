@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
-import { MainButton } from '../../components';
+import { MainButton } from '../MainButton/MainButton';
 
 const styles = StyleSheet.create({
   switchScreenText: {
