@@ -7,7 +7,7 @@ import { FormError, MainButton } from '../../components';
 import { RegisterFormData } from '../../types';
 
 interface RegisterFormProps {
-  onSubmit: any; // TODO: add type
+  onSubmit: (data: RegisterFormData) => void;
 }
 
 export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {

@@ -1,10 +1,10 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC, useState } from 'react';
-import { Keyboard, Text, View } from 'react-native';
+import { Keyboard, View } from 'react-native';
 import {
+  AuthNavigationBox,
   ErrorNotification,
   LoginImage,
-  MainButton,
   RegisterForm,
 } from '../../components';
 import { auth } from '../../firebase';
@@ -40,13 +40,10 @@ export const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
       <View style={styles.imageContainer}>
         <LoginImage />
       </View>
-      <View style={styles.switchScreenText}>
-        <Text>Do you already have an account?</Text>
-      </View>
-      <MainButton
-        mode='outlined'
-        onPress={() => navigation.goBack()}
-        text='Sign in'
+      <AuthNavigationBox
+        questionText='Do you already have an account?'
+        buttonText='Sign in'
+        onButtonPress={() => navigation.navigate('Login')}
       />
       <ErrorNotification error={error} />
     </View>

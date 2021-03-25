@@ -7,7 +7,7 @@ import { ResetPasswordFormData } from '../../types';
 import styles from './styles';
 
 interface ResetPasswordFormProps {
-  onSubmit: any; // TODO: add type
+  onSubmit: (data: ResetPasswordFormData) => void;
 }
 
 export const ResetPasswordForm: FC<ResetPasswordFormProps> = ({ onSubmit }) => {

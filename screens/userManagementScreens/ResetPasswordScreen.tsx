@@ -1,19 +1,15 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { FC, useRef, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { Text, View, Keyboard } from 'react-native';
-import { ResetPasswordFormData } from '../../types';
-
-import { TextInput } from 'react-native-paper';
+import React, { FC, useState } from 'react';
+import { Keyboard, Text, View } from 'react-native';
 import {
-  ForgotPasswordImage,
-  MainButton,
-  FormError,
+  AuthNavigationBox,
   ErrorNotification,
+  ForgotPasswordImage,
   ResetPasswordForm,
 } from '../../components';
 import { auth } from '../../firebase';
 import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
+import { ResetPasswordFormData } from '../../types';
 import styles from './styles';
 
 type ResetPasswordScreenNavigationProp = StackNavigationProp<
@@ -57,13 +53,10 @@ export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
       <View style={styles.imageContainer}>
         <ForgotPasswordImage />
       </View>
-      <View style={styles.switchScreenText}>
-        <Text>Back to login page?</Text>
-      </View>
-      <MainButton
-        text='Sign in'
-        mode='outlined'
-        onPress={() => navigation.goBack()}
+      <AuthNavigationBox
+        questionText='Back to login page?'
+        buttonText='Sign in'
+        onButtonPress={() => navigation.navigate('Login')}
       />
       <ErrorNotification error={error} />
     </View>

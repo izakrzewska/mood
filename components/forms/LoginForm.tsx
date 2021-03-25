@@ -7,7 +7,7 @@ import styles from './styles';
 import { LoginFormData } from '../../types';
 
 interface LoginFormProps {
-  onSubmit: any; // TODO: add type
+  onSubmit: (data: LoginFormData) => void;
 }
 
 export const LoginForm: FC<LoginFormProps> = ({ onSubmit }) => {

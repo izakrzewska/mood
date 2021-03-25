@@ -8,14 +8,6 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     paddingHorizontal: 30,
   },
-  formInput: {
-    padding: 10,
-  },
-  switchScreenText: {
-    justifyContent: 'center',
-    paddingTop: 20,
-    paddingLeft: 10,
-  },
   imageContainer: {
     marginVertical: 30,
     alignSelf: 'flex-end',

@@ -1,11 +1,11 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC, useState } from 'react';
-import { Keyboard, Text, View } from 'react-native';
+import { Keyboard, View } from 'react-native';
 import {
+  AuthNavigationBox,
   ErrorNotification,
   LoginForm,
   LoginImage,
-  MainButton,
 } from '../../components';
 import { auth } from '../../firebase';
 import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
@@ -40,23 +40,15 @@ export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
       <View style={styles.imageContainer}>
         <LoginImage />
       </View>
-      <View style={styles.switchScreenText}>
-        <Text>Forgot password?</Text>
-      </View>
-      <MainButton
-        mode='outlined'
-        onPress={() => {
-          navigation.navigate('ResetPassword');
-        }}
-        text='Reset password'
+      <AuthNavigationBox
+        questionText='Forgot password?'
+        buttonText='Reset password'
+        onButtonPress={() => navigation.navigate('ResetPassword')}
       />
-      <View style={styles.switchScreenText}>
-        <Text>Don't have an account yet?</Text>
-      </View>
-      <MainButton
-        mode='outlined'
-        onPress={() => navigation.navigate('Register')}
-        text='Register account'
+      <AuthNavigationBox
+        questionText="Don't have an account yet?"
+        buttonText='Register account'
+        onButtonPress={() => navigation.navigate('Register')}
       />
       <ErrorNotification error={error} />
     </View>
