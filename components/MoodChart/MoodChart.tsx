@@ -56,19 +56,8 @@ export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
             data: { strokeWidth: 10, fill: colors.main },
           }}
         />
-        {/* <VictoryLine
-          interpolation='natural'
-          style={{
-            data: { stroke: colors.main, width: 0.7 },
-          }}
-          data={chartData}
-        />
-        <VictoryScatter
-          data={chartData}
-          size={6}
-          style={{ data: { fill: colors.main } }}
-        /> */}
         <VictoryAxis
+          domain={[0, 10]}
           dependentAxis
           style={{
             grid: { stroke: 'grey', opacity: 0.3, strokeWidth: 0.8 },

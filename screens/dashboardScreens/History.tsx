@@ -3,10 +3,16 @@ import React, { FC, useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Text } from 'react-native-paper';
-import { Loader, MoodCard, NoDataImage } from '../../components';
+import {
+  Loader,
+  MoodCard,
+  NoDataImage,
+  Modal,
+  MainButton,
+} from '../../components';
 import { auth, db } from '../../firebase';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
-import { IMoodFetched } from '../../types';
+import { IMoodFetchedHistory } from '../../types';
 
 type HistoryScreenNavigationProp = StackNavigationProp<
   DashboardStackParamList,
@@ -35,7 +41,9 @@ const styles = StyleSheet.create({
 export default styles;
 
 export const History: FC<HistoryScreenProps> = ({ navigation }) => {
-  const [historyData, setHistoryData] = useState<IMoodFetched[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const [historyData, setHistoryData] = useState<IMoodFetchedHistory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const user = auth.currentUser!;
 
@@ -45,7 +53,7 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
       .where('belongsTo', '==', user.uid)
       .orderBy('createdAt', 'desc');
     ref.onSnapshot((query) => {
-      const historyDataArray: IMoodFetched[] = [];
+      const historyDataArray: IMoodFetchedHistory[] = [];
       query.forEach((doc) => {
         const date =
           doc.data() && doc.data().createdAt && doc.data().createdAt.toDate();
@@ -61,13 +69,13 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
     });
   }, []);
 
-  const onMoodDelete = async (mood: IMoodFetched) => {
+  const onMoodDelete = async (mood: IMoodFetchedHistory) => {
     const ref = db.collection('moods').doc(mood.id);
-    try {
-      await ref.delete();
-    } catch (err) {
-      console.error(err);
-    }
+    // try {
+    //   await ref.delete();
+    // } catch (err) {
+    //   console.error(err);
+    // }
   };
 
   const renderItem = ({ item }: any) => (

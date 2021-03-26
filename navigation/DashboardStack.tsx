@@ -5,15 +5,18 @@ import {
   History,
   NewMood,
   MoodDetails,
+  EditMoodDetails,
 } from '../screens/dashboardScreens';
 import { forFade } from '../screens/utils';
 import { useTheme } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export type DashboardStackParamList = {
   MoodsStatistics: undefined;
   History: undefined;
   NewMood: undefined;
   MoodDetails: { moodId: string };
+  EditMoodDetails: { moodId: string; value: number; note: string };
 };
 
 export const DashboardStack = () => {
@@ -52,6 +55,13 @@ export const DashboardStack = () => {
         component={MoodDetails}
         options={{
           title: 'Mood Details',
+        }}
+      />
+      <Stack.Screen
+        name='EditMoodDetails'
+        component={EditMoodDetails}
+        options={{
+          title: 'Edit mood',
         }}
       />
       <Stack.Screen

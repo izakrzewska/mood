@@ -23,24 +23,28 @@ export const ErrorNotification: FC<ErrorNotificationProps> = ({ error }) => {
   };
 
   return (
-    <View>
-      <Snackbar
-        onDismiss={dismissSnackbar}
-        visible={isSnackBarVisible}
-        action={{
-          label: 'OK',
-          onPress: dismissSnackbar,
-        }}
-        theme={{
-          colors: {
-            accent: colors.white,
-            onSurface: colors.error,
-            surface: colors.white,
-          },
-        }}
-      >
-        {notificationText}
-      </Snackbar>
-    </View>
+    <Snackbar
+      onDismiss={dismissSnackbar}
+      visible={isSnackBarVisible}
+      wrapperStyle={{
+        alignSelf: 'center',
+      }}
+      style={{
+        marginHorizontal: 0,
+      }}
+      action={{
+        label: 'OK',
+        onPress: dismissSnackbar,
+      }}
+      theme={{
+        colors: {
+          accent: colors.white,
+          onSurface: colors.error,
+          surface: colors.white,
+        },
+      }}
+    >
+      {notificationText}
+    </Snackbar>
   );
 };

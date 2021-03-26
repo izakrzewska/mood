@@ -5,7 +5,7 @@ import { MoodChart, Loader, AddDataImage, MainButton } from '../../components';
 import { useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
-import { IMoodFetched } from '../../types';
+import { IMoodFetchedStatistics } from '../../types';
 import Constants from 'expo-constants';
 import { IconButton } from 'react-native-paper';
 import { colors } from '../../themes';
@@ -52,7 +52,7 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
 }) => {
   const isFocused = useIsFocused();
   const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
-  const [moodsData, setMoodsData] = useState<IMoodFetched[]>([]);
+  const [moodsData, setMoodsData] = useState<IMoodFetchedStatistics[]>([]);
   const user = auth.currentUser!;
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
         .where('belongsTo', '==', user.uid)
         .orderBy('createdAt', 'asc');
       ref.onSnapshot((query) => {
-        const moodsDataArray: IMoodFetched[] = [];
+        const moodsDataArray: IMoodFetchedStatistics[] = [];
         query.forEach((doc) => {
           const date =
             doc.data() &&
