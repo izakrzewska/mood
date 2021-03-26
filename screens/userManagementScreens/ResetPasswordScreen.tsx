@@ -9,7 +9,7 @@ import {
 } from '../../components';
 import { auth } from '../../firebase';
 import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
-import { ResetPasswordFormData } from '../../types';
+import { ResetPasswordFormData, IError } from '../../types';
 import styles from './styles';
 
 type ResetPasswordScreenNavigationProp = StackNavigationProp<
@@ -24,8 +24,8 @@ type RegisterScreenProps = {
 export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
   navigation,
 }) => {
-  const [error, setError] = useState();
-  const [isEmailSent, setIsEmailSent] = useState(false);
+  const [error, setError] = useState<IError>();
+  const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
 
   const onSubmit = (data: ResetPasswordFormData) => {
     Keyboard.dismiss();

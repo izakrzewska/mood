@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { StyleSheet, View, Pressable, Text, Alert } from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import NativeModal from 'react-native-modal';
 
 const styles = StyleSheet.create({
@@ -33,6 +33,8 @@ interface ModalProps {
 }
 
 export const Modal: FC<ModalProps> = ({ isModalVisible, children }) => {
+  const deviceHeight = Dimensions.get('window').height;
+
   return (
     <NativeModal
       animationIn='bounceInUp'
@@ -41,12 +43,10 @@ export const Modal: FC<ModalProps> = ({ isModalVisible, children }) => {
       backdropOpacity={0.5}
       animationInTiming={1000}
       animationOutTiming={1000}
+      deviceHeight={deviceHeight}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          {children}
-          {/* <Text style={styles.modalText}>Hello World!</Text> */}
-        </View>
+        <View style={styles.modalView}>{children}</View>
       </View>
     </NativeModal>
   );

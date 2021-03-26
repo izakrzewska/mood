@@ -9,7 +9,7 @@ import {
 } from '../../components';
 import { auth } from '../../firebase';
 import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
-import { RegisterFormData } from '../../types';
+import { RegisterFormData, IError } from '../../types';
 import styles from './styles';
 
 type RegisterScreenNavigationProp = StackNavigationProp<
@@ -22,7 +22,7 @@ type RegisterScreenProps = {
 };
 
 export const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
-  const [error, setError] = useState();
+  const [error, setError] = useState<IError>();
 
   const onSubmit = (data: RegisterFormData) => {
     Keyboard.dismiss();

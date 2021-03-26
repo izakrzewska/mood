@@ -15,7 +15,7 @@ import { MainButton } from '../MainButton/MainButton';
 
 interface MoodCardProps {
   mood: IMoodFetchedHistory;
-  onMoodDelete: (mood: IMoodFetchedHistory) => void;
+  openModal: (moodId: string) => void;
 }
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -36,8 +36,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export const MoodCard: FC<MoodCardProps> = ({ mood, onMoodDelete }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+export const MoodCard: FC<MoodCardProps> = ({ mood, openModal }) => {
   const navigation = useNavigation();
   const formattedTime = mood.date.toLocaleTimeString([], {
     hour: '2-digit',
@@ -51,15 +50,6 @@ export const MoodCard: FC<MoodCardProps> = ({ mood, onMoodDelete }) => {
     day: 'numeric',
   });
 
-  const onDelete = () => {
-    // setModalVisible(false);
-    onMoodDelete(mood);
-  };
-
-  const onModalOpen = () => {
-    setModalVisible(true);
-  };
-
   const onRightSwipe = (progress: any, dragX: any) => {
     const scale = dragX.interpolate({
       inputRange: [0, 200],
@@ -67,7 +57,7 @@ export const MoodCard: FC<MoodCardProps> = ({ mood, onMoodDelete }) => {
     });
 
     return (
-      <TouchableOpacity onPress={onModalOpen} activeOpacity={0.6}>
+      <TouchableOpacity onPress={() => openModal(mood.id)} activeOpacity={0.6}>
         <Animated.View
           style={{
             transform: [{ scale: scale }],
@@ -87,41 +77,22 @@ export const MoodCard: FC<MoodCardProps> = ({ mood, onMoodDelete }) => {
   };
 
   return (
-    <>
-      <Swipeable renderRightActions={onRightSwipe}>
-        <TouchableOpacity onPress={onMoodEntrySelect}>
-          <Card style={styles.card}>
-            <Card.Title
-              title={formattedDate}
-              subtitle={formattedTime}
-              right={() => <Title>{mood.value}</Title>}
-              rightStyle={styles.valueContainer}
-              left={() =>
-                mood.hasNote ? (
-                  <FontAwesome name='file' size={20} color={colors.grey} />
-                ) : null
-              }
-            />
-          </Card>
-        </TouchableOpacity>
-      </Swipeable>
-      <Modal isModalVisible={modalVisible}>
-        <Text>{`Are you sure you want to delete entry from ${formattedDate} ${formattedTime}?`}</Text>
-        <View style={{ flexDirection: 'row', marginTop: 20 }}>
-          <MainButton
-            text='Close'
-            mode='text'
-            onPress={() => setModalVisible(false)}
-            extraStyles={{ flexGrow: 1 }}
+    <Swipeable renderRightActions={onRightSwipe}>
+      <TouchableOpacity onPress={onMoodEntrySelect}>
+        <Card style={styles.card}>
+          <Card.Title
+            title={formattedDate}
+            subtitle={formattedTime}
+            right={() => <Title>{mood.value}</Title>}
+            rightStyle={styles.valueContainer}
+            left={() =>
+              mood.hasNote ? (
+                <FontAwesome name='file' size={20} color={colors.grey} />
+              ) : null
+            }
           />
-          <MainButton
-            text='Delete'
-            mode='text'
-            onPress={onDelete}
-            extraStyles={{ flexGrow: 1 }}
-          />
-        </View>
-      </Modal>
-    </>
+        </Card>
+      </TouchableOpacity>
+    </Swipeable>
   );
 };

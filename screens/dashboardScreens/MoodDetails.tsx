@@ -56,8 +56,8 @@ export const MoodDetails: FC<MoodDetailsScreenProps> = ({
         text='Edit'
         onPress={() =>
           navigation.replace('EditMoodDetails', {
-            value: moodData?.value,
-            note: moodData?.note,
+            value: moodData?.value!,
+            note: moodData?.note!,
             moodId: moodId,
           })
         }

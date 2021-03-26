@@ -39,3 +39,8 @@ export interface MoodFormData {
 export interface Mood {
   value: number;
 }
+
+export interface IError {
+  code: string;
+  message: string;
+}

@@ -1,14 +1,18 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Snackbar } from 'react-native-paper';
-import { View } from 'react-native';
+import { IError } from '../../types';
 import { colors } from '../../themes';
 import { getErrorText } from '../../screens/utils';
 
 interface ErrorNotificationProps {
-  error?: { code: string; message: string };
+  error?: IError;
+  extraStyles?: any;
 }
 
-export const ErrorNotification: FC<ErrorNotificationProps> = ({ error }) => {
+export const ErrorNotification: FC<ErrorNotificationProps> = ({
+  error,
+  extraStyles,
+}) => {
   useEffect(() => {
     if (error !== undefined) {
       setIsSnackBarVisible(true);
@@ -28,6 +32,7 @@ export const ErrorNotification: FC<ErrorNotificationProps> = ({ error }) => {
       visible={isSnackBarVisible}
       wrapperStyle={{
         alignSelf: 'center',
+        ...extraStyles,
       }}
       style={{
         marginHorizontal: 0,

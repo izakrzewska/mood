@@ -9,7 +9,7 @@ import {
 } from '../../components';
 import { auth } from '../../firebase';
 import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
-import { LoginFormData } from '../../types';
+import { LoginFormData, IError } from '../../types';
 import styles from './styles';
 
 type LoginScreenNavigationProp = StackNavigationProp<
@@ -22,7 +22,7 @@ type LoginScreenProps = {
 };
 
 export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
-  const [error, setError] = useState();
+  const [error, setError] = useState<IError>();
 
   const onSubmit = (data: LoginFormData) => {
     Keyboard.dismiss();

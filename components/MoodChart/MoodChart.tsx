@@ -2,20 +2,16 @@ import React, { FC } from 'react';
 import { View } from 'react-native';
 import {
   VictoryAxis,
-  VictoryChart,
-  VictoryLine,
-  VictoryTheme,
-  VictoryScatter,
   VictoryBar,
-  VictoryTooltip,
+  VictoryChart,
+  VictoryTheme,
   VictoryZoomContainer,
 } from 'victory-native';
-import { IMoodFetched } from '../../types';
 import { colors } from '../../themes';
-import { DefaultTheme } from 'react-native-paper';
+import { IMoodFetchedStatistics } from '../../types';
 
 interface MoodChartProps {
-  moods: IMoodFetched[];
+  moods: IMoodFetchedStatistics[];
 }
 
 export const MoodChart: FC<MoodChartProps> = ({ moods }) => {

@@ -1,6 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC, useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ListRenderItem } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Text } from 'react-native-paper';
 import {
@@ -9,10 +9,11 @@ import {
   NoDataImage,
   Modal,
   MainButton,
+  ErrorNotification,
 } from '../../components';
 import { auth, db } from '../../firebase';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
-import { IMoodFetchedHistory } from '../../types';
+import { IMoodFetchedHistory, IError } from '../../types';
 
 type HistoryScreenNavigationProp = StackNavigationProp<
   DashboardStackParamList,
@@ -41,8 +42,9 @@ const styles = StyleSheet.create({
 export default styles;
 
 export const History: FC<HistoryScreenProps> = ({ navigation }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-
+  const [error, setError] = useState<IError>();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [toBeDeletedItemId, setToBeDeletedItemId] = useState<string>();
   const [historyData, setHistoryData] = useState<IMoodFetchedHistory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const user = auth.currentUser!;
@@ -69,17 +71,26 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
     });
   }, []);
 
-  const onMoodDelete = async (mood: IMoodFetchedHistory) => {
-    const ref = db.collection('moods').doc(mood.id);
-    // try {
-    //   await ref.delete();
-    // } catch (err) {
-    //   console.error(err);
-    // }
+  const openModal = (moodId: string) => {
+    setIsModalVisible(true);
+    setToBeDeletedItemId(moodId);
   };
 
-  const renderItem = ({ item }: any) => (
-    <MoodCard mood={item} onMoodDelete={onMoodDelete} />
+  const onMoodDelete = () => {
+    const ref = db.collection('moods').doc(toBeDeletedItemId);
+    ref
+      .delete()
+      .then(() => {
+        setIsModalVisible(false);
+        setToBeDeletedItemId(undefined);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  };
+
+  const renderItem: ListRenderItem<IMoodFetchedHistory> = ({ item }) => (
+    <MoodCard mood={item} openModal={openModal} />
   );
 
   const noHistoryContent = (
@@ -98,6 +109,27 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
       ) : (
         noHistoryContent
       )}
+      <Modal isModalVisible={isModalVisible}>
+        <Text>{`Are you sure you want to delete entry?`}</Text>
+        <View style={{ flexDirection: 'row', marginTop: 20 }}>
+          <MainButton
+            text='Close'
+            mode='text'
+            onPress={() => setIsModalVisible(false)}
+            extraStyles={{ flexGrow: 1 }}
+          />
+          <MainButton
+            text='Delete'
+            mode='text'
+            onPress={onMoodDelete}
+            extraStyles={{ flexGrow: 1 }}
+          />
+        </View>
+      </Modal>
+      <ErrorNotification
+        error={error}
+        extraStyles={{ paddingHorizontal: 30 }}
+      />
     </View>
   );
 };
