@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
-import { View, Text } from 'react-native';
-import { MainButton } from '../../components';
+import { View } from 'react-native';
+import { MainButton, ProfileInfo } from '../../components';
+import { Text } from 'react-native-paper';
 import { auth } from '../../firebase';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { SettingsdStackParamList } from '../../navigation/SettingsStack';
@@ -15,15 +16,44 @@ type ProfileScreenProps = {
 };
 
 export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
+  const user = auth.currentUser!;
   const onSubmit = () => {
     auth.signOut();
   };
+
   return (
-    <View>
-      <Text>Profile</Text>
-      <View>
-        <MainButton mode='outlined' onPress={onSubmit} text='Sign out' />
-      </View>
+    <View
+      style={{
+        paddingHorizontal: 30,
+        paddingVertical: 20,
+        flex: 1,
+        justifyContent: 'center',
+      }}
+    >
+      <ProfileInfo
+        text={user.displayName as string}
+        onSave={() => console.log('edit username')}
+      />
+      <ProfileInfo
+        text={user.email as string}
+        onSave={() => console.log('edit email')}
+      />
+
+      <MainButton
+        mode='text'
+        onPress={() => console.log('Edit password')}
+        text='Change password'
+        extraStyles={{
+          alignSelf: 'flex-end',
+          marginTop: 10,
+        }}
+      />
+      <MainButton
+        mode='outlined'
+        onPress={onSubmit}
+        text='Sign out'
+        extraStyles={{ marginTop: 'auto' }}
+      />
     </View>
   );
 };

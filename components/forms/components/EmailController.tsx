@@ -2,13 +2,16 @@ import React, { FC } from 'react';
 import { TextInput } from 'react-native-paper';
 import { Controller, Control } from 'react-hook-form';
 import {
+  EditEmailFormData,
   LoginFormData,
   RegisterFormData,
   ResetPasswordFormData,
 } from '../../../types';
 
 interface EmailControllerProps {
-  control: Control<LoginFormData | RegisterFormData | ResetPasswordFormData>;
+  control: Control<
+    LoginFormData | RegisterFormData | ResetPasswordFormData | EditEmailFormData
+  >;
 }
 
 export const EmailController: FC<EmailControllerProps> = ({ control }) => {

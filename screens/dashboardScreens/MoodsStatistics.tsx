@@ -2,6 +2,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Text } from 'react-native-paper';
 import { AddDataImage, Loader, MainButton, MoodChart } from '../../components';
 import { auth, db } from '../../firebase';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
@@ -10,7 +11,8 @@ import { IMoodFetchedStatistics } from '../../types';
 const styles = StyleSheet.create({
   staticticsScreenContainer: {
     flex: 1,
-    marginBottom: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 30,
   },
   noStatisticsContainer: {
     flex: 1,
@@ -22,7 +24,6 @@ const styles = StyleSheet.create({
   },
   historyButton: {
     alignSelf: 'flex-end',
-    marginTop: 20,
   },
   moodChartContainer: {
     flex: 1,
@@ -85,8 +86,10 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
     navigation.push('NewMood');
   };
 
+  const greeting = <Text>{`Hello, ${user.displayName}`}</Text>;
   const noMoodsContent = (
     <View style={styles.noStatisticsContainer}>
+      <View style={{ marginBottom: 50 }}>{greeting}</View>
       <AddDataImage />
       <MainButton
         mode='contained'
@@ -105,6 +108,7 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
         onPress={showHistory}
         extraStyles={styles.historyButton}
       />
+      <View style={{ alignItems: 'center', marginTop: 30 }}>{greeting}</View>
       <View style={styles.moodChartContainer}>
         <MoodChart moods={moodsData} />
       </View>

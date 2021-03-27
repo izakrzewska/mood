@@ -29,6 +29,12 @@ export const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
     const { email, password } = data;
     auth
       .createUserWithEmailAndPassword(email.trim().toLowerCase(), password)
+      .then((response) => {
+        const user = response.user;
+        user
+          ?.updateProfile({ displayName: data.username })
+          .catch((error) => setError(error));
+      })
       .catch((error) => {
         setError(error);
       });

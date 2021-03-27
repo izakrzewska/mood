@@ -26,6 +26,7 @@ export interface LoginFormData {
 }
 
 export interface RegisterFormData extends LoginFormData {
+  username: string;
   email: string;
   password: string;
   passwordConf: string;
@@ -34,6 +35,14 @@ export interface RegisterFormData extends LoginFormData {
 export interface MoodFormData {
   value: number;
   note: string;
+}
+
+export interface EditEmailFormData {
+  email: string;
+}
+
+export interface EditUsernameFormData {
+  username: string;
 }
 
 export interface Mood {
