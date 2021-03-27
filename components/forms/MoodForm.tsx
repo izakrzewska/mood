@@ -1,16 +1,16 @@
-import React, { FC, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { View, ScrollView } from 'react-native';
+import React, { FC } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { ScrollView, View } from 'react-native';
+import { RadioButton, TextInput } from 'react-native-paper';
+import { availableMoods } from '../../constants';
+import { colors } from '../../themes';
 import { MoodFormData } from '../../types';
 import { MainButton } from '../MainButton/MainButton';
 import { FormError } from './components';
-import { TextInput, RadioButton, Text, Card, Title } from 'react-native-paper';
-import { availableMoods } from '../../constants';
-import { colors } from '../../themes';
 
 interface MoodFormProps {
   onSubmit: (data: MoodFormData) => void;
-  defaultValues?: { value: number; note: string };
+  defaultValues?: { value: number };
 }
 
 export const MoodForm: FC<MoodFormProps> = ({ onSubmit, defaultValues }) => {
@@ -50,22 +50,6 @@ export const MoodForm: FC<MoodFormProps> = ({ onSubmit, defaultValues }) => {
         }}
       />
       <FormError error={errors.value} />
-
-      <Controller
-        control={control}
-        render={({ onChange, onBlur, value }) => (
-          <TextInput
-            multiline
-            label='Note'
-            mode='outlined'
-            onBlur={onBlur}
-            onChangeText={(value) => onChange(value)}
-            value={value}
-          />
-        )}
-        name='note'
-        defaultValue={defaultValues ? defaultValues.note : ''}
-      />
       <MainButton
         mode='text'
         onPress={handleSubmit(onSubmit)}

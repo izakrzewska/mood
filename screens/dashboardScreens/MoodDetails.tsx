@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 import { MainButton } from '../../components';
 import { db } from '../../firebase';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
-import { IMoodDetails, MoodFormData } from '../../types';
+import { IMoodFetched, MoodFormData } from '../../types';
 
 type MoodDetailsScreenNavigationProp = StackNavigationProp<
   DashboardStackParamList,
@@ -26,7 +26,7 @@ export const MoodDetails: FC<MoodDetailsScreenProps> = ({
   navigation,
   route,
 }) => {
-  const [moodData, setMoodData] = useState<IMoodDetails>();
+  const [moodData, setMoodData] = useState<IMoodFetched>();
   const { moodId } = route.params;
 
   useEffect(() => {
@@ -37,8 +37,8 @@ export const MoodDetails: FC<MoodDetailsScreenProps> = ({
         if (doc.exists) {
           setMoodData({
             value: doc.data().value,
+            id: doc.data().id,
             date: doc.data().date,
-            note: doc.data().note,
           });
         } else {
           console.log('No such document!');
@@ -50,14 +50,12 @@ export const MoodDetails: FC<MoodDetailsScreenProps> = ({
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>{moodData?.value}</Text>
-      <Text>{moodData?.note}</Text>
       <MainButton
         mode='text'
         text='Edit'
         onPress={() =>
           navigation.replace('EditMoodDetails', {
             value: moodData?.value!,
-            note: moodData?.note!,
             moodId: moodId,
           })
         }

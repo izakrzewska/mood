@@ -8,16 +8,17 @@ import {
   VictoryZoomContainer,
 } from 'victory-native';
 import { colors } from '../../themes';
-import { IMoodFetchedStatistics } from '../../types';
+import { IMoodFetched } from '../../types';
 
 interface MoodChartProps {
-  moods: IMoodFetchedStatistics[];
+  moods: IMoodFetched[];
 }
 
 export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
   const chartData = moods.map((mood) => {
+    const date = mood.date && mood.date.toDate().setHours(0, 0, 0, 0);
     return {
-      x: mood.date,
+      x: date,
       y: mood.value,
     };
   });

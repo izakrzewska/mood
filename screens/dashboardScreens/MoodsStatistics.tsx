@@ -4,9 +4,10 @@ import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { AddDataImage, Loader, MainButton, MoodChart } from '../../components';
+import { useGetMoods } from '../../hooks';
 import { auth, db } from '../../firebase';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
-import { IMoodFetchedStatistics } from '../../types';
+import { IMoodFetched } from '../../types';
 
 const styles = StyleSheet.create({
   staticticsScreenContainer: {
@@ -49,37 +50,14 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
   navigation,
 }) => {
   const isFocused = useIsFocused();
-  const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
-  const [moodsData, setMoodsData] = useState<IMoodFetchedStatistics[]>([]);
   const user = auth.currentUser!;
 
-  useEffect(() => {
-    if (isFocused) {
-      const ref = db
-        .collection('moods')
-        .where('belongsTo', '==', user.uid)
-        .orderBy('createdAt', 'asc');
-      ref.onSnapshot((query) => {
-        const moodsDataArray: IMoodFetchedStatistics[] = [];
-        query.forEach((doc) => {
-          const date =
-            doc.data() &&
-            doc.data().createdAt &&
-            doc.data().createdAt.toDate().setHours(0, 0, 0, 0);
-          moodsDataArray.push({
-            id: doc.id,
-            date,
-            value: doc.data().value,
-          });
-        });
-        setMoodsData(moodsDataArray);
-        setIsDataLoaded(true);
-      });
-    }
-  }, [isFocused]);
+  const { moodsData, isLoading } = useGetMoods(isFocused);
 
   const showHistory = () => {
-    navigation.push('History');
+    navigation.push('History', {
+      moods: moodsData,
+    });
   };
 
   const onNewMoodPress = () => {
@@ -113,13 +91,6 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
         <MoodChart moods={moodsData} />
       </View>
       <View style={styles.rateMoodButtonContainer}>
-        {/* <IconButton
-          animated
-          size={52}
-          color={colors.main}
-          icon='plus'
-          style={{ alignSelf: 'center' }}
-        /> */}
         <MainButton
           mode='text'
           text='Rate your today mood'
@@ -129,9 +100,9 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
     </View>
   );
 
-  return !isDataLoaded ? (
+  return isLoading ? (
     <Loader />
-  ) : moodsData.length > 0 ? (
+  ) : moodsData?.length > 0 ? (
     moodsContent
   ) : (
     noMoodsContent

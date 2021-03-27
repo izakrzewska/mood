@@ -57,7 +57,6 @@ export const NewMood: FC<NewMoodScreenProps> = ({ navigation }) => {
         value: Number(data.value),
         belongsTo: user.uid,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        note: data.note.trim(),
       };
       const ref = db.collection('moods');
       await ref.add(moodData);

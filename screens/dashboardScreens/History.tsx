@@ -1,19 +1,21 @@
+import { useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { FC, useEffect, useState } from 'react';
-import { View, StyleSheet, ListRenderItem } from 'react-native';
+import React, { FC, useState } from 'react';
+import { ListRenderItem, StyleSheet, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Text } from 'react-native-paper';
 import {
+  ErrorNotification,
   Loader,
+  MainButton,
+  Modal,
   MoodCard,
   NoDataImage,
-  Modal,
-  MainButton,
-  ErrorNotification,
 } from '../../components';
-import { auth, db } from '../../firebase';
+import { db } from '../../firebase';
+import { useGetMoods } from '../../hooks';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
-import { IMoodFetchedHistory, IError } from '../../types';
+import { IError, IMoodFetched } from '../../types';
 
 type HistoryScreenNavigationProp = StackNavigationProp<
   DashboardStackParamList,
@@ -45,31 +47,9 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
   const [error, setError] = useState<IError>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [toBeDeletedItemId, setToBeDeletedItemId] = useState<string>();
-  const [historyData, setHistoryData] = useState<IMoodFetchedHistory[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const user = auth.currentUser!;
+  const isFocused = useIsFocused();
 
-  useEffect(() => {
-    const ref = db
-      .collection('moods')
-      .where('belongsTo', '==', user.uid)
-      .orderBy('createdAt', 'desc');
-    ref.onSnapshot((query) => {
-      const historyDataArray: IMoodFetchedHistory[] = [];
-      query.forEach((doc) => {
-        const date =
-          doc.data() && doc.data().createdAt && doc.data().createdAt.toDate();
-        historyDataArray.push({
-          id: doc.id,
-          date,
-          value: doc.data().value,
-          hasNote: doc.data().note !== '',
-        });
-      });
-      setHistoryData(historyDataArray);
-      setIsLoading(false);
-    });
-  }, []);
+  const { moodsData, isLoading } = useGetMoods(isFocused);
 
   const openModal = (moodId: string) => {
     setIsModalVisible(true);
@@ -89,7 +69,7 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
       });
   };
 
-  const renderItem: ListRenderItem<IMoodFetchedHistory> = ({ item }) => (
+  const renderItem: ListRenderItem<IMoodFetched> = ({ item }) => (
     <MoodCard mood={item} openModal={openModal} />
   );
 
@@ -100,12 +80,12 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
     </View>
   );
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <View style={styles.historyScreenContainer}>
-      {isLoading ? (
-        <Loader />
-      ) : historyData.length > 0 ? (
-        <FlatList data={historyData} renderItem={renderItem} />
+      {moodsData?.length > 0 ? (
+        <FlatList data={moodsData} renderItem={renderItem} />
       ) : (
         noHistoryContent
       )}

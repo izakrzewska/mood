@@ -9,13 +9,14 @@ import {
 } from '../screens/dashboardScreens';
 import { forFade } from '../screens/utils';
 import { useTheme } from '@react-navigation/native';
+import { IMoodFetched } from '../types';
 
 export type DashboardStackParamList = {
   MoodsStatistics: undefined;
   History: undefined;
   NewMood: undefined;
   MoodDetails: { moodId: string };
-  EditMoodDetails: { moodId: string; value: number; note: string };
+  EditMoodDetails: { moodId: string; value: number };
 };
 
 export const DashboardStack = () => {

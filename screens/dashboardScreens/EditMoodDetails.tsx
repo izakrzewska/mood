@@ -26,7 +26,7 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { value, note, moodId } = route.params;
+  const { value, moodId } = route.params;
   const onSubmit = async (data: MoodFormData) => {
     const ref = db.collection('moods').doc(moodId);
 
@@ -34,7 +34,6 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
       await ref.set(
         {
           value: Number(data.value),
-          note: data.note,
         },
         { merge: true }
       );
@@ -46,7 +45,7 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
 
   return (
     <View style={{ flex: 1 }}>
-      <MoodForm onSubmit={onSubmit} defaultValues={{ value, note }} />
+      <MoodForm onSubmit={onSubmit} defaultValues={{ value }} />
     </View>
   );
 };
