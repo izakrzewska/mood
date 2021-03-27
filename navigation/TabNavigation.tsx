@@ -3,13 +3,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { SafeAreaView } from 'react-native';
 import { SettingsStack, SettingsStackParamList } from './SettingsStack';
-import { DashboardStack, DashboardStackParamList } from './DashboardStack';
+import { MoodStack, MoodStackParamList } from './MoodStack';
 import { JournalStack, JournalStackParamList } from './JournalStack';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { useTheme } from '@react-navigation/native';
 
 type TabParamList = {
-  Dashboard: NavigatorScreenParams<DashboardStackParamList>;
+  Mood: NavigatorScreenParams<MoodStackParamList>;
   Settings: NavigatorScreenParams<SettingsStackParamList>;
   Journal: NavigatorScreenParams<JournalStackParamList>;
 };
@@ -26,7 +26,7 @@ export const TabNavigation = () => {
             if (route.name === 'Settings') {
               return <FontAwesome name='cogs' size={size} color={color} />;
             }
-            if (route.name === 'Dashboard') {
+            if (route.name === 'Mood') {
               return <FontAwesome name='dashboard' size={size} color={color} />;
             }
             if (route.name === 'Journal') {
@@ -43,10 +43,10 @@ export const TabNavigation = () => {
         }}
       >
         <Tab.Screen
-          name='Dashboard'
-          component={DashboardStack}
+          name='Mood'
+          component={MoodStack}
           options={{
-            title: 'Dashboard',
+            title: 'Mood',
           }}
         />
         <Tab.Screen

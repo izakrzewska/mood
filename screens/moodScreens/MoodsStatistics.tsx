@@ -6,7 +6,7 @@ import { Text } from 'react-native-paper';
 import { AddDataImage, Loader, MainButton, MoodChart } from '../../components';
 import { useGetMoods } from '../../hooks';
 import { auth, db } from '../../firebase';
-import { DashboardStackParamList } from '../../navigation/DashboardStack';
+import { MoodStackParamList } from '../../navigation/MoodStack';
 import { IMoodFetched } from '../../types';
 
 const styles = StyleSheet.create({
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 });
 
 type MoodStatisticsScreenNavigationProp = StackNavigationProp<
-  DashboardStackParamList,
+  MoodStackParamList,
   'MoodsStatistics'
 >;
 

@@ -2,20 +2,17 @@ import React, { FC } from 'react';
 import { View, Text } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { MoodForm } from '../../components';
-import { DashboardStackParamList } from '../../navigation/DashboardStack';
+import { MoodStackParamList } from '../../navigation/MoodStack';
 import { MoodFormData } from '../../types';
 import { RouteProp } from '@react-navigation/native';
 import { db } from '../../firebase';
 
 type EditMoodScreenNavigationProp = StackNavigationProp<
-  DashboardStackParamList,
+  MoodStackParamList,
   'EditMoodDetails'
 >;
 
-type EditMoodScreenRouteProp = RouteProp<
-  DashboardStackParamList,
-  'EditMoodDetails'
->;
+type EditMoodScreenRouteProp = RouteProp<MoodStackParamList, 'EditMoodDetails'>;
 
 type EditMoodScreenProps = {
   navigation: EditMoodScreenNavigationProp;

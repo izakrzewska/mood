@@ -14,11 +14,11 @@ import {
 } from '../../components';
 import { db } from '../../firebase';
 import { useGetMoods } from '../../hooks';
-import { DashboardStackParamList } from '../../navigation/DashboardStack';
+import { MoodStackParamList } from '../../navigation/MoodStack';
 import { IError, IMoodFetched } from '../../types';
 
 type HistoryScreenNavigationProp = StackNavigationProp<
-  DashboardStackParamList,
+  MoodStackParamList,
   'History'
 >;
 

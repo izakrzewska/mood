@@ -4,11 +4,11 @@ import React, { FC } from 'react';
 import { View } from 'react-native';
 import { MoodForm } from '../../components';
 import { auth, db } from '../../firebase';
-import { DashboardStackParamList } from '../../navigation/DashboardStack';
+import { MoodStackParamList } from '../../navigation/MoodStack';
 import { MoodFormData } from '../../types';
 
 type NewMoodScreenNavigationProp = StackNavigationProp<
-  DashboardStackParamList,
+  MoodStackParamList,
   'NewMood'
 >;
 

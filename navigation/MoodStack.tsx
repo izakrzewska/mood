@@ -5,21 +5,21 @@ import {
   History,
   NewMood,
   EditMoodDetails,
-} from '../screens/dashboardScreens';
+} from '../screens/moodScreens';
 import { forFade } from '../screens/utils';
 import { useTheme } from '@react-navigation/native';
 import { IMoodFetched } from '../types';
 
-export type DashboardStackParamList = {
+export type MoodStackParamList = {
   MoodsStatistics: undefined;
   History: undefined;
   NewMood: undefined;
   EditMoodDetails: { moodId: string; value: number };
 };
 
-export const DashboardStack = () => {
+export const MoodStack = () => {
   const { colors } = useTheme();
-  const Stack = createStackNavigator<DashboardStackParamList>();
+  const Stack = createStackNavigator<MoodStackParamList>();
 
   return (
     <Stack.Navigator
