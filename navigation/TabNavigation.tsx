@@ -2,7 +2,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { SafeAreaView } from 'react-native';
-import { SettingsTab } from '../screens';
+import { SettingsStack } from './SettingsStack';
 import { DashboardStack } from './DashboardStack';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { DashboardStackParamList } from './DashboardStack';
@@ -47,7 +47,7 @@ export const TabNavigation = () => {
         />
         <Tab.Screen
           name='Settings'
-          component={SettingsTab}
+          component={SettingsStack}
           options={{
             title: 'Settings',
           }}

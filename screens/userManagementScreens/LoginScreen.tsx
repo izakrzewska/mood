@@ -8,7 +8,7 @@ import {
   LoginImage,
 } from '../../components';
 import { auth } from '../../firebase';
-import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
+import { UserManagementStackParamList } from '../../navigation/UserManagementStack';
 import { LoginFormData, IError } from '../../types';
 import styles from './styles';
 

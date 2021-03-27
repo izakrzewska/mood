@@ -1,14 +1,11 @@
-import React, { useEffect, useState, FC } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import { auth, db } from '../../firebase';
-import { MoodChart, Loader, AddDataImage, MainButton } from '../../components';
 import { useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React, { FC, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { AddDataImage, Loader, MainButton, MoodChart } from '../../components';
+import { auth, db } from '../../firebase';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
 import { IMoodFetchedStatistics } from '../../types';
-import Constants from 'expo-constants';
-import { IconButton } from 'react-native-paper';
-import { colors } from '../../themes';
 
 const styles = StyleSheet.create({
   staticticsScreenContainer: {

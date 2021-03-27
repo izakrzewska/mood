@@ -12,7 +12,7 @@ export type UserManagementStackParamList = {
 
 const Stack = createStackNavigator<UserManagementStackParamList>();
 
-export const UserManagementStackNavigation = () => {
+export const UserManagementStack = () => {
   return (
     <>
       <StatusBar style='dark' />

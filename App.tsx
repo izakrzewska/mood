@@ -3,7 +3,7 @@ import { auth } from './firebase';
 import { Provider as PaperProvider, Snackbar, Text } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { paperTheme, navigationTheme } from './themes';
-import { TabNavigation, UserManagementStackNavigation } from './navigation';
+import { TabNavigation, UserManagementStack } from './navigation';
 
 export default function App() {
   const [signedIn, setSignedIn] = useState(false);
@@ -19,7 +19,7 @@ export default function App() {
   return (
     <PaperProvider theme={paperTheme}>
       <NavigationContainer theme={navigationTheme}>
-        {signedIn ? <TabNavigation /> : <UserManagementStackNavigation />}
+        {signedIn ? <TabNavigation /> : <UserManagementStack />}
       </NavigationContainer>
     </PaperProvider>
   );

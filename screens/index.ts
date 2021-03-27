@@ -4,4 +4,4 @@ export {
   ResetPasswordScreen,
 } from './userManagementScreens';
 export { History, MoodsStatistics } from './dashboardScreens';
-export { SettingsTab } from './settingsTabScreens';
+export { Profile } from './settingsScreens';

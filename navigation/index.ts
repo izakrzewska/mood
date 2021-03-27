@@ -1,3 +1,4 @@
 export { DashboardStack } from './DashboardStack';
 export { TabNavigation } from './TabNavigation';
-export { UserManagementStackNavigation } from './UserManagementStackNavigation';
+export { UserManagementStack } from './UserManagementStack';
+export { SettingsStack } from './SettingsStack';

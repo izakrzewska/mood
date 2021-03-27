@@ -8,7 +8,7 @@ import {
   ResetPasswordForm,
 } from '../../components';
 import { auth } from '../../firebase';
-import { UserManagementStackParamList } from '../../navigation/UserManagementStackNavigation';
+import { UserManagementStackParamList } from '../../navigation/UserManagementStack';
 import { ResetPasswordFormData, IError } from '../../types';
 import styles from './styles';
 

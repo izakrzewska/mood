@@ -34,6 +34,7 @@ export const MoodDetails: FC<MoodDetailsScreenProps> = ({
     ref
       .get()
       .then((doc) => {
+        console.log(doc.data());
         if (doc.exists) {
           setMoodData({
             value: doc.data().value,

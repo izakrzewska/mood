@@ -9,7 +9,6 @@ import {
 } from '../screens/dashboardScreens';
 import { forFade } from '../screens/utils';
 import { useTheme } from '@react-navigation/native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export type DashboardStackParamList = {
   MoodsStatistics: undefined;
