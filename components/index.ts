@@ -5,6 +5,7 @@ export {
   ForgotPasswordImage,
   NoDataImage,
   AddDataImage,
+  MoodImage,
 } from './images';
 export { MainButton } from './MainButton/MainButton';
 export { MoodCard } from './MoodCard/MoodCard';

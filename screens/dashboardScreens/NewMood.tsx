@@ -1,14 +1,10 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import firebase from 'firebase';
-import React, { FC, useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Card, Text, TextInput } from 'react-native-paper';
-import { MainButton, MoodForm } from '../../components';
-import { availableMoods } from '../../constants';
+import React, { FC } from 'react';
+import { View } from 'react-native';
+import { MoodForm } from '../../components';
 import { auth, db } from '../../firebase';
 import { DashboardStackParamList } from '../../navigation/DashboardStack';
-import { colors } from '../../themes';
 import { MoodFormData } from '../../types';
 
 type NewMoodScreenNavigationProp = StackNavigationProp<
@@ -19,35 +15,6 @@ type NewMoodScreenNavigationProp = StackNavigationProp<
 type NewMoodScreenProps = {
   navigation: NewMoodScreenNavigationProp;
 };
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
-
-const styles = StyleSheet.create({
-  newMoodContainer: {
-    flex: 1,
-    paddingVertical: 30,
-  },
-  moodCardsContainer: {
-    paddingHorizontal: 20,
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  moodCard: {
-    shadowColor: colors.grey,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
-    marginVertical: 10,
-    alignItems: 'center',
-    padding: 15,
-    margin: 10,
-    minWidth: 50,
-    height: 50,
-  },
-});
 
 export const NewMood: FC<NewMoodScreenProps> = ({ navigation }) => {
   const onSubmit = async (data: MoodFormData) => {
@@ -67,7 +34,7 @@ export const NewMood: FC<NewMoodScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.newMoodContainer}>
+    <View style={{ flex: 1 }}>
       <MoodForm onSubmit={onSubmit} />
     </View>
   );

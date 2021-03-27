@@ -44,7 +44,11 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
       <MoodForm onSubmit={onSubmit} defaultValues={{ value }} />
     </View>
   );

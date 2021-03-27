@@ -83,12 +83,19 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
   return isLoading ? (
     <Loader />
   ) : (
-    <View style={styles.historyScreenContainer}>
-      {moodsData?.length > 0 ? (
-        <FlatList data={moodsData} renderItem={renderItem} />
-      ) : (
-        noHistoryContent
-      )}
+    <>
+      <View style={styles.historyScreenContainer}>
+        {moodsData?.length > 0 ? (
+          <FlatList data={moodsData} renderItem={renderItem} />
+        ) : (
+          noHistoryContent
+        )}
+
+        <ErrorNotification
+          error={error}
+          extraStyles={{ paddingHorizontal: 30 }}
+        />
+      </View>
       <Modal isModalVisible={isModalVisible}>
         <Text>{`Are you sure you want to delete entry?`}</Text>
         <View style={{ flexDirection: 'row', marginTop: 20 }}>
@@ -106,10 +113,6 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
           />
         </View>
       </Modal>
-      <ErrorNotification
-        error={error}
-        extraStyles={{ paddingHorizontal: 30 }}
-      />
-    </View>
+    </>
   );
 };
