@@ -55,9 +55,7 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
   const { moodsData, isLoading } = useGetMoods(isFocused);
 
   const showHistory = () => {
-    navigation.push('History', {
-      moods: moodsData,
-    });
+    navigation.push('History');
   };
 
   const onNewMoodPress = () => {

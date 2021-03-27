@@ -3,9 +3,9 @@ import React, { FC } from 'react';
 import { Animated, Dimensions, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { Card, IconButton, Title } from 'react-native-paper';
-import { colors } from '../../themes';
+import { Card, Title } from 'react-native-paper';
 import { IMoodFetched } from '../../types';
+import { MainButton } from '../MainButton/MainButton';
 
 interface MoodCardProps {
   mood: IMoodFetched;
@@ -23,10 +23,10 @@ const styles = StyleSheet.create({
   valueContainer: {
     marginEnd: 20,
   },
-  deleteIconContainer: {
+  hiddenButtonsContainer: {
     height: '100%',
-    justifyContent: 'center',
-    marginEnd: 35,
+    flexDirection: 'row',
+    marginEnd: 15,
   },
 });
 
@@ -44,44 +44,38 @@ export const MoodCard: FC<MoodCardProps> = ({ mood, openModal }) => {
     day: 'numeric',
   });
 
-  const onRightSwipe = (progress: any, dragX: any) => {
-    const scale = dragX.interpolate({
-      inputRange: [0, 200],
-      outputRange: [1, 0],
-    });
-
+  const onRightSwipe = () => {
     return (
-      <TouchableOpacity onPress={() => openModal(mood.id)} activeOpacity={0.6}>
-        <Animated.View
-          style={{
-            transform: [{ scale: scale }],
-            ...styles.deleteIconContainer,
-          }}
-        >
-          <IconButton icon='delete' size={16} color={colors.grey} />
-        </Animated.View>
-      </TouchableOpacity>
+      <Animated.View style={styles.hiddenButtonsContainer}>
+        <MainButton
+          mode='text'
+          text='Edit'
+          onPress={() =>
+            navigation.navigate('EditMoodDetails', {
+              moodId: mood.id,
+              value: mood.value,
+            })
+          }
+        />
+        <MainButton
+          mode='text'
+          text='Delete'
+          onPress={() => openModal(mood.id)}
+        />
+      </Animated.View>
     );
-  };
-
-  const onMoodEntrySelect = () => {
-    navigation.navigate('MoodDetails', {
-      moodId: mood.id,
-    });
   };
 
   return (
     <Swipeable renderRightActions={onRightSwipe}>
-      <TouchableOpacity onPress={onMoodEntrySelect}>
-        <Card style={styles.card}>
-          <Card.Title
-            title={formattedDate}
-            subtitle={formattedTime}
-            right={() => <Title>{mood.value}</Title>}
-            rightStyle={styles.valueContainer}
-          />
-        </Card>
-      </TouchableOpacity>
+      <Card style={styles.card}>
+        <Card.Title
+          title={formattedDate}
+          subtitle={formattedTime}
+          right={() => <Title>{mood.value}</Title>}
+          rightStyle={styles.valueContainer}
+        />
+      </Card>
     </Swipeable>
   );
 };

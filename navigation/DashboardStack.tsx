@@ -4,7 +4,6 @@ import {
   MoodsStatistics,
   History,
   NewMood,
-  MoodDetails,
   EditMoodDetails,
 } from '../screens/dashboardScreens';
 import { forFade } from '../screens/utils';
@@ -15,7 +14,6 @@ export type DashboardStackParamList = {
   MoodsStatistics: undefined;
   History: undefined;
   NewMood: undefined;
-  MoodDetails: { moodId: string };
   EditMoodDetails: { moodId: string; value: number };
 };
 
@@ -48,13 +46,6 @@ export const DashboardStack = () => {
         component={History}
         options={{
           title: 'History',
-        }}
-      />
-      <Stack.Screen
-        name='MoodDetails'
-        component={MoodDetails}
-        options={{
-          title: 'Mood Details',
         }}
       />
       <Stack.Screen

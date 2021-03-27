@@ -40,7 +40,7 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
     } catch (err) {
       console.log(err);
     }
-    navigation.push('MoodDetails', { moodId });
+    navigation.push('History');
   };
 
   return (
