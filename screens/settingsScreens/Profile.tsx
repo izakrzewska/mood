@@ -1,13 +1,12 @@
 import React, { FC } from 'react';
 import { View } from 'react-native';
 import { MainButton, ProfileInfo } from '../../components';
-import { Text } from 'react-native-paper';
 import { auth } from '../../firebase';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { SettingsdStackParamList } from '../../navigation/SettingsStack';
+import { SettingsStackParamList } from '../../navigation/SettingsStack';
 
 type ProfileScreenNavigationProp = StackNavigationProp<
-  SettingsdStackParamList,
+  SettingsStackParamList,
   'Profile'
 >;
 

@@ -2,15 +2,16 @@ import { FontAwesome } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { SafeAreaView } from 'react-native';
-import { SettingsStack } from './SettingsStack';
-import { DashboardStack } from './DashboardStack';
+import { SettingsStack, SettingsStackParamList } from './SettingsStack';
+import { DashboardStack, DashboardStackParamList } from './DashboardStack';
+import { JournalStack, JournalStackParamList } from './JournalStack';
 import { NavigatorScreenParams } from '@react-navigation/native';
-import { DashboardStackParamList } from './DashboardStack';
 import { useTheme } from '@react-navigation/native';
 
 type TabParamList = {
   Dashboard: NavigatorScreenParams<DashboardStackParamList>;
-  Settings: undefined; // TODO: change when settings stack is done
+  Settings: NavigatorScreenParams<SettingsStackParamList>;
+  Journal: NavigatorScreenParams<JournalStackParamList>;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -28,6 +29,9 @@ export const TabNavigation = () => {
             if (route.name === 'Dashboard') {
               return <FontAwesome name='dashboard' size={size} color={color} />;
             }
+            if (route.name === 'Journal') {
+              return <FontAwesome name='book' size={size} color={color} />;
+            }
           },
         })}
         tabBarOptions={{
@@ -43,6 +47,13 @@ export const TabNavigation = () => {
           component={DashboardStack}
           options={{
             title: 'Dashboard',
+          }}
+        />
+        <Tab.Screen
+          name='Journal'
+          component={JournalStack}
+          options={{
+            title: 'Journal',
           }}
         />
         <Tab.Screen

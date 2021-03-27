@@ -1,16 +1,16 @@
-import { useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import { Profile } from '../screens/settingsScreens';
+import { JournalEntries } from '../screens/journalScreens';
 import { forFade } from '../screens/utils';
+import { useTheme } from '@react-navigation/native';
 
-export type SettingsStackParamList = {
-  Profile: undefined;
+export type JournalStackParamList = {
+  JournalEntries: undefined;
 };
 
-export const SettingsStack = () => {
+export const JournalStack = () => {
   const { colors } = useTheme();
-  const Stack = createStackNavigator<SettingsStackParamList>();
+  const Stack = createStackNavigator<JournalStackParamList>();
 
   return (
     <Stack.Navigator
@@ -25,10 +25,10 @@ export const SettingsStack = () => {
       }}
     >
       <Stack.Screen
-        name='Profile'
-        component={Profile}
+        name='JournalEntries'
+        component={JournalEntries}
         options={{
-          title: 'Profile',
+          title: 'All entries',
         }}
       />
     </Stack.Navigator>
