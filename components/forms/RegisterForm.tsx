@@ -26,20 +26,22 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {
   const currentPassword = (password.current = watch('password', ''));
   return (
     <View>
-      <UserNameController control={control} />
-      <FormError error={errors.username} />
-      <EmailController control={control} />
-      <FormError error={errors.email} />
-      <PasswordController control={control} name='password' label='Password' />
-      <FormError error={errors.password} />
+      <UserNameController control={control} error={errors.username} />
+      <EmailController control={control} error={errors.email} />
+      <PasswordController
+        control={control}
+        name='password'
+        label='Password'
+        error={errors.password}
+      />
       <PasswordController
         name='passwordConf'
         label='password'
         control={control}
         confirmation
         currentPassword={currentPassword}
+        error={errors.passwordConf}
       />
-      <FormError error={errors.passwordConf} />
       <MainButton
         mode='contained'
         onPress={handleSubmit(onSubmit)}

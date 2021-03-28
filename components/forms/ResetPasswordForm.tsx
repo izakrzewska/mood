@@ -1,9 +1,9 @@
 import React, { FC, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
-import { MainButton } from '../MainButton/MainButton';
 import { ResetPasswordFormData } from '../../types';
-import { EmailController, FormError } from './components';
+import { MainButton } from '../MainButton/MainButton';
+import { EmailController } from './components';
 
 interface ResetPasswordFormProps {
   onSubmit: (data: ResetPasswordFormData) => void;
@@ -20,8 +20,7 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = ({ onSubmit }) => {
 
   return (
     <View>
-      <EmailController control={control} />
-      <FormError error={errors.email} />
+      <EmailController control={control} error={errors.email} />
       <MainButton
         mode='contained'
         onPress={handleSubmit(onSubmit)}

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import { LoginFormData } from '../../types';
 import { MainButton } from '../MainButton/MainButton';
-import { EmailController, FormError, PasswordController } from './components';
+import { EmailController, PasswordController } from './components';
 
 interface LoginFormProps {
   onSubmit: (data: LoginFormData) => void;
@@ -15,10 +15,13 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmit }) => {
   });
   return (
     <View>
-      <EmailController control={control} />
-      <FormError error={errors.email} />
-      <PasswordController control={control} name='password' label='Password' />
-      <FormError error={errors.password} />
+      <EmailController control={control} error={errors.email} />
+      <PasswordController
+        control={control}
+        name='password'
+        label='Password'
+        error={errors.password}
+      />
       <MainButton
         mode='contained'
         onPress={handleSubmit(onSubmit)}

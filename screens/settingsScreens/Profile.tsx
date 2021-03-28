@@ -1,22 +1,21 @@
-import React, { FC, useState, useRef } from 'react';
-import { View, Keyboard } from 'react-native';
-import { MainButton, ProfileInfo, ErrorNotification } from '../../components';
-import { auth } from '../../firebase';
-import firebase from 'firebase';
-import { useForm } from 'react-hook-form';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { SettingsStackParamList } from '../../navigation/SettingsStack';
-import {
-  EditEmailFormData,
-  EditUsernameFormData,
-  EditPasswordFormData,
-} from '../../types';
+import firebase from 'firebase';
+import React, { FC, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Keyboard, View } from 'react-native';
+import { ErrorNotification, MainButton, ProfileInfo } from '../../components';
 import {
   EmailController,
-  FormError,
   PasswordController,
   UserNameController,
 } from '../../components/forms/components';
+import { auth } from '../../firebase';
+import { SettingsStackParamList } from '../../navigation/SettingsStack';
+import {
+  EditEmailFormData,
+  EditPasswordFormData,
+  EditUsernameFormData,
+} from '../../types';
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   SettingsStackParamList,
@@ -133,20 +132,24 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
           <UserNameController
             control={usernameControl}
             defaultValue={user.displayName!}
+            error={userNameErrors.username}
           />
-          <FormError error={userNameErrors.username} />
         </ProfileInfo>
         <ProfileInfo
           text={user.email as string}
           onSave={handleEmailSubmit(handleEmaileSave)}
         >
-          <EmailController control={emailControl} defaultValue={user.email!} />
+          <EmailController
+            control={emailControl}
+            defaultValue={user.email!}
+            error={emailErrors.email}
+          />
           <PasswordController
             label='Password'
             name='password'
             control={emailControl}
+            error={emailErrors.password}
           />
-          <FormError error={emailErrors.email} />
         </ProfileInfo>
         <View>
           {isPasswordInEdit ? (
@@ -155,22 +158,22 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
                 label='Old password'
                 name='oldPassword'
                 control={passwordControl}
+                error={passwordErros.oldPassword}
               />
-              <FormError error={passwordErros.oldPassword} />
               <PasswordController
                 control={passwordControl}
                 label='New password'
                 name='password'
+                error={passwordErros.password}
               />
-              <FormError error={passwordErros.password} />
               <PasswordController
                 control={passwordControl}
                 confirmation
                 currentPassword={currentPassword}
                 label='New password confirmation'
                 name='passwordConf'
+                error={passwordErros.passwordConf}
               />
-              <FormError error={passwordErros.passwordConf} />
               <View
                 style={{
                   flexDirection: 'row',
