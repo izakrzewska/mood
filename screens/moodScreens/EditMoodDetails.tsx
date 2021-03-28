@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
-import { View, Text } from 'react-native';
+import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React, { FC } from 'react';
+import { View } from 'react-native';
 import { MoodForm } from '../../components';
+import { db } from '../../firebase';
 import { MoodStackParamList } from '../../navigation/MoodStack';
 import { MoodFormData } from '../../types';
-import { RouteProp } from '@react-navigation/native';
-import { db } from '../../firebase';
 
 type EditMoodScreenNavigationProp = StackNavigationProp<
   MoodStackParamList,
@@ -24,20 +24,24 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
   route,
 }) => {
   const { value, moodId } = route.params;
-  const onSubmit = async (data: MoodFormData) => {
+  const onSubmit = (data: MoodFormData) => {
     const ref = db.collection('moods').doc(moodId);
-
-    try {
-      await ref.set(
+    ref
+      .set(
         {
           value: Number(data.value),
         },
         { merge: true }
-      );
-    } catch (err) {
-      console.log(err);
-    }
-    navigation.push('History');
+      )
+      .then(() => {
+        //TODO: success notification
+      })
+      .catch((error) => {
+        // TODO: error notification
+      })
+      .finally(() => {
+        navigation.navigate('History');
+      });
   };
 
   return (

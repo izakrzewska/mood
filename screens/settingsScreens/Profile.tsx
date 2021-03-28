@@ -1,14 +1,14 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import firebase from 'firebase';
 import React, { FC, useState } from 'react';
-import { Keyboard, View } from 'react-native';
+import { Keyboard, View, ScrollView } from 'react-native';
+import { Divider, List } from 'react-native-paper';
 import {
   ChangeEmailForm,
   ChangePasswordForm,
   ChangeUsernameForm,
   ErrorNotification,
   MainButton,
-  ProfileInfo,
   SuccessNotification,
 } from '../../components';
 import { auth } from '../../firebase';
@@ -18,7 +18,6 @@ import {
   EditPasswordFormData,
   EditUsernameFormData,
 } from '../../types';
-import { Divider } from 'react-native-paper';
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   SettingsStackParamList,
@@ -36,8 +35,10 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
   const [error, setError] = useState();
   const [hasSuccess, setHasSuccess] = useState(false);
   const [notificationText, setNotificationText] = useState('');
+
   const user = auth.currentUser!;
-  const onSubmit = () => {
+
+  const onSignOut = () => {
     auth.signOut();
   };
 
@@ -63,6 +64,7 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
   };
 
   const handleEmaileSave = (data: EditEmailFormData) => {
+    setHasSuccess(false);
     Keyboard.dismiss();
     user
       .reauthenticateWithCredential(getCredentials(data.password))
@@ -84,6 +86,7 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
   };
 
   const handlePasswordSave = (data: EditPasswordFormData) => {
+    setHasSuccess(false);
     Keyboard.dismiss();
     user
       .reauthenticateWithCredential(getCredentials(data.oldPassword))
@@ -106,76 +109,63 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
 
   return (
     <>
-      <View
-        style={{
+      <ScrollView
+        contentContainerStyle={{
           paddingHorizontal: 30,
           paddingVertical: 20,
           flex: 1,
           justifyContent: 'center',
         }}
       >
-        {isUsernameinEdit ? (
+        <List.Accordion
+          title='Edit username'
+          expanded={isUsernameinEdit}
+          onPress={() => setIsUsernameInEdit(!isUsernameinEdit)}
+        >
           <ChangeUsernameForm
             closeForm={() => setIsUsernameInEdit(false)}
             handleUsernameSave={handleUsernameSave}
           />
-        ) : (
-          <ProfileInfo
-            text={user.displayName as string}
-            showForm={() => setIsUsernameInEdit(true)}
-            disabled={isEmailInEdit || isPasswordInEdit}
-          />
-        )}
+        </List.Accordion>
         <Divider />
-        {isEmailInEdit ? (
+        <List.Accordion
+          title='Edit e-email'
+          expanded={isEmailInEdit}
+          onPress={() => setIsEmailInEdit(!isEmailInEdit)}
+        >
           <ChangeEmailForm
             closeForm={() => setIsEmailInEdit(false)}
             handleEmailSave={handleEmaileSave}
           />
-        ) : (
-          <ProfileInfo
-            text={user.email as string}
-            showForm={() => setIsEmailInEdit(true)}
-            disabled={isUsernameinEdit || isPasswordInEdit}
-          />
-        )}
+        </List.Accordion>
         <Divider />
-        <View>
-          {isPasswordInEdit ? (
-            <ChangePasswordForm
-              closeEdit={() => setIsPasswordInEdit(false)}
-              handlePasswordSave={handlePasswordSave}
-            />
-          ) : (
-            <MainButton
-              mode='text'
-              onPress={() => setIsPasswordInEdit(true)}
-              disabled={isUsernameinEdit || isEmailInEdit}
-              text='Change password'
-              extraStyles={{
-                alignSelf: 'flex-end',
-                marginTop: 10,
-              }}
-            />
-          )}
-          <MainButton
-            mode='text'
-            onPress={() => console.log('delete account')}
-            disabled={isUsernameinEdit || isEmailInEdit || isPasswordInEdit}
-            text='Remove account'
-            extraStyles={{
-              alignSelf: 'flex-end',
-              marginTop: 10,
-            }}
+        <List.Accordion
+          title='Edit password'
+          expanded={isPasswordInEdit}
+          onPress={() => setIsPasswordInEdit(!isPasswordInEdit)}
+        >
+          <ChangePasswordForm
+            closeEdit={() => setIsPasswordInEdit(false)}
+            handlePasswordSave={handlePasswordSave}
           />
-        </View>
+        </List.Accordion>
+        <Divider />
+        {/* <MainButton
+          mode='text'
+          onPress={() => console.log('delete account')}
+          text='Remove account'
+          extraStyles={{
+            alignSelf: 'flex-end',
+            marginTop: 10,
+          }}
+        /> */}
         <MainButton
           mode='outlined'
-          onPress={onSubmit}
+          onPress={onSignOut}
           text='Sign out'
           extraStyles={{ marginTop: 'auto' }}
         />
-      </View>
+      </ScrollView>
       <ErrorNotification error={error} />
       <SuccessNotification
         success={hasSuccess}

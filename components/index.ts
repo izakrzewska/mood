@@ -21,5 +21,4 @@ export {
 } from './forms';
 export { AuthNavigationBox } from './AuthNavigationBox/AuthNavigationBox';
 export { Modal } from './Modal/Modal';
-export { ProfileInfo } from './ProfileInfo/ProfileInfo';
 export { SuccessNotification } from './SuccessNotification/SuccessNotification';
