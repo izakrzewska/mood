@@ -41,17 +41,19 @@ export const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.authFormContainer}>
-      <RegisterForm onSubmit={onSubmit} />
-      <View style={styles.imageContainer}>
-        <LoginImage />
+    <>
+      <View style={styles.authFormContainer}>
+        <RegisterForm onSubmit={onSubmit} />
+        <View style={styles.imageContainer}>
+          <LoginImage />
+        </View>
+        <AuthNavigationBox
+          questionText='Do you already have an account?'
+          buttonText='Sign in'
+          onButtonPress={() => navigation.navigate('Login')}
+        />
       </View>
-      <AuthNavigationBox
-        questionText='Do you already have an account?'
-        buttonText='Sign in'
-        onButtonPress={() => navigation.navigate('Login')}
-      />
       <ErrorNotification error={error} />
-    </View>
+    </>
   );
 };

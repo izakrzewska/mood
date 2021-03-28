@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { View, Text } from 'react-native';
-import { EditUsernameFormData } from '../../types';
-import { UserNameController } from './components';
+import { View } from 'react-native';
 import { auth } from '../../firebase';
+import { EditUsernameFormData } from '../../types';
 import { MainButton } from '../MainButton/MainButton';
+import { UserNameController } from './components';
 
 interface ChangeUsernameFormProps {
   closeForm: () => void;

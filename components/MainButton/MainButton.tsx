@@ -16,6 +16,7 @@ interface MainButtonProps {
   text: string;
   mode: 'contained' | 'outlined' | 'text';
   extraStyles?: any;
+  disabled?: boolean;
 }
 
 export const MainButton: FC<MainButtonProps> = ({
@@ -23,11 +24,13 @@ export const MainButton: FC<MainButtonProps> = ({
   text,
   mode,
   extraStyles,
+  disabled = false,
 }) => {
   const containedButton = mode === 'contained';
   const labelStyle = containedButton ? { color: 'white' } : null;
   return (
     <Button
+      disabled={disabled}
       mode={mode}
       onPress={onPress}
       style={[

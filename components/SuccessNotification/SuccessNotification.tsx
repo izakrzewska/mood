@@ -1,26 +1,25 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Snackbar } from 'react-native-paper';
-import { IError } from '../../types';
 import { colors } from '../../themes';
-import { getErrorText } from '../../screens/utils';
 
-interface ErrorNotificationProps {
-  error?: IError;
+interface SuccessNotificationProps {
+  success?: boolean;
   extraStyles?: any;
+  notificationText: string;
 }
 
-export const ErrorNotification: FC<ErrorNotificationProps> = ({
-  error,
+export const SuccessNotification: FC<SuccessNotificationProps> = ({
+  success,
   extraStyles,
+  notificationText,
 }) => {
   useEffect(() => {
-    if (error !== undefined) {
+    if (success) {
       setIsSnackBarVisible(true);
     }
-  }, [error]);
+  }, [success]);
 
   const [isSnackBarVisible, setIsSnackBarVisible] = useState(false);
-  const notificationText = error === undefined ? '' : getErrorText(error);
 
   const dismissSnackbar = () => {
     setIsSnackBarVisible(false);
@@ -45,7 +44,7 @@ export const ErrorNotification: FC<ErrorNotificationProps> = ({
       theme={{
         colors: {
           accent: colors.white,
-          onSurface: colors.error,
+          onSurface: colors.success,
           surface: colors.white,
         },
       }}

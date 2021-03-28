@@ -35,22 +35,24 @@ export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.authFormContainer}>
-      <LoginForm onSubmit={onSubmit} />
-      <View style={styles.imageContainer}>
-        <LoginImage />
+    <>
+      <View style={styles.authFormContainer}>
+        <LoginForm onSubmit={onSubmit} />
+        <View style={styles.imageContainer}>
+          <LoginImage />
+        </View>
+        <AuthNavigationBox
+          questionText='Forgot password?'
+          buttonText='Reset password'
+          onButtonPress={() => navigation.navigate('ResetPassword')}
+        />
+        <AuthNavigationBox
+          questionText="Don't have an account yet?"
+          buttonText='Register account'
+          onButtonPress={() => navigation.navigate('Register')}
+        />
       </View>
-      <AuthNavigationBox
-        questionText='Forgot password?'
-        buttonText='Reset password'
-        onButtonPress={() => navigation.navigate('ResetPassword')}
-      />
-      <AuthNavigationBox
-        questionText="Don't have an account yet?"
-        buttonText='Register account'
-        onButtonPress={() => navigation.navigate('Register')}
-      />
       <ErrorNotification error={error} />
-    </View>
+    </>
   );
 };

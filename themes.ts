@@ -6,6 +6,8 @@ export const colors = {
   grey: '#8d99ae',
   white: '#fff',
   error: '#EE6364',
+  // success: '#66cdaa'
+  success: '#84c3be',
 };
 
 export const paperTheme = {

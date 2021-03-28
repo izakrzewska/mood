@@ -90,11 +90,6 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
         ) : (
           noHistoryContent
         )}
-
-        <ErrorNotification
-          error={error}
-          extraStyles={{ paddingHorizontal: 30 }}
-        />
       </View>
       <Modal isModalVisible={isModalVisible}>
         <Text>{`Are you sure you want to delete entry?`}</Text>
@@ -113,6 +108,10 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
           />
         </View>
       </Modal>
+      <ErrorNotification
+        error={error}
+        extraStyles={{ paddingHorizontal: 30 }}
+      />
     </>
   );
 };

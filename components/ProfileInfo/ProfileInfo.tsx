@@ -7,6 +7,7 @@ import { MainButton } from '../MainButton/MainButton';
 interface ProfileInfoProps {
   text: string;
   showForm: () => void;
+  disabled: boolean;
 }
 
 const styles = StyleSheet.create({
@@ -20,11 +21,20 @@ const styles = StyleSheet.create({
   },
 });
 
-export const ProfileInfo: FC<ProfileInfoProps> = ({ text, showForm }) => {
+export const ProfileInfo: FC<ProfileInfoProps> = ({
+  text,
+  showForm,
+  disabled,
+}) => {
   return (
     <View style={styles.infoContainer}>
       <Text style={styles.infoText}>{text}</Text>
-      <MainButton mode='text' onPress={showForm} text='Edit' />
+      <MainButton
+        mode='text'
+        onPress={showForm}
+        text='Edit'
+        disabled={disabled}
+      />
     </View>
   );
 };

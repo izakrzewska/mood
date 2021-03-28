@@ -48,17 +48,23 @@ export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
   );
 
   return (
-    <View style={styles.authFormContainer}>
-      {isEmailSent ? emailSentInfo : <ResetPasswordForm onSubmit={onSubmit} />}
-      <View style={styles.imageContainer}>
-        <ForgotPasswordImage />
+    <>
+      <View style={styles.authFormContainer}>
+        {isEmailSent ? (
+          emailSentInfo
+        ) : (
+          <ResetPasswordForm onSubmit={onSubmit} />
+        )}
+        <View style={styles.imageContainer}>
+          <ForgotPasswordImage />
+        </View>
+        <AuthNavigationBox
+          questionText='Back to login page?'
+          buttonText='Sign in'
+          onButtonPress={() => navigation.navigate('Login')}
+        />
       </View>
-      <AuthNavigationBox
-        questionText='Back to login page?'
-        buttonText='Sign in'
-        onButtonPress={() => navigation.navigate('Login')}
-      />
       <ErrorNotification error={error} />
-    </View>
+    </>
   );
 };
