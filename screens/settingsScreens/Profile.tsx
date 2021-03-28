@@ -1,14 +1,15 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import firebase from 'firebase';
-import React, { FC, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { FC, useState } from 'react';
 import { Keyboard, View } from 'react-native';
-import { ErrorNotification, MainButton, ProfileInfo } from '../../components';
 import {
-  EmailController,
-  PasswordController,
-  UserNameController,
-} from '../../components/forms/components';
+  ChangeEmailForm,
+  ChangePasswordForm,
+  ChangeUsernameForm,
+  ErrorNotification,
+  MainButton,
+  ProfileInfo,
+} from '../../components';
 import { auth } from '../../firebase';
 import { SettingsStackParamList } from '../../navigation/SettingsStack';
 import {
@@ -28,31 +29,13 @@ type ProfileScreenProps = {
 
 export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
   const [isPasswordInEdit, setIsPasswordInEdit] = useState(false);
+  const [isUsernameinEdit, setIsUsernameInEdit] = useState(false);
+  const [isEmailInEdit, setIsEmailInEdit] = useState(false);
   const [error, setError] = useState();
   const user = auth.currentUser!;
   const onSubmit = () => {
     auth.signOut();
   };
-
-  const {
-    handleSubmit: handleUsernameSubmit,
-    errors: userNameErrors,
-    control: usernameControl,
-  } = useForm<EditUsernameFormData>();
-  const {
-    handleSubmit: handleEmailSubmit,
-    errors: emailErrors,
-    control: emailControl,
-  } = useForm<EditEmailFormData>();
-  const {
-    handleSubmit: handlePasswordSubmit,
-    errors: passwordErros,
-    control: passwordControl,
-    watch: passwordWatch,
-  } = useForm<EditPasswordFormData>();
-
-  const password = useRef({});
-  const currentPassword = (password.current = passwordWatch('password', ''));
 
   const handleUsernameSave = (data: EditUsernameFormData) => {
     user
@@ -125,74 +108,34 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
           justifyContent: 'center',
         }}
       >
-        <ProfileInfo
-          text={user.displayName as string}
-          onSave={handleUsernameSubmit(handleUsernameSave)}
-        >
-          <UserNameController
-            control={usernameControl}
-            defaultValue={user.displayName!}
-            error={userNameErrors.username}
+        {isUsernameinEdit ? (
+          <ChangeUsernameForm
+            closeForm={() => setIsUsernameInEdit(false)}
+            handleUsernameSave={handleUsernameSave}
           />
-        </ProfileInfo>
-        <ProfileInfo
-          text={user.email as string}
-          onSave={handleEmailSubmit(handleEmaileSave)}
-        >
-          <EmailController
-            control={emailControl}
-            defaultValue={user.email!}
-            error={emailErrors.email}
+        ) : (
+          <ProfileInfo
+            text={user.displayName as string}
+            showForm={() => setIsUsernameInEdit(true)}
           />
-          <PasswordController
-            label='Password'
-            name='password'
-            control={emailControl}
-            error={emailErrors.password}
+        )}
+        {isEmailInEdit ? (
+          <ChangeEmailForm
+            closeForm={() => setIsEmailInEdit(false)}
+            handleEmailSave={handleEmaileSave}
           />
-        </ProfileInfo>
+        ) : (
+          <ProfileInfo
+            text={user.email as string}
+            showForm={() => setIsEmailInEdit(true)}
+          />
+        )}
         <View>
           {isPasswordInEdit ? (
-            <>
-              <PasswordController
-                label='Old password'
-                name='oldPassword'
-                control={passwordControl}
-                error={passwordErros.oldPassword}
-              />
-              <PasswordController
-                control={passwordControl}
-                label='New password'
-                name='password'
-                error={passwordErros.password}
-              />
-              <PasswordController
-                control={passwordControl}
-                confirmation
-                currentPassword={currentPassword}
-                label='New password confirmation'
-                name='passwordConf'
-                error={passwordErros.passwordConf}
-              />
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignSelf: 'flex-end',
-                  marginTop: 10,
-                }}
-              >
-                <MainButton
-                  mode='text'
-                  onPress={() => setIsPasswordInEdit(false)}
-                  text='Close'
-                />
-                <MainButton
-                  mode='text'
-                  onPress={handlePasswordSubmit(handlePasswordSave)}
-                  text='Save'
-                />
-              </View>
-            </>
+            <ChangePasswordForm
+              closeEdit={() => setIsPasswordInEdit(false)}
+              handlePasswordSave={handlePasswordSave}
+            />
           ) : (
             <MainButton
               mode='text'

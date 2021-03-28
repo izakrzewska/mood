@@ -6,7 +6,7 @@ import { MainButton } from '../MainButton/MainButton';
 
 interface ProfileInfoProps {
   text: string;
-  onSave: any;
+  showForm: () => void;
 }
 
 const styles = StyleSheet.create({
@@ -20,35 +20,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export const ProfileInfo: FC<ProfileInfoProps> = ({
-  text,
-  onSave,
-  children,
-}) => {
-  const [isInEdit, setIsInEdit] = useState<boolean>(false);
-
+export const ProfileInfo: FC<ProfileInfoProps> = ({ text, showForm }) => {
   return (
     <View style={styles.infoContainer}>
-      {isInEdit ? (
-        <>
-          <View style={{ flexGrow: 1 }}>{children}</View>
-          <MainButton
-            mode='text'
-            onPress={() => setIsInEdit(false)}
-            text='Close'
-          />
-          <MainButton mode='text' onPress={onSave} text='Save' />
-        </>
-      ) : (
-        <>
-          <Text style={styles.infoText}>{text}</Text>
-          <MainButton
-            mode='text'
-            onPress={() => setIsInEdit(true)}
-            text='Edit'
-          />
-        </>
-      )}
+      <Text style={styles.infoText}>{text}</Text>
+      <MainButton mode='text' onPress={showForm} text='Edit' />
     </View>
   );
 };
