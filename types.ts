@@ -23,10 +23,17 @@ export interface MoodFormData {
 
 export interface EditEmailFormData {
   email: string;
+  password: string;
 }
 
 export interface EditUsernameFormData {
   username: string;
+}
+
+export interface EditPasswordFormData {
+  oldPassword: string;
+  password: string;
+  passwordConf: string;
 }
 
 export interface Mood {

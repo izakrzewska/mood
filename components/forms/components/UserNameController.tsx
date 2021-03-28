@@ -5,10 +5,12 @@ import { TextInput } from 'react-native-paper';
 
 interface UserNameControllerProps {
   control: Control<RegisterFormData | EditUsernameFormData>;
+  defaultValue?: string;
 }
 
 export const UserNameController: FC<UserNameControllerProps> = ({
   control,
+  defaultValue,
 }) => {
   return (
     <Controller
@@ -26,7 +28,7 @@ export const UserNameController: FC<UserNameControllerProps> = ({
       rules={{
         required: { value: true, message: 'This field is required' },
       }}
-      defaultValue=''
+      defaultValue={defaultValue || ''}
     />
   );
 };

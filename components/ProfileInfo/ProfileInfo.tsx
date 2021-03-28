@@ -1,11 +1,12 @@
 import React, { FC, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
+import { UserNameController } from '../forms/components';
 import { MainButton } from '../MainButton/MainButton';
 
 interface ProfileInfoProps {
   text: string;
-  onSave: () => void;
+  onSave: any;
 }
 
 const styles = StyleSheet.create({
@@ -19,14 +20,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export const ProfileInfo: FC<ProfileInfoProps> = ({ text, onSave }) => {
+export const ProfileInfo: FC<ProfileInfoProps> = ({
+  text,
+  onSave,
+  children,
+}) => {
   const [isInEdit, setIsInEdit] = useState<boolean>(false);
 
   return (
     <View style={styles.infoContainer}>
       {isInEdit ? (
         <>
-          <Text style={styles.infoText}>Edit</Text>
+          <View style={{ flexGrow: 1 }}>{children}</View>
           <MainButton
             mode='text'
             onPress={() => setIsInEdit(false)}

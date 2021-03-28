@@ -30,9 +30,11 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {
       <FormError error={errors.username} />
       <EmailController control={control} />
       <FormError error={errors.email} />
-      <PasswordController control={control} />
+      <PasswordController control={control} name='password' label='Password' />
       <FormError error={errors.password} />
       <PasswordController
+        name='passwordConf'
+        label='password'
         control={control}
         confirmation
         currentPassword={currentPassword}

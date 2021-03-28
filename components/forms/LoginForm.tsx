@@ -17,7 +17,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmit }) => {
     <View>
       <EmailController control={control} />
       <FormError error={errors.email} />
-      <PasswordController control={control} />
+      <PasswordController control={control} name='password' label='Password' />
       <FormError error={errors.password} />
       <MainButton
         mode='contained'

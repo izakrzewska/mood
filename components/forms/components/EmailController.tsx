@@ -12,9 +12,13 @@ interface EmailControllerProps {
   control: Control<
     LoginFormData | RegisterFormData | ResetPasswordFormData | EditEmailFormData
   >;
+  defaultValue?: string;
 }
 
-export const EmailController: FC<EmailControllerProps> = ({ control }) => {
+export const EmailController: FC<EmailControllerProps> = ({
+  control,
+  defaultValue,
+}) => {
   return (
     <Controller
       control={control}
@@ -35,7 +39,7 @@ export const EmailController: FC<EmailControllerProps> = ({ control }) => {
           message: 'Invalid e-mail address',
         },
       }}
-      defaultValue=''
+      defaultValue={defaultValue || ''}
     />
   );
 };

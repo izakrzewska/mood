@@ -1,20 +1,31 @@
 import React, { FC, useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import { Controller, Control } from 'react-hook-form';
-import { LoginFormData, RegisterFormData } from '../../../types';
+import {
+  LoginFormData,
+  RegisterFormData,
+  EditPasswordFormData,
+  EditEmailFormData,
+} from '../../../types';
 
 import { colors } from '../../../themes';
 
 interface PasswordControllerProps {
-  control: Control<LoginFormData | RegisterFormData>;
+  control: Control<
+    LoginFormData | RegisterFormData | EditPasswordFormData | EditEmailFormData
+  >;
   confirmation?: boolean;
   currentPassword?: string;
+  label: string;
+  name: string;
 }
 
 export const PasswordController: FC<PasswordControllerProps> = ({
   control,
   confirmation = false,
+  label,
   currentPassword,
+  name,
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   return (
@@ -22,7 +33,7 @@ export const PasswordController: FC<PasswordControllerProps> = ({
       control={control}
       render={({ onChange, onBlur, value }) => (
         <TextInput
-          label={confirmation ? 'Confirm password' : 'Password'}
+          label={label}
           mode='outlined'
           secureTextEntry={!isPasswordVisible}
           onBlur={onBlur}
@@ -41,7 +52,7 @@ export const PasswordController: FC<PasswordControllerProps> = ({
           }
         />
       )}
-      name={confirmation ? 'passwordConf' : 'password'}
+      name={name}
       rules={{
         required: { value: true, message: 'This field is required' },
         minLength: {
