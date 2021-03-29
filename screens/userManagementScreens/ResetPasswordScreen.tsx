@@ -6,11 +6,13 @@ import {
   ErrorNotification,
   ForgotPasswordImage,
   ResetPasswordForm,
+  SuccessNotification,
 } from '../../components';
 import { auth } from '../../firebase';
 import { UserManagementStackParamList } from '../../navigation/UserManagementStack';
 import { ResetPasswordFormData, IError } from '../../types';
 import styles from './styles';
+import { useNotifySuccess } from '../../hooks';
 
 type ResetPasswordScreenNavigationProp = StackNavigationProp<
   UserManagementStackParamList,
@@ -25,7 +27,7 @@ export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
   navigation,
 }) => {
   const [error, setError] = useState<IError>();
-  const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
+  const { openSuccess, isActive, message } = useNotifySuccess();
 
   const onSubmit = (data: ResetPasswordFormData) => {
     Keyboard.dismiss();
@@ -34,27 +36,17 @@ export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
     auth
       .sendPasswordResetEmail(email.trim().toLowerCase())
       .then(() => {
-        setIsEmailSent(true);
+        openSuccess('Reset password link sent. Check your inbox to proceed.');
       })
       .catch((error) => {
         setError(error);
       });
   };
 
-  const emailSentInfo = (
-    <View>
-      <Text>Email sent. Check your inbox.</Text>
-    </View>
-  );
-
   return (
     <>
       <View style={styles.authFormContainer}>
-        {isEmailSent ? (
-          emailSentInfo
-        ) : (
-          <ResetPasswordForm onSubmit={onSubmit} />
-        )}
+        <ResetPasswordForm onSubmit={onSubmit} />
         <View style={styles.imageContainer}>
           <ForgotPasswordImage />
         </View>
@@ -65,6 +57,7 @@ export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
         />
       </View>
       <ErrorNotification error={error} />
+      <SuccessNotification success={isActive} notificationText={message} />
     </>
   );
 };

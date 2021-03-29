@@ -1,11 +1,16 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { FC } from 'react';
-import { View } from 'react-native';
-import { MoodForm } from '../../components';
+import React, { FC, useState } from 'react';
+import { Keyboard, View } from 'react-native';
+import {
+  ErrorNotification,
+  MoodForm,
+  SuccessNotification,
+} from '../../components';
 import { db } from '../../firebase';
 import { MoodStackParamList } from '../../navigation/MoodStack';
 import { MoodFormData } from '../../types';
+import { useNotifySuccess } from '../../hooks';
 
 type EditMoodScreenNavigationProp = StackNavigationProp<
   MoodStackParamList,
@@ -23,7 +28,10 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
   navigation,
   route,
 }) => {
+  const [error, setHasError] = useState();
   const { value, moodId } = route.params;
+  const { openSuccess, isActive, message } = useNotifySuccess();
+
   const onSubmit = (data: MoodFormData) => {
     const ref = db.collection('moods').doc(moodId);
     ref
@@ -34,13 +42,11 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
         { merge: true }
       )
       .then(() => {
-        //TODO: success notification
+        Keyboard.dismiss();
+        openSuccess('Updated successfuly');
       })
       .catch((error) => {
-        // TODO: error notification
-      })
-      .finally(() => {
-        navigation.navigate('History');
+        setHasError(error);
       });
   };
 
@@ -51,6 +57,8 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
       }}
     >
       <MoodForm onSubmit={onSubmit} defaultValues={{ value }} />
+      <ErrorNotification error={error} />
+      <SuccessNotification success={isActive} notificationText={message} />
     </View>
   );
 };

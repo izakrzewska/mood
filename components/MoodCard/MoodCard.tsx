@@ -10,6 +10,7 @@ import { MainButton } from '../MainButton/MainButton';
 interface MoodCardProps {
   mood: IMoodFetched;
   openModal: (moodId: string) => void;
+  setSuccess: boolean;
 }
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -30,7 +31,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export const MoodCard: FC<MoodCardProps> = ({ mood, openModal }) => {
+export const MoodCard: FC<MoodCardProps> = ({
+  mood,
+  openModal,
+  setSuccess,
+}) => {
   const navigation = useNavigation();
   const formattedTime = mood.date.toDate().toLocaleTimeString([], {
     hour: '2-digit',

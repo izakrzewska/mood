@@ -29,6 +29,7 @@ export const SuccessNotification: FC<SuccessNotificationProps> = ({
     <Snackbar
       onDismiss={dismissSnackbar}
       visible={isSnackBarVisible}
+      duration={3000}
       wrapperStyle={{
         alignSelf: 'center',
         ...extraStyles,

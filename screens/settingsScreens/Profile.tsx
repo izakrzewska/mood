@@ -18,6 +18,7 @@ import {
   EditPasswordFormData,
   EditUsernameFormData,
 } from '../../types';
+import { useNotifySuccess } from '../../hooks';
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   SettingsStackParamList,
@@ -33,8 +34,7 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
   const [isUsernameinEdit, setIsUsernameInEdit] = useState(false);
   const [isEmailInEdit, setIsEmailInEdit] = useState(false);
   const [error, setError] = useState();
-  const [hasSuccess, setHasSuccess] = useState(false);
-  const [notificationText, setNotificationText] = useState('');
+  const { message, isActive, openSuccess } = useNotifySuccess();
 
   const user = auth.currentUser!;
 
@@ -47,15 +47,13 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
   };
 
   const handleUsernameSave = (data: EditUsernameFormData) => {
-    setHasSuccess(false);
     Keyboard.dismiss();
     user
       .updateProfile({
         displayName: data.username,
       })
       .then(() => {
-        setHasSuccess(true);
-        setNotificationText('Username updated successfuly');
+        openSuccess('Username updated successfully');
       })
       .catch((error) => {
         setError(error);
@@ -64,7 +62,6 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
   };
 
   const handleEmaileSave = (data: EditEmailFormData) => {
-    setHasSuccess(false);
     Keyboard.dismiss();
     user
       .reauthenticateWithCredential(getCredentials(data.password))
@@ -72,8 +69,7 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
         user
           .updateEmail(data.email)
           .then(() => {
-            setHasSuccess(true);
-            setNotificationText('E-mail updated successfully');
+            openSuccess('E-mail updated successfully');
           })
           .catch((error) => {
             setError(error);
@@ -82,11 +78,10 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
       .catch((error) => {
         setError(error);
       })
-      .finally(() => setIsUsernameInEdit(false));
+      .finally(() => setIsEmailInEdit(false));
   };
 
   const handlePasswordSave = (data: EditPasswordFormData) => {
-    setHasSuccess(false);
     Keyboard.dismiss();
     user
       .reauthenticateWithCredential(getCredentials(data.oldPassword))
@@ -94,8 +89,7 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
         user
           .updatePassword(data.password)
           .then(() => {
-            setHasSuccess(true);
-            setNotificationText('Password updated successfully');
+            openSuccess('Password updated successfully');
           })
           .catch((error) => {
             setError(error);
@@ -114,9 +108,14 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
           paddingHorizontal: 30,
           paddingVertical: 20,
           flex: 1,
-          justifyContent: 'center',
         }}
       >
+        <MainButton
+          mode='text'
+          onPress={onSignOut}
+          text='Sign out'
+          extraStyles={{ marginLeft: 'auto', marginBottom: 15 }}
+        />
         <List.Accordion
           title='Edit username'
           expanded={isUsernameinEdit}
@@ -159,18 +158,9 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
             marginTop: 10,
           }}
         /> */}
-        <MainButton
-          mode='outlined'
-          onPress={onSignOut}
-          text='Sign out'
-          extraStyles={{ marginTop: 'auto' }}
-        />
       </ScrollView>
       <ErrorNotification error={error} />
-      <SuccessNotification
-        success={hasSuccess}
-        notificationText={notificationText}
-      />
+      <SuccessNotification success={isActive} notificationText={message} />
     </>
   );
 };
