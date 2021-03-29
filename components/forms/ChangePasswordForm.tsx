@@ -6,12 +6,12 @@ import { useForm } from 'react-hook-form';
 import { EditPasswordFormData } from '../../types';
 
 interface ChangePasswordFormProps {
-  closeEdit: () => void;
+  closeForm: () => void;
   handlePasswordSave: (data: EditPasswordFormData) => void;
 }
 
 export const ChangePasswordForm: FC<ChangePasswordFormProps> = ({
-  closeEdit,
+  closeForm,
   handlePasswordSave,
 }) => {
   const { handleSubmit, errors, control, watch } = useForm<
@@ -49,7 +49,7 @@ export const ChangePasswordForm: FC<ChangePasswordFormProps> = ({
           marginTop: 10,
         }}
       >
-        <MainButton mode='text' onPress={closeEdit} text='Close' />
+        <MainButton mode='text' onPress={closeForm} text='Close' />
         <MainButton
           mode='text'
           onPress={handleSubmit(handlePasswordSave)}

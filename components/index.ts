@@ -18,6 +18,7 @@ export {
   ChangePasswordForm,
   ChangeUsernameForm,
   ChangeEmailForm,
+  DeleteAccountForm,
 } from './forms';
 export { AuthNavigationBox } from './AuthNavigationBox/AuthNavigationBox';
 export { Modal } from './Modal/Modal';

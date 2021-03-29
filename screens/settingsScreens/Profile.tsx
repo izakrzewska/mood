@@ -2,7 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import firebase from 'firebase';
 import React, { FC, useState } from 'react';
 import { Keyboard, View, ScrollView } from 'react-native';
-import { Divider, List } from 'react-native-paper';
+import { Divider, List, Text } from 'react-native-paper';
 import {
   ChangeEmailForm,
   ChangePasswordForm,
@@ -10,6 +10,7 @@ import {
   ErrorNotification,
   MainButton,
   SuccessNotification,
+  DeleteAccountForm,
 } from '../../components';
 import { auth } from '../../firebase';
 import { SettingsStackParamList } from '../../navigation/SettingsStack';
@@ -17,6 +18,7 @@ import {
   EditEmailFormData,
   EditPasswordFormData,
   EditUsernameFormData,
+  DeleteAccountFormData,
 } from '../../types';
 import { useNotifySuccess } from '../../hooks';
 
@@ -33,6 +35,7 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
   const [isPasswordInEdit, setIsPasswordInEdit] = useState(false);
   const [isUsernameinEdit, setIsUsernameInEdit] = useState(false);
   const [isEmailInEdit, setIsEmailInEdit] = useState(false);
+  const [isAccountRemoval, setIsAccountRemoval] = useState(false);
   const [error, setError] = useState();
   const { message, isActive, openSuccess } = useNotifySuccess();
 
@@ -101,6 +104,15 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
       .finally(() => setIsPasswordInEdit(false));
   };
 
+  const handleDelete = (data: DeleteAccountFormData) => {
+    Keyboard.dismiss();
+    user
+      .reauthenticateWithCredential(getCredentials(data.password))
+      .then(() => {
+        user.delete().catch((error) => setError(error));
+      });
+  };
+
   return (
     <>
       <ScrollView
@@ -144,20 +156,22 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
           onPress={() => setIsPasswordInEdit(!isPasswordInEdit)}
         >
           <ChangePasswordForm
-            closeEdit={() => setIsPasswordInEdit(false)}
+            closeForm={() => setIsPasswordInEdit(false)}
             handlePasswordSave={handlePasswordSave}
           />
         </List.Accordion>
         <Divider />
-        {/* <MainButton
-          mode='text'
-          onPress={() => console.log('delete account')}
-          text='Remove account'
-          extraStyles={{
-            alignSelf: 'flex-end',
-            marginTop: 10,
-          }}
-        /> */}
+        <List.Accordion
+          title='Remove account'
+          expanded={isAccountRemoval}
+          onPress={() => setIsAccountRemoval(!isAccountRemoval)}
+        >
+          <DeleteAccountForm
+            closeForm={() => setIsAccountRemoval(false)}
+            handleDelete={handleDelete}
+          />
+        </List.Accordion>
+        <Divider />
       </ScrollView>
       <ErrorNotification error={error} />
       <SuccessNotification success={isActive} notificationText={message} />

@@ -36,6 +36,10 @@ export interface EditPasswordFormData {
   passwordConf: string;
 }
 
+export interface DeleteAccountFormData {
+  password: string;
+}
+
 export interface Mood {
   value: number;
 }

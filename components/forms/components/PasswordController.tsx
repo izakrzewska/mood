@@ -6,6 +6,7 @@ import {
   RegisterFormData,
   EditPasswordFormData,
   EditEmailFormData,
+  DeleteAccountFormData,
 } from '../../../types';
 
 import { colors } from '../../../themes';
@@ -13,7 +14,11 @@ import { FormError } from './FormError';
 
 interface PasswordControllerProps {
   control: Control<
-    LoginFormData | RegisterFormData | EditPasswordFormData | EditEmailFormData
+    | LoginFormData
+    | RegisterFormData
+    | EditPasswordFormData
+    | EditEmailFormData
+    | DeleteAccountFormData
   >;
   confirmation?: boolean;
   currentPassword?: string;
