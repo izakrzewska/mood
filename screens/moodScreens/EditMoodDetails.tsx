@@ -33,21 +33,26 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
   const { openSuccess, isActive, message } = useNotifySuccess();
 
   const onSubmit = (data: MoodFormData) => {
+    let mounted = true;
     const ref = db.collection('moods').doc(moodId);
-    ref
-      .set(
-        {
-          value: Number(data.value),
-        },
-        { merge: true }
-      )
-      .then(() => {
-        Keyboard.dismiss();
-        openSuccess('Updated successfuly');
-      })
-      .catch((error) => {
-        setHasError(error);
-      });
+
+    if (mounted) {
+      ref
+        .set(
+          {
+            value: Number(data.value),
+          },
+          { merge: true }
+        )
+        .then(() => {
+          Keyboard.dismiss();
+          openSuccess('Updated successfuly');
+        })
+        .catch((error) => {
+          setHasError(error);
+        });
+    }
+    return () => (mounted = false);
   };
 
   return (

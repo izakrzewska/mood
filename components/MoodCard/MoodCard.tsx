@@ -1,28 +1,41 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { FC } from 'react';
-import { Animated, Dimensions, StyleSheet } from 'react-native';
+import { Animated, Dimensions, StyleSheet, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { Card, Title } from 'react-native-paper';
+import {
+  Card,
+  Title,
+  Divider,
+  Text,
+  Badge,
+  useTheme,
+  Chip,
+} from 'react-native-paper';
+import { colors } from '../../themes';
 import { IMoodFetched } from '../../types';
 import { MainButton } from '../MainButton/MainButton';
 
 interface MoodCardProps {
   mood: IMoodFetched;
   openModal: (moodId: string) => void;
-  setSuccess: boolean;
 }
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   card: {
-    marginVertical: 10,
+    marginVertical: 20,
     marginHorizontal: 5,
+    flexDirection: 'row',
+    backgroundColor: 'white',
     width: 0.8 * SCREEN_WIDTH,
     alignSelf: 'center',
   },
   valueContainer: {
     marginEnd: 20,
+    // borderColor: 'red',
+    // borderWidth: 1,
+    justifyContent: 'center',
   },
   hiddenButtonsContainer: {
     height: '100%',
@@ -31,11 +44,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export const MoodCard: FC<MoodCardProps> = ({
-  mood,
-  openModal,
-  setSuccess,
-}) => {
+export const MoodCard: FC<MoodCardProps> = ({ mood, openModal }) => {
+  const { colors } = useTheme();
   const navigation = useNavigation();
   const formattedTime = mood.date.toDate().toLocaleTimeString([], {
     hour: '2-digit',
@@ -43,10 +53,13 @@ export const MoodCard: FC<MoodCardProps> = ({
   });
 
   const formattedDate = mood.date.toDate().toLocaleDateString(undefined, {
-    weekday: 'long',
     year: 'numeric',
-    month: 'numeric',
+    month: 'long',
     day: 'numeric',
+  });
+
+  const formattedDay = mood.date.toDate().toLocaleDateString(undefined, {
+    weekday: 'long',
   });
 
   const onRightSwipe = () => {
@@ -72,15 +85,21 @@ export const MoodCard: FC<MoodCardProps> = ({
   };
 
   return (
-    <Swipeable renderRightActions={onRightSwipe}>
-      <Card style={styles.card}>
-        <Card.Title
-          title={formattedDate}
-          subtitle={formattedTime}
-          right={() => <Title>{mood.value}</Title>}
-          rightStyle={styles.valueContainer}
-        />
-      </Card>
-    </Swipeable>
+    <>
+      <Swipeable renderRightActions={onRightSwipe}>
+        <View style={styles.card}>
+          <View style={{ flexGrow: 1 }}>
+            <Text
+              style={{ fontSize: 16 }}
+            >{`${formattedDate}, ${formattedTime}`}</Text>
+            <Text>{formattedDay}</Text>
+          </View>
+          <View style={styles.valueContainer}>
+            <Text style={{ fontSize: 20 }}>{mood.value}</Text>
+          </View>
+        </View>
+      </Swipeable>
+      <Divider />
+    </>
   );
 };

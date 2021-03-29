@@ -46,7 +46,6 @@ export default styles;
 
 export const History: FC<HistoryScreenProps> = ({ navigation }) => {
   const [error, setError] = useState<IError>();
-  const [hasSuccess, setHasSuccess] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [toBeDeletedItemId, setToBeDeletedItemId] = useState<string>();
   const isFocused = useIsFocused();
@@ -59,7 +58,6 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
   };
 
   const onMoodDelete = () => {
-    setHasSuccess(false);
     const ref = db.collection('moods').doc(toBeDeletedItemId);
     ref
       .delete()
