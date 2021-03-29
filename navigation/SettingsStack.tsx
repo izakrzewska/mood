@@ -29,6 +29,7 @@ export const SettingsStack = () => {
         component={Profile}
         options={{
           title: 'Profile',
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

@@ -1,12 +1,10 @@
-import { FontAwesome } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { NavigatorScreenParams, useTheme } from '@react-navigation/native';
 import React from 'react';
 import { SafeAreaView } from 'react-native';
-import { SettingsStack, SettingsStackParamList } from './SettingsStack';
-import { MoodStack, MoodStackParamList } from './MoodStack';
 import { JournalStack, JournalStackParamList } from './JournalStack';
-import { NavigatorScreenParams } from '@react-navigation/native';
-import { useTheme } from '@react-navigation/native';
+import { MoodStack, MoodStackParamList } from './MoodStack';
+import { SettingsStack, SettingsStackParamList } from './SettingsStack';
 
 type TabParamList = {
   Mood: NavigatorScreenParams<MoodStackParamList>;
@@ -14,53 +12,40 @@ type TabParamList = {
   Journal: NavigatorScreenParams<JournalStackParamList>;
 };
 
-const Tab = createBottomTabNavigator<TabParamList>();
+const Tab = createMaterialBottomTabNavigator<TabParamList>();
 
 export const TabNavigation = () => {
   const { colors } = useTheme();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.primary }}>
       <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ color, size }) => {
-            if (route.name === 'Settings') {
-              return <FontAwesome name='cogs' size={size} color={color} />;
-            }
-            if (route.name === 'Mood') {
-              return <FontAwesome name='dashboard' size={size} color={color} />;
-            }
-            if (route.name === 'Journal') {
-              return <FontAwesome name='book' size={size} color={color} />;
-            }
-          },
-        })}
-        tabBarOptions={{
-          activeTintColor: colors.text,
-          inactiveTintColor: colors.text,
-          style: {
-            backgroundColor: colors.primary,
-          },
-        }}
+        initialRouteName='Mood'
+        shifting
+        activeColor={colors.text}
+        inactiveColor={colors.text}
       >
         <Tab.Screen
           name='Mood'
           component={MoodStack}
           options={{
-            title: 'Mood',
+            title: 'mood',
+            tabBarIcon: 'chart-bar',
           }}
         />
         <Tab.Screen
           name='Journal'
           component={JournalStack}
           options={{
-            title: 'Journal',
+            title: 'journal',
+            tabBarIcon: 'book-open-page-variant',
           }}
         />
         <Tab.Screen
           name='Settings'
           component={SettingsStack}
           options={{
-            title: 'Settings',
+            title: 'settings',
+            tabBarIcon: 'account-cog',
           }}
         />
       </Tab.Navigator>

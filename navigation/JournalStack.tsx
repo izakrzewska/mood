@@ -29,6 +29,7 @@ export const JournalStack = () => {
         component={JournalEntries}
         options={{
           title: 'All entries',
+          headerShown: false,
         }}
       />
     </Stack.Navigator>
