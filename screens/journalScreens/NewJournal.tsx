@@ -5,22 +5,16 @@ import { MainButton } from '../../components';
 import { JournalStackParamList } from '../../navigation/JournalStack';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-type JournalEntriesNavigationProp = StackNavigationProp<
+type NewJournalNavigationProp = StackNavigationProp<
   JournalStackParamList,
-  'JournalEntries'
+  'NewJournal'
 >;
 
-type JournalEntriesScreenProps = {
-  navigation: JournalEntriesNavigationProp;
+type NewJournalScreenProps = {
+  navigation: NewJournalNavigationProp;
 };
 
-export const JournalEntries: FC<JournalEntriesScreenProps> = ({
-  navigation,
-}) => {
-  const onNewEntry = () => {
-    navigation.push('NewJournal');
-  };
-
+export const NewJournal: FC<NewJournalScreenProps> = () => {
   return (
     <View
       style={{
@@ -34,7 +28,11 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
       <View
         style={{ marginTop: 'auto', marginHorizontal: 30, marginBottom: 15 }}
       >
-        <MainButton mode='text' text='Add new entry' onPress={onNewEntry} />
+        <MainButton
+          mode='text'
+          text='Save'
+          onPress={() => console.log('adding new')}
+        />
       </View>
     </View>
   );

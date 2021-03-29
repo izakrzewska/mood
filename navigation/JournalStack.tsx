@@ -1,11 +1,12 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import { JournalEntries } from '../screens/journalScreens';
+import { JournalEntries, NewJournal } from '../screens/journalScreens';
 import { forFade } from '../screens/utils';
 import { useTheme } from '@react-navigation/native';
 
 export type JournalStackParamList = {
   JournalEntries: undefined;
+  NewJournal: undefined;
 };
 
 export const JournalStack = () => {
@@ -29,6 +30,14 @@ export const JournalStack = () => {
         component={JournalEntries}
         options={{
           title: 'All entries',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name='NewJournal'
+        component={NewJournal}
+        options={{
+          title: 'New entry',
           headerShown: false,
         }}
       />
