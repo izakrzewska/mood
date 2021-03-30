@@ -50,7 +50,7 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
   const [toBeDeletedItemId, setToBeDeletedItemId] = useState<string>();
   const isFocused = useIsFocused();
   const { isActive, openSuccess, message } = useNotifySuccess();
-  const { moodsData, isLoading } = useGetMoods(isFocused);
+  const { moodsData, isLoading } = useGetMoods(isFocused, 'desc');
 
   const openModal = (moodId: string) => {
     setIsModalVisible(true);

@@ -12,7 +12,7 @@ import {
   MainButton,
   SuccessNotification,
 } from '../../components';
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
 import { useNotifySuccess } from '../../hooks';
 import { SettingsStackParamList } from '../../navigation/SettingsStack';
 import {
@@ -150,12 +150,36 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
       .finally(() => dispatch({ type: 'TOGGLE_PASSWORD_EDIT' }));
   };
 
+  const removeData = async () => {
+    const collectionRef = db.collection('moods');
+    // TODO: remove from journals too
+    const query = collectionRef.where('belongsTo', '==', user.uid);
+
+    return new Promise((resolve, reject) => {
+      deleteQueryBatch(query, resolve).catch(reject);
+    });
+  };
+
+  const deleteQueryBatch = async (query: any, resolve: any) => {
+    const snapshot = await query.get();
+    const batch = db.batch();
+    snapshot.docs.forEach((doc: any) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit().then(() => {
+      resolve();
+    });
+  };
+
   const handleDelete = (data: DeleteAccountFormData) => {
     Keyboard.dismiss();
     user
       .reauthenticateWithCredential(getCredentials(data.password))
       .then(() => {
-        user.delete().catch((error) => setError(error));
+        user
+          .delete()
+          .then(() => removeData())
+          .catch((error) => setError(error));
       });
   };
 

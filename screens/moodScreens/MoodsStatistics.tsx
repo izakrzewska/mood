@@ -50,7 +50,7 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
 }) => {
   const isFocused = useIsFocused();
   const user = auth.currentUser!;
-  const { moodsData, isLoading } = useGetMoods(isFocused);
+  const { moodsData, isLoading } = useGetMoods(isFocused, 'asc');
 
   const showHistory = () => {
     navigation.push('History');
