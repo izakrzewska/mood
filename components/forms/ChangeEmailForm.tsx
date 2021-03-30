@@ -1,18 +1,16 @@
 import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { EditEmailFormData } from '../../types';
 import { EmailController, PasswordController } from './components';
 import { auth } from '../../firebase';
 import { MainButton } from '../MainButton/MainButton';
 
 interface ChangeEmailFormProps {
-  closeForm: () => void;
   handleEmailSave: (data: EditEmailFormData) => void;
 }
 
 export const ChangeEmailForm: FC<ChangeEmailFormProps> = ({
-  closeForm,
   handleEmailSave,
 }) => {
   const user = auth.currentUser!;
@@ -30,20 +28,15 @@ export const ChangeEmailForm: FC<ChangeEmailFormProps> = ({
         control={control}
         error={errors.password}
       />
-      <View
-        style={{
-          flexDirection: 'row',
+      <MainButton
+        mode='text'
+        onPress={handleSubmit(handleEmailSave)}
+        text='Save'
+        extraStyles={{
           alignSelf: 'flex-end',
-          marginTop: 10,
+          marginVertical: 10,
         }}
-      >
-        <MainButton mode='text' onPress={closeForm} text='Close' />
-        <MainButton
-          mode='text'
-          onPress={handleSubmit(handleEmailSave)}
-          text='Save'
-        />
-      </View>
+      />
     </View>
   );
 };

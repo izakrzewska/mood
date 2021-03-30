@@ -7,12 +7,10 @@ import { MainButton } from '../MainButton/MainButton';
 import { PasswordController } from './components';
 
 interface DeleteAccountFormProps {
-  closeForm: () => void;
   handleDelete: (data: DeleteAccountFormData) => void;
 }
 
 export const DeleteAccountForm: FC<DeleteAccountFormProps> = ({
-  closeForm,
   handleDelete,
 }) => {
   const user = auth.currentUser!;
@@ -25,20 +23,15 @@ export const DeleteAccountForm: FC<DeleteAccountFormProps> = ({
         control={control}
         error={errors.password}
       />
-      <View
-        style={{
-          flexDirection: 'row',
+      <MainButton
+        mode='text'
+        onPress={handleSubmit(handleDelete)}
+        text='Save'
+        extraStyles={{
           alignSelf: 'flex-end',
-          marginTop: 10,
+          marginVertical: 10,
         }}
-      >
-        <MainButton mode='text' onPress={closeForm} text='Close' />
-        <MainButton
-          mode='text'
-          onPress={handleSubmit(handleDelete)}
-          text='Save'
-        />
-      </View>
+      />
     </View>
   );
 };

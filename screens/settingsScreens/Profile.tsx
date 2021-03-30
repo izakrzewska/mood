@@ -1,26 +1,26 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import firebase from 'firebase';
-import React, { FC, useState } from 'react';
-import { Keyboard, View, ScrollView } from 'react-native';
-import { Divider, List, Text } from 'react-native-paper';
+import React, { FC, useReducer, useState } from 'react';
+import { Keyboard, ScrollView, View } from 'react-native';
+import { Divider, List } from 'react-native-paper';
 import {
   ChangeEmailForm,
   ChangePasswordForm,
   ChangeUsernameForm,
+  DeleteAccountForm,
   ErrorNotification,
   MainButton,
   SuccessNotification,
-  DeleteAccountForm,
 } from '../../components';
 import { auth } from '../../firebase';
+import { useNotifySuccess } from '../../hooks';
 import { SettingsStackParamList } from '../../navigation/SettingsStack';
 import {
+  DeleteAccountFormData,
   EditEmailFormData,
   EditPasswordFormData,
   EditUsernameFormData,
-  DeleteAccountFormData,
 } from '../../types';
-import { useNotifySuccess } from '../../hooks';
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   SettingsStackParamList,
@@ -31,11 +31,57 @@ type ProfileScreenProps = {
   navigation: ProfileScreenNavigationProp;
 };
 
+interface ProfileState {
+  isUsernameinEdit: boolean;
+  isEmailInEdit: boolean;
+  isPasswordInEdit: boolean;
+  isAccountRemoval: boolean;
+}
+
+const initialProfileState: ProfileState = {
+  isUsernameinEdit: false,
+  isEmailInEdit: false,
+  isPasswordInEdit: false,
+  isAccountRemoval: false,
+};
+
+const profileReducer = (state: ProfileState, action: any) => {
+  switch (action.type) {
+    case 'TOGGLE_USERNAME_EDIT':
+      return {
+        isUsernameinEdit: !state.isUsernameinEdit,
+        isEmailInEdit: false,
+        isPasswordInEdit: false,
+        isAccountRemoval: false,
+      };
+    case 'TOGGLE_EMAIL_EDIT':
+      return {
+        isUsernameinEdit: false,
+        isEmailInEdit: !state.isEmailInEdit,
+        isPasswordInEdit: false,
+        isAccountRemoval: false,
+      };
+    case 'TOGGLE_PASSWORD_EDIT':
+      return {
+        isUsernameinEdit: false,
+        isEmailInEdit: false,
+        isPasswordInEdit: !state.isPasswordInEdit,
+        isAccountRemoval: false,
+      };
+    case 'TOGGLE_ACCOUNT_REMOVAL':
+      return {
+        isUsernameinEdit: false,
+        isEmailInEdit: false,
+        isPasswordInEdit: false,
+        isAccountRemoval: !state.isAccountRemoval,
+      };
+    default:
+      return state;
+  }
+};
+
 export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
-  const [isPasswordInEdit, setIsPasswordInEdit] = useState(false);
-  const [isUsernameinEdit, setIsUsernameInEdit] = useState(false);
-  const [isEmailInEdit, setIsEmailInEdit] = useState(false);
-  const [isAccountRemoval, setIsAccountRemoval] = useState(false);
+  const [state, dispatch] = useReducer(profileReducer, initialProfileState);
   const [error, setError] = useState();
   const { message, isActive, openSuccess } = useNotifySuccess();
 
@@ -61,7 +107,7 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
       .catch((error) => {
         setError(error);
       })
-      .finally(() => setIsUsernameInEdit(false));
+      .finally(() => dispatch({ type: 'TOGGLE_USERNAME_EDIT' }));
   };
 
   const handleEmaileSave = (data: EditEmailFormData) => {
@@ -81,7 +127,7 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
       .catch((error) => {
         setError(error);
       })
-      .finally(() => setIsEmailInEdit(false));
+      .finally(() => dispatch({ type: 'TOGGLE_EMAIL_EDIT' }));
   };
 
   const handlePasswordSave = (data: EditPasswordFormData) => {
@@ -101,7 +147,7 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
       .catch((error) => {
         setError(error);
       })
-      .finally(() => setIsPasswordInEdit(false));
+      .finally(() => dispatch({ type: 'TOGGLE_PASSWORD_EDIT' }));
   };
 
   const handleDelete = (data: DeleteAccountFormData) => {
@@ -115,63 +161,53 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
 
   return (
     <>
-      <ScrollView
-        contentContainerStyle={{
-          paddingHorizontal: 30,
-          paddingVertical: 20,
-          flex: 1,
-        }}
-      >
-        <MainButton
-          mode='text'
-          onPress={onSignOut}
-          text='Sign out'
-          extraStyles={{ marginLeft: 'auto', marginBottom: 15 }}
-        />
-        <List.Accordion
-          title='Edit username'
-          expanded={isUsernameinEdit}
-          onPress={() => setIsUsernameInEdit(!isUsernameinEdit)}
+      <ScrollView>
+        <View
+          style={{
+            paddingHorizontal: 30,
+            paddingVertical: 20,
+            flex: 1,
+          }}
         >
-          <ChangeUsernameForm
-            closeForm={() => setIsUsernameInEdit(false)}
-            handleUsernameSave={handleUsernameSave}
+          <MainButton
+            mode='text'
+            onPress={onSignOut}
+            text='Sign out'
+            extraStyles={{ marginLeft: 'auto', marginBottom: 15 }}
           />
-        </List.Accordion>
-        <Divider />
-        <List.Accordion
-          title='Edit e-email'
-          expanded={isEmailInEdit}
-          onPress={() => setIsEmailInEdit(!isEmailInEdit)}
-        >
-          <ChangeEmailForm
-            closeForm={() => setIsEmailInEdit(false)}
-            handleEmailSave={handleEmaileSave}
-          />
-        </List.Accordion>
-        <Divider />
-        <List.Accordion
-          title='Edit password'
-          expanded={isPasswordInEdit}
-          onPress={() => setIsPasswordInEdit(!isPasswordInEdit)}
-        >
-          <ChangePasswordForm
-            closeForm={() => setIsPasswordInEdit(false)}
-            handlePasswordSave={handlePasswordSave}
-          />
-        </List.Accordion>
-        <Divider />
-        <List.Accordion
-          title='Remove account'
-          expanded={isAccountRemoval}
-          onPress={() => setIsAccountRemoval(!isAccountRemoval)}
-        >
-          <DeleteAccountForm
-            closeForm={() => setIsAccountRemoval(false)}
-            handleDelete={handleDelete}
-          />
-        </List.Accordion>
-        <Divider />
+          <List.Accordion
+            title='Edit username'
+            expanded={state.isUsernameinEdit}
+            onPress={() => dispatch({ type: 'TOGGLE_USERNAME_EDIT' })}
+          >
+            <ChangeUsernameForm handleUsernameSave={handleUsernameSave} />
+          </List.Accordion>
+          <Divider />
+          <List.Accordion
+            title='Edit e-email'
+            expanded={state.isEmailInEdit}
+            onPress={() => dispatch({ type: 'TOGGLE_EMAIL_EDIT' })}
+          >
+            <ChangeEmailForm handleEmailSave={handleEmaileSave} />
+          </List.Accordion>
+          <Divider />
+          <List.Accordion
+            title='Edit password'
+            expanded={state.isPasswordInEdit}
+            onPress={() => dispatch({ type: 'TOGGLE_PASSWORD_EDIT' })}
+          >
+            <ChangePasswordForm handlePasswordSave={handlePasswordSave} />
+          </List.Accordion>
+          <Divider />
+          <List.Accordion
+            title='Remove account'
+            expanded={state.isAccountRemoval}
+            onPress={() => dispatch({ type: 'TOGGLE_ACCOUNT_REMOVAL' })}
+          >
+            <DeleteAccountForm handleDelete={handleDelete} />
+          </List.Accordion>
+          <Divider />
+        </View>
       </ScrollView>
       <ErrorNotification error={error} />
       <SuccessNotification success={isActive} notificationText={message} />

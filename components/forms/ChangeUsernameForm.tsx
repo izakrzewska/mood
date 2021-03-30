@@ -7,12 +7,10 @@ import { MainButton } from '../MainButton/MainButton';
 import { UserNameController } from './components';
 
 interface ChangeUsernameFormProps {
-  closeForm: () => void;
   handleUsernameSave: (data: EditUsernameFormData) => void;
 }
 
 export const ChangeUsernameForm: FC<ChangeUsernameFormProps> = ({
-  closeForm,
   handleUsernameSave,
 }) => {
   const user = auth.currentUser!;
@@ -24,20 +22,15 @@ export const ChangeUsernameForm: FC<ChangeUsernameFormProps> = ({
         defaultValue={user.displayName!}
         error={errors.username}
       />
-      <View
-        style={{
-          flexDirection: 'row',
+      <MainButton
+        mode='text'
+        onPress={handleSubmit(handleUsernameSave)}
+        text='Save'
+        extraStyles={{
           alignSelf: 'flex-end',
-          marginTop: 10,
+          marginVertical: 10,
         }}
-      >
-        <MainButton mode='text' onPress={closeForm} text='Close' />
-        <MainButton
-          mode='text'
-          onPress={handleSubmit(handleUsernameSave)}
-          text='Save'
-        />
-      </View>
+      />
     </View>
   );
 };
