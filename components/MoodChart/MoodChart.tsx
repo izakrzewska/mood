@@ -48,14 +48,14 @@ export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
       >
         <VictoryBar
           data={chartData}
-          domain={[1, 10]}
+          // domain={[1, 10]}
           alignment='middle'
           style={{
             data: { strokeWidth: 10, fill: colors.main },
           }}
         />
         <VictoryAxis
-          domain={[1, 10]}
+          // domain={[1, 10]}
           dependentAxis
           style={{
             grid: { stroke: 'grey', opacity: 0.3, strokeWidth: 0.8 },

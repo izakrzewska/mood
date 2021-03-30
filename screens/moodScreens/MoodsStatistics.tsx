@@ -66,7 +66,7 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
       <View style={{ marginBottom: 50 }}>{greeting}</View>
       <AddDataImage />
       <MainButton
-        mode='contained'
+        mode='text'
         onPress={onNewMoodPress}
         text='Start tracking your mood'
         extraStyles={styles.noStatisticsButton}

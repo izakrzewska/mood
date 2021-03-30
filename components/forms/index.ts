@@ -6,3 +6,4 @@ export { ChangePasswordForm } from './ChangePasswordForm';
 export { ChangeUsernameForm } from './ChangeUsernameForm';
 export { ChangeEmailForm } from './ChangeEmailForm';
 export { DeleteAccountForm } from './DeleteAccountForm';
+export { JournalForm } from './JournalForm';
