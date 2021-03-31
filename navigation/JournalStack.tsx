@@ -11,7 +11,11 @@ import { useTheme } from '@react-navigation/native';
 export type JournalStackParamList = {
   JournalEntries: undefined;
   NewJournal: undefined;
-  JournalDetails: undefined;
+  JournalDetails: {
+    title: string;
+    content: string;
+    formattedDate: any; // TODO: better type
+  };
 };
 
 export const JournalStack = () => {

@@ -21,6 +21,7 @@ export const NewJournal: FC<NewJournalScreenProps> = ({ navigation }) => {
     const user = auth.currentUser!;
     try {
       const journalData = {
+        title: data.title,
         content: data.content,
         belongsTo: user.uid,
         createdAt: new Date(),

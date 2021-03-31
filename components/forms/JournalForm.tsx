@@ -32,6 +32,29 @@ export const JournalForm: FC<JournalFormProps> = ({
         render={({ onChange, onBlur, value }) => (
           <TextInput
             multiline
+            label='Title'
+            autoFocus
+            mode='outlined'
+            onBlur={onBlur}
+            onChangeText={(value) => onChange(value)}
+            value={value}
+          />
+        )}
+        name='title'
+        defaultValue={defaultValues ? defaultValues.content : ''}
+        rules={{
+          required: {
+            value: true,
+            message: 'This field is required',
+          },
+        }}
+      />
+      <FormError error={errors.title} />
+      <Controller
+        control={control}
+        render={({ onChange, onBlur, value }) => (
+          <TextInput
+            multiline
             label='Journal'
             autoFocus
             mode='outlined'

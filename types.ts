@@ -23,6 +23,7 @@ export interface MoodFormData {
 
 export interface JournalFormData {
   content: string;
+  title: string;
 }
 
 export interface EditEmailFormData {
@@ -54,7 +55,8 @@ export interface IError {
 }
 
 export interface IJournalFetched {
-  content: number;
+  content: string;
+  title: string;
   id: string;
   date: any;
 }

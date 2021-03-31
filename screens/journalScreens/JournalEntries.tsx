@@ -60,6 +60,7 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
             id: doc.id,
             date: doc.data().createdAt,
             content: doc.data().content,
+            title: doc.data().title,
           });
         });
         setJournalsData(journalsDataArray);
@@ -87,15 +88,24 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
       >
         <View style={styles.card}>
           <View style={{ flexGrow: 1 }}>
-            <Text
-              style={{ fontSize: 16 }}
-            >{`${formattedDate}, ${formattedTime}`}</Text>
+            <Text style={{ fontSize: 16, marginBottom: 5 }}>{item.title}</Text>
+            <Text>{`${formattedDate}, ${formattedTime}`}</Text>
             <Text>{formattedWeekday}</Text>
           </View>
           <IconButton
             icon='note-text-outline'
             color={colors.primary}
-            onPress={() => navigation.navigate('JournalDetails')}
+            onPress={() =>
+              navigation.navigate('JournalDetails', {
+                title: item.title,
+                content: item.content,
+                formattedDate: {
+                  formattedDate,
+                  formattedTime,
+                  formattedWeekday,
+                },
+              })
+            }
           />
         </View>
       </SwipeableCard>
@@ -117,11 +127,15 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
       ) : (
         <NoData />
       )}
-      <View
-        style={{ marginTop: 'auto', marginHorizontal: 30, marginBottom: 15 }}
-      >
-        <MainButton mode='text' text='Add new entry' onPress={onNewEntry} />
-      </View>
+      <MainButton
+        mode='text'
+        text='New entry'
+        onPress={onNewEntry}
+        extraStyles={{
+          marginTop: 'auto',
+          marginHorizontal: 30,
+        }}
+      />
     </View>
   );
 };
