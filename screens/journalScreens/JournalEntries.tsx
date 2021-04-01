@@ -1,28 +1,28 @@
+import { useIsFocused } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC, useEffect, useState } from 'react';
 import {
-  View,
+  Dimensions,
   FlatList,
   ListRenderItem,
   StyleSheet,
-  Dimensions,
-  Image,
+  View,
 } from 'react-native';
-import { IconButton, Text, useTheme, List, Divider } from 'react-native-paper';
-import { useIsFocused } from '@react-navigation/native';
-import { auth, db } from '../../firebase';
+import { Divider, useTheme } from 'react-native-paper';
 import {
-  MainButton,
-  SwipeableCard,
-  NoData,
-  Loader,
   DeleteModal,
-  SuccessNotification,
   ErrorNotification,
+  JournalEntry,
+  Loader,
+  MainButton,
+  NoData,
+  SuccessNotification,
+  SwipeableCard,
 } from '../../components';
+import { auth, db } from '../../firebase';
+import { useNotifySuccess } from '../../hooks';
 import { JournalStackParamList } from '../../navigation/JournalStack';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { IError, IJournalFetched } from '../../types';
-import { useFormatDate, useNotifySuccess } from '../../hooks';
 
 type JournalEntriesNavigationProp = StackNavigationProp<
   JournalStackParamList,
@@ -58,7 +58,6 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
   const [journalsData, setJournalsData] = useState<IJournalFetched[]>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const user = auth.currentUser!;
-  const { colors } = useTheme();
   useEffect(() => {
     const fetchData = () => {
       setIsLoading(true);
@@ -74,7 +73,7 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
             date: doc.data().createdAt,
             content: doc.data().content,
             title: doc.data().title,
-            images: doc.data().photos,
+            images: doc.data().images,
             isOpen: false,
           });
         });
@@ -111,39 +110,20 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
   };
 
   const renderItem: ListRenderItem<IJournalFetched> = ({ item }) => {
-    const { formattedDate, formattedTime } = useFormatDate(item.date);
-
     return (
       <>
         <SwipeableCard
-          onEdit={() => console.log('edit')}
+          onEdit={() =>
+            navigation.navigate('JournalEdit', {
+              title: item.title,
+              content: item.content,
+              images: item.images,
+              id: item.id,
+            })
+          }
           onDelete={() => openModal(item.id)}
         >
-          <List.Accordion
-            title={item.title}
-            expanded={openId === item.id}
-            onPress={() =>
-              openId === item.id ? setOpenId(undefined) : setOpenId(item.id)
-            }
-            description={`${formattedDate}, ${formattedTime}`}
-            style={{ backgroundColor: colors.background }}
-          >
-            <Text>{item.content}</Text>
-            <View style={{ flexDirection: 'row' }}>
-              {item.images &&
-                item.images.map((image) => (
-                  <Image
-                    style={{
-                      marginHorizontal: 5,
-                      width: 100,
-                      height: 100,
-                    }}
-                    key={image}
-                    source={{ uri: image }}
-                  />
-                ))}
-            </View>
-          </List.Accordion>
+          <JournalEntry item={item} />
         </SwipeableCard>
         <Divider />
       </>

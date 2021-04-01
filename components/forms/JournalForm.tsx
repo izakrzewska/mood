@@ -41,7 +41,7 @@ export const JournalForm: FC<JournalFormProps> = ({
           />
         )}
         name='title'
-        defaultValue={defaultValues ? defaultValues.content : ''}
+        defaultValue={defaultValues ? defaultValues.title : ''}
         rules={{
           required: {
             value: true,
@@ -74,7 +74,7 @@ export const JournalForm: FC<JournalFormProps> = ({
       <FormError error={errors.content} />
       <Controller
         control={control}
-        render={({ onChange, onBlur, value }) => (
+        render={({ onChange, value }) => (
           <ImagePicker value={value} onChange={onChange} setValue={setValue} />
         )}
         name='images'

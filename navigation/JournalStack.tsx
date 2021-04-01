@@ -3,7 +3,7 @@ import React from 'react';
 import {
   JournalEntries,
   NewJournal,
-  JournalDetails,
+  JournalEdit,
 } from '../screens/journalScreens';
 import { forFade } from '../screens/utils';
 import { useTheme } from '@react-navigation/native';
@@ -11,10 +11,11 @@ import { useTheme } from '@react-navigation/native';
 export type JournalStackParamList = {
   JournalEntries: undefined;
   NewJournal: undefined;
-  JournalDetails: {
+  JournalEdit: {
     title: string;
     content: string;
-    formattedDate: any; // TODO: better type
+    images: string[];
+    id: string;
   };
 };
 
@@ -51,10 +52,10 @@ export const JournalStack = () => {
         }}
       />
       <Stack.Screen
-        name='JournalDetails'
-        component={JournalDetails}
+        name='JournalEdit'
+        component={JournalEdit}
         options={{
-          title: 'Details',
+          title: 'Edit',
         }}
       />
     </Stack.Navigator>
