@@ -16,6 +16,7 @@ export const paperTheme = {
     ...PaperDefaultTheme.colors,
     primary: colors.main,
     error: colors.error,
+    background: colors.white,
   },
 };
 

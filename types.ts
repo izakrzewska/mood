@@ -24,6 +24,7 @@ export interface MoodFormData {
 export interface JournalFormData {
   content: string;
   title: string;
+  images: string[];
 }
 
 export interface EditEmailFormData {
@@ -59,4 +60,5 @@ export interface IJournalFetched {
   title: string;
   id: string;
   date: any;
+  images: string[];
 }

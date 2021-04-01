@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import NativeModal from 'react-native-modal';
+import { MainButton } from '../MainButton/MainButton';
+import { Text } from 'react-native-paper';
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -30,9 +32,15 @@ const styles = StyleSheet.create({
 
 interface ModalProps {
   isModalVisible: boolean;
+  onClose: () => void;
+  onDelete: (id: string) => void;
 }
 
-export const Modal: FC<ModalProps> = ({ isModalVisible, children }) => {
+export const DeleteModal: FC<ModalProps> = ({
+  onClose,
+  onDelete,
+  isModalVisible,
+}) => {
   const deviceHeight = Dimensions.get('window').height;
 
   return (
@@ -46,7 +54,23 @@ export const Modal: FC<ModalProps> = ({ isModalVisible, children }) => {
       deviceHeight={deviceHeight}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>{children}</View>
+        <View style={styles.modalView}>
+          <Text>{`Are you sure you want to delete entry?`}</Text>
+          <View style={{ flexDirection: 'row', marginTop: 20 }}>
+            <MainButton
+              text='Close'
+              mode='text'
+              onPress={onClose}
+              extraStyles={{ flexGrow: 1 }}
+            />
+            <MainButton
+              text='Delete'
+              mode='text'
+              onPress={onDelete}
+              extraStyles={{ flexGrow: 1 }}
+            />
+          </View>
+        </View>
       </View>
     </NativeModal>
   );

@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { View } from 'react-native';
 import { auth, db } from '../../firebase';
 import { Text } from 'react-native-paper';
-import { MainButton, JournalForm } from '../../components';
+import { MainButton, JournalForm, ErrorNotification } from '../../components';
 import { JournalStackParamList } from '../../navigation/JournalStack';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { JournalFormData } from '../../types';
+import { IError, JournalFormData } from '../../types';
 
 type NewJournalNavigationProp = StackNavigationProp<
   JournalStackParamList,
@@ -17,6 +17,7 @@ type NewJournalScreenProps = {
 };
 
 export const NewJournal: FC<NewJournalScreenProps> = ({ navigation }) => {
+  const [error, setError] = useState<IError>();
   const onSubmit = async (data: JournalFormData) => {
     const user = auth.currentUser!;
     try {
@@ -25,23 +26,27 @@ export const NewJournal: FC<NewJournalScreenProps> = ({ navigation }) => {
         content: data.content,
         belongsTo: user.uid,
         createdAt: new Date(),
+        photos: data.images,
       };
       const ref = db.collection('journals');
       await ref.add(journalData);
       navigation.push('JournalEntries');
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      setError(error);
     }
   };
   return (
-    <View
-      style={{
-        flex: 1,
-        paddingVertical: 20,
-        paddingHorizontal: 30,
-      }}
-    >
-      <JournalForm onSubmit={onSubmit} />
-    </View>
+    <>
+      <View
+        style={{
+          flex: 1,
+          paddingVertical: 20,
+          paddingHorizontal: 30,
+        }}
+      >
+        <JournalForm onSubmit={onSubmit} />
+      </View>
+      <ErrorNotification error={error} />
+    </>
   );
 };

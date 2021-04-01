@@ -21,7 +21,7 @@ export {
   JournalForm,
 } from './forms';
 export { AuthNavigationBox } from './AuthNavigationBox/AuthNavigationBox';
-export { Modal } from './Modal/Modal';
+export { DeleteModal } from './DeleteModal/DeleteModal';
 export { SuccessNotification } from './SuccessNotification/SuccessNotification';
 export { SwipeableCard } from './SwipeableCard/SwipeableCard';
 export { NoData } from './NoData/NoData';

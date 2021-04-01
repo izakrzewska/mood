@@ -1,11 +1,10 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import firebase from 'firebase';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { View } from 'react-native';
-import { MoodForm } from '../../components';
+import { ErrorNotification, MoodForm } from '../../components';
 import { auth, db } from '../../firebase';
 import { MoodStackParamList } from '../../navigation/MoodStack';
-import { MoodFormData } from '../../types';
+import { IError, MoodFormData } from '../../types';
 
 type NewMoodScreenNavigationProp = StackNavigationProp<
   MoodStackParamList,
@@ -17,6 +16,7 @@ type NewMoodScreenProps = {
 };
 
 export const NewMood: FC<NewMoodScreenProps> = ({ navigation }) => {
+  const [error, setError] = useState<IError>();
   const onSubmit = async (data: MoodFormData) => {
     const user = auth.currentUser!;
     try {
@@ -28,14 +28,17 @@ export const NewMood: FC<NewMoodScreenProps> = ({ navigation }) => {
       const ref = db.collection('moods');
       await ref.add(moodData);
       navigation.push('MoodsStatistics');
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      setError(error);
     }
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <MoodForm onSubmit={onSubmit} />
-    </View>
+    <>
+      <View style={{ flex: 1 }}>
+        <MoodForm onSubmit={onSubmit} />
+      </View>
+      <ErrorNotification error={error} />
+    </>
   );
 };

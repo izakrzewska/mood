@@ -8,7 +8,7 @@ import {
   ErrorNotification,
   Loader,
   MainButton,
-  Modal,
+  DeleteModal,
   SuccessNotification,
   SwipeableCard,
   NoData,
@@ -114,8 +114,12 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
           <NoData />
         )}
       </View>
-      <Modal isModalVisible={isModalVisible}>
-        <Text>{`Are you sure you want to delete entry?`}</Text>
+      <DeleteModal
+        isModalVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        onDelete={onMoodDelete}
+      />
+      {/* <Text>{`Are you sure you want to delete entry?`}</Text>
         <View style={{ flexDirection: 'row', marginTop: 20 }}>
           <MainButton
             text='Close'
@@ -130,7 +134,7 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
             extraStyles={{ flexGrow: 1 }}
           />
         </View>
-      </Modal>
+      </DeleteModal> */}
       <ErrorNotification
         error={error}
         extraStyles={{ paddingHorizontal: 30 }}
