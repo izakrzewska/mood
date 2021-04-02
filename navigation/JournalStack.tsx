@@ -12,7 +12,6 @@ export type JournalStackParamList = {
   JournalEntries: undefined;
   NewJournal: undefined;
   JournalEdit: {
-    title: string;
     content: string;
     images: string[];
     id: string;
@@ -48,7 +47,6 @@ export const JournalStack = () => {
         component={NewJournal}
         options={{
           title: 'New entry',
-          headerShown: false,
         }}
       />
       <Stack.Screen

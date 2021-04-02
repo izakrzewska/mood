@@ -8,7 +8,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { Divider, useTheme } from 'react-native-paper';
+import { Divider } from 'react-native-paper';
 import {
   DeleteModal,
   ErrorNotification,
@@ -72,7 +72,6 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
             id: doc.id,
             date: doc.data().createdAt,
             content: doc.data().content,
-            title: doc.data().title,
             images: doc.data().images,
             isOpen: false,
           });
@@ -115,7 +114,6 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
         <SwipeableCard
           onEdit={() =>
             navigation.navigate('JournalEdit', {
-              title: item.title,
               content: item.content,
               images: item.images,
               id: item.id,
@@ -123,7 +121,11 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
           }
           onDelete={() => openModal(item.id)}
         >
-          <JournalEntry item={item} />
+          <JournalEntry
+            isOpen={openId === item.id}
+            item={item}
+            setOpenId={setOpenId}
+          />
         </SwipeableCard>
         <Divider />
       </>

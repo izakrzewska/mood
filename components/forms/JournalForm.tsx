@@ -1,16 +1,15 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { KeyboardAvoidingView, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
+import { colors } from '../../themes';
 import { JournalFormData } from '../../types';
 import { ImagePicker } from '../ImagePicker/ImagePicker';
 import { MainButton } from '../MainButton/MainButton';
 import { FormError } from './components';
-// import * as ImagePicker from 'expo-image-picker';
-
 interface JournalFormProps {
   onSubmit: (data: JournalFormData) => void;
-  defaultValues?: { title: string; content: string; images: string[] };
+  defaultValues?: { content: string; images: string[] };
 }
 
 export const JournalForm: FC<JournalFormProps> = ({
@@ -31,32 +30,14 @@ export const JournalForm: FC<JournalFormProps> = ({
         render={({ onChange, onBlur, value }) => (
           <TextInput
             multiline
-            returnKeyType='done'
-            label='Title'
-            autoFocus
-            mode='outlined'
-            onBlur={onBlur}
-            onChangeText={(value) => onChange(value)}
-            value={value}
-          />
-        )}
-        name='title'
-        defaultValue={defaultValues ? defaultValues.title : ''}
-        rules={{
-          required: {
-            value: true,
-            message: 'This field is required',
-          },
-        }}
-      />
-      <FormError error={errors.title} />
-      <Controller
-        control={control}
-        render={({ onChange, onBlur, value }) => (
-          <TextInput
-            multiline
+            blurOnSubmit={true}
+            selectTextOnFocus={false}
+            style={{
+              height: 300,
+              backgroundColor: colors.white,
+            }}
             label='Journal'
-            mode='outlined'
+            mode='flat'
             onBlur={onBlur}
             onChangeText={(value) => onChange(value)}
             value={value}
@@ -74,8 +55,8 @@ export const JournalForm: FC<JournalFormProps> = ({
       <FormError error={errors.content} />
       <Controller
         control={control}
-        render={({ onChange, value }) => (
-          <ImagePicker value={value} onChange={onChange} setValue={setValue} />
+        render={({ value }) => (
+          <ImagePicker value={value} setValue={setValue} />
         )}
         name='images'
         defaultValue={defaultValues ? defaultValues.images : ''}

@@ -22,11 +22,10 @@ export const NewJournal: FC<NewJournalScreenProps> = ({ navigation }) => {
     const user = auth.currentUser!;
     try {
       const journalData = {
-        title: data.title,
         content: data.content,
         belongsTo: user.uid,
         createdAt: new Date(),
-        photos: data.images,
+        images: data.images,
       };
       const ref = db.collection('journals');
       await ref.add(journalData);

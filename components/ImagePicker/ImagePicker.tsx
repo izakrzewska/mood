@@ -1,13 +1,8 @@
 import * as ExpoImagePicker from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
-import {
-  ImageBackground,
-  Platform,
-  TouchableHighlight,
-  View,
-} from 'react-native';
-import { IconButton } from 'react-native-paper';
+import { Platform, View, Text } from 'react-native';
 import { MainButton } from '../MainButton/MainButton';
+import { Image } from './Image';
 
 export const ImagePicker = ({ value, setValue }: any) => {
   const [selectedImage, setSelectedImage] = useState<string>();
@@ -42,40 +37,27 @@ export const ImagePicker = ({ value, setValue }: any) => {
       value.filter((addedImage: string) => addedImage !== image)
     );
   };
-
   return (
     <View>
-      <View style={{ flexDirection: 'row' }}>
-        {value.map((image: any) => (
-          <TouchableHighlight
-            key={image}
-            onPress={() => setSelectedImage(image)}
-          >
-            <ImageBackground
-              source={{ uri: image }}
-              imageStyle={selectedImage === image && { opacity: 0.5 }}
-              style={{ height: 100, width: 100 }}
-            >
-              {selectedImage === image && (
-                <View
-                  style={{
-                    flex: 1,
-                    alignItems: 'flex-end',
-                    justifyContent: 'flex-end',
-                    opacity: 1,
-                  }}
-                >
-                  <IconButton
-                    icon='delete'
-                    onPress={() => onImageDelete(image)}
-                  />
-                </View>
-              )}
-            </ImageBackground>
-          </TouchableHighlight>
-        ))}
-      </View>
-      <MainButton text='Add photo' onPress={onAddPhotosPress} mode='text' />
+      {value ? (
+        <View style={{ flexDirection: 'row' }}>
+          {value.map((uri: string) => (
+            <Image
+              uri={uri}
+              key={uri}
+              onImageDelete={onImageDelete}
+              isSelected={selectedImage === uri}
+              setSelectedImage={setSelectedImage}
+            />
+          ))}
+        </View>
+      ) : null}
+      <MainButton
+        text='Add photo'
+        onPress={onAddPhotosPress}
+        mode='text'
+        disabled={value.length >= 3}
+      />
     </View>
   );
 };

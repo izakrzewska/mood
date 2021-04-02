@@ -29,7 +29,7 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { title, content, images, id } = route.params;
+  const { content, images, id } = route.params;
   const { isActive, openSuccess, message } = useNotifySuccess();
   const [error, setHasError] = useState();
 
@@ -39,7 +39,6 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
     ref
       .set(
         {
-          title: data.title,
           content: data.content,
           images: data.images,
         },
@@ -68,7 +67,7 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
         <View style={{ flex: 1 }}>
           <JournalForm
             onSubmit={onSubmit}
-            defaultValues={{ title, content, images }}
+            defaultValues={{ content: content, images: images }}
           />
         </View>
       </View>
