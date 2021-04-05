@@ -1,8 +1,8 @@
 import { useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Text } from 'react-native-paper';
 import { AddDataImage, Loader, MainButton, MoodChart } from '../../components';
 import { auth } from '../../firebase';
 import { useGetMoods } from '../../hooks';
@@ -64,9 +64,11 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
   const noMoodsContent = (
     <View style={styles.noStatisticsContainer}>
       <View style={{ marginBottom: 50 }}>{greeting}</View>
-      <AddDataImage />
+      <TouchableWithoutFeedback onPress={onNewMoodPress}>
+        <AddDataImage />
+      </TouchableWithoutFeedback>
       <MainButton
-        mode='text'
+        mode='outlined'
         onPress={onNewMoodPress}
         text='Start tracking your mood'
         extraStyles={styles.noStatisticsButton}
@@ -87,8 +89,8 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
       </View>
       <View style={styles.rateMoodButtonContainer}>
         <MainButton
-          mode='text'
-          text='Rate your today mood'
+          mode='outlined'
+          text='Rate your mood'
           onPress={onNewMoodPress}
         />
       </View>

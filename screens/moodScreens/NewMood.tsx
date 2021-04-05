@@ -19,6 +19,7 @@ export const NewMood: FC<NewMoodScreenProps> = ({ navigation }) => {
   const [error, setError] = useState<IError>();
   const onSubmit = async (data: MoodFormData) => {
     const user = auth.currentUser!;
+
     try {
       const moodData = {
         value: Number(data.value),

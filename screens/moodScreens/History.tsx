@@ -119,22 +119,6 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
         onClose={() => setIsModalVisible(false)}
         onDelete={onMoodDelete}
       />
-      {/* <Text>{`Are you sure you want to delete entry?`}</Text>
-        <View style={{ flexDirection: 'row', marginTop: 20 }}>
-          <MainButton
-            text='Close'
-            mode='text'
-            onPress={() => setIsModalVisible(false)}
-            extraStyles={{ flexGrow: 1 }}
-          />
-          <MainButton
-            text='Delete'
-            mode='text'
-            onPress={onMoodDelete}
-            extraStyles={{ flexGrow: 1 }}
-          />
-        </View>
-      </DeleteModal> */}
       <ErrorNotification
         error={error}
         extraStyles={{ paddingHorizontal: 30 }}

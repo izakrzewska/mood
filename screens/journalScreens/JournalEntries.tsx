@@ -149,7 +149,7 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
           <NoData />
         )}
         <MainButton
-          mode='text'
+          mode='outlined'
           text='New entry'
           onPress={onNewEntry}
           extraStyles={{

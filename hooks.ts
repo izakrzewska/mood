@@ -7,7 +7,6 @@ export const useGetMoods = (isFocused: boolean, order: 'asc' | 'desc') => {
   const [moodsData, setMoodsData] = useState<IMoodFetched[]>();
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    let isMounted = true;
     const fetchData = () => {
       setIsLoading(true);
       const ref = db
@@ -28,13 +27,9 @@ export const useGetMoods = (isFocused: boolean, order: 'asc' | 'desc') => {
       });
     };
 
-    if (isFocused && isMounted) {
+    if (isFocused) {
       fetchData();
     }
-
-    return () => {
-      isMounted = false;
-    };
   }, [isFocused]);
   return { moodsData, isLoading };
 };

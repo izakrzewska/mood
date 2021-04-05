@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { View } from 'react-native';
 import {
   VictoryAxis,
   VictoryBar,
   VictoryChart,
   VictoryTheme,
+  VictoryTooltip,
   VictoryZoomContainer,
 } from 'victory-native';
 import { colors } from '../../themes';
@@ -15,66 +16,84 @@ interface MoodChartProps {
 }
 
 export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
-  const chartData = moods.map((mood) => {
-    const date = mood.date && mood.date.toDate().setHours(0, 0, 0, 0);
-    return {
-      x: date,
-      y: mood.value,
-    };
-  });
+  const getChartData = (): any => {
+    const groupedData = moods.reduce((acc: any, item: any): any => {
+      const shortDate = item.date.toDate().toLocaleDateString();
+      if (!acc[shortDate]) {
+        acc[shortDate] = [];
+      }
 
-  const formatDate = (date: Date) =>
-    date.toLocaleDateString(undefined, {
-      month: 'numeric',
-      day: 'numeric',
+      acc[shortDate].push(item);
+      return acc;
+    }, {});
+
+    const chartData = Object.entries(groupedData).map((entry: any) => {
+      const finalValue =
+        entry[1].reduce((acc, item): any => {
+          return acc + item.value;
+        }, 0) / entry[1].length;
+      return {
+        x: entry[0],
+        y: finalValue,
+      };
     });
+    return chartData;
+  };
+
+  // const chartData = moods.map((mood) => {
+  //   return {
+  //     x: mood.date && mood.date.toDate().setHours(0, 0, 0, 0),
+  //     y: mood.value,
+  //   };
+  // });
 
   return (
-    <View>
-      <VictoryChart
-        domainPadding={5}
-        scale={{ x: 'time' }}
-        theme={VictoryTheme.material}
-        containerComponent={
-          <VictoryZoomContainer
-            allowZoom={false}
-            zoomDimension='x'
-            zoomDomain={{
-              x: [new Date().getTime() - 6.048e8, new Date().getTime()], // today minus one week in miliseconds - today
-              y: [1, 10],
-            }}
-          />
-        }
-      >
-        <VictoryBar
-          data={chartData}
-          // domain={[1, 10]}
-          alignment='middle'
+    <VictoryChart
+      theme={VictoryTheme.material}
+      containerComponent={
+        <VictoryZoomContainer
+          allowZoom={false}
+          allowPan={getChartData().length > 7}
+          zoomDimension='x'
+          zoomDomain={{
+            x: [getChartData().length - 7, getChartData().length],
+            y: [1, 10],
+          }}
           style={{
-            data: { strokeWidth: 10, fill: colors.main },
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         />
-        <VictoryAxis
-          // domain={[1, 10]}
-          dependentAxis
-          style={{
-            grid: { stroke: 'grey', opacity: 0.3, strokeWidth: 0.8 },
-          }}
-        />
-        <VictoryAxis
-          tickFormat={(tick) => formatDate(tick)}
-          style={{
-            tickLabels: {
-              angle: 40,
-              padding: 10,
-              fontSize: 12,
-            },
-            grid: {
-              strokeWidth: 0,
-            },
-          }}
-        />
-      </VictoryChart>
-    </View>
+      }
+    >
+      <VictoryBar
+        domainPadding={25}
+        data={getChartData()}
+        alignment='middle'
+        style={{
+          data: { strokeWidth: 10, fill: colors.main },
+        }}
+      />
+      <VictoryAxis
+        dependentAxis
+        style={{
+          grid: { stroke: 'grey', opacity: 0.3, strokeWidth: 0.8 },
+        }}
+      />
+      <VictoryAxis
+        tickFormat={(tick) => tick.slice(0, tick.length - 5)}
+        style={{
+          tickLabels: {
+            angle: 40,
+            padding: 15,
+            fontSize: 12,
+          },
+          grid: {
+            strokeWidth: 0,
+          },
+        }}
+      />
+    </VictoryChart>
   );
 };
