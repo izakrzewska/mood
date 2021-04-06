@@ -72,7 +72,6 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
             id: doc.id,
             date: doc.data().createdAt,
             content: doc.data().content,
-            images: doc.data().images,
             isOpen: false,
           });
         });
@@ -115,7 +114,6 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
           onEdit={() =>
             navigation.navigate('JournalEdit', {
               content: item.content,
-              images: item.images,
               id: item.id,
             })
           }
@@ -143,7 +141,7 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
       >
         {isLoading ? (
           <Loader />
-        ) : journalsData?.length > 0 ? (
+        ) : journalsData && journalsData?.length > 0 ? (
           <FlatList data={journalsData} renderItem={renderItem} />
         ) : (
           <NoData />

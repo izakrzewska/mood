@@ -1,72 +1,108 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { KeyboardAvoidingView, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  View,
+  Keyboard,
+  Dimensions,
+  TextInput as NativeTextInput,
+} from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { TextInput } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../themes';
 import { JournalFormData } from '../../types';
-import { ImagePicker } from '../ImagePicker/ImagePicker';
 import { MainButton } from '../MainButton/MainButton';
 import { FormError } from './components';
+import { useWindowDimensions } from 'react-native';
 interface JournalFormProps {
   onSubmit: (data: JournalFormData) => void;
-  defaultValues?: { content: string; images: string[] };
+  defaultValues?: { content: string };
 }
 
 export const JournalForm: FC<JournalFormProps> = ({
   onSubmit,
   defaultValues,
 }) => {
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const windowHeight =
+    useWindowDimensions().height - (1 / 3) * useWindowDimensions().height;
+  const [inputHeight, setInputHeight] = useState<undefined | number>(
+    windowHeight
+  );
+
   const { control, handleSubmit, errors, setValue } = useForm<JournalFormData>({
     reValidateMode: 'onChange',
   });
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      (e) => {
+        setKeyboardVisible(true);
+        setInputHeight(e.endCoordinates.height);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      (e) => {
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
       }}
     >
-      <Controller
-        control={control}
-        render={({ onChange, onBlur, value }) => (
-          <TextInput
-            multiline
-            blurOnSubmit={true}
-            selectTextOnFocus={false}
-            style={{
-              height: 300,
-              backgroundColor: colors.white,
-            }}
-            label='Journal'
-            mode='flat'
-            onBlur={onBlur}
-            onChangeText={(value) => onChange(value)}
-            value={value}
-          />
-        )}
-        name='content'
-        defaultValue={defaultValues ? defaultValues.content : ''}
-        rules={{
-          required: {
-            value: true,
-            message: 'This field is required',
-          },
+      <View
+        style={{
+          flex: 1,
         }}
-      />
-      <FormError error={errors.content} />
-      <Controller
-        control={control}
-        render={({ value }) => (
-          <ImagePicker value={value} setValue={setValue} />
-        )}
-        name='images'
-        defaultValue={defaultValues ? defaultValues.images : ''}
-      />
-      <MainButton
-        mode='text'
-        onPress={handleSubmit(onSubmit)}
-        text='Save'
-        extraStyles={{ marginTop: 20 }}
-      />
-    </View>
+      >
+        <Controller
+          control={control}
+          render={({ onChange, onBlur, value }) => (
+            <ScrollView>
+              <NativeTextInput
+                multiline
+                blurOnSubmit={true}
+                placeholder='How are you?'
+                style={{
+                  height: isKeyboardVisible ? inputHeight : windowHeight,
+                  marginTop: 20,
+                  fontSize: 16,
+                }}
+                onBlur={onBlur}
+                onChangeText={(value) => onChange(value)}
+                value={value}
+              />
+            </ScrollView>
+          )}
+          name='content'
+          defaultValue={defaultValues ? defaultValues.content : ''}
+          rules={{
+            required: {
+              value: true,
+              message: 'This field is required',
+            },
+          }}
+        />
+        <FormError error={errors.content} />
+        <MainButton
+          mode='text'
+          onPress={handleSubmit(onSubmit)}
+          text='Save'
+          extraStyles={{ marginTop: 20 }}
+        />
+      </View>
+    </SafeAreaView>
   );
 };

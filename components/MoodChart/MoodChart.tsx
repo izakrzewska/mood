@@ -12,12 +12,12 @@ import { colors } from '../../themes';
 import { IMoodFetched } from '../../types';
 
 interface MoodChartProps {
-  moods: IMoodFetched[];
+  moods?: IMoodFetched[];
 }
 
 export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
   const getChartData = (): any => {
-    const groupedData = moods.reduce((acc: any, item: any): any => {
+    const groupedData = moods?.reduce((acc: any, item: any): any => {
       const shortDate = item.date.toDate().toLocaleDateString();
       if (!acc[shortDate]) {
         acc[shortDate] = [];
@@ -29,7 +29,7 @@ export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
 
     const chartData = Object.entries(groupedData).map((entry: any) => {
       const finalValue =
-        entry[1].reduce((acc, item): any => {
+        entry[1].reduce((acc: any, item: any): any => {
           return acc + item.value;
         }, 0) / entry[1].length;
       return {

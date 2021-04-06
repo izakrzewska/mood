@@ -13,7 +13,6 @@ export type JournalStackParamList = {
   NewJournal: undefined;
   JournalEdit: {
     content: string;
-    images: string[];
     id: string;
   };
 };

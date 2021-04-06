@@ -23,7 +23,6 @@ export interface MoodFormData {
 
 export interface JournalFormData {
   content: string;
-  images: string[];
 }
 
 export interface EditEmailFormData {
@@ -55,8 +54,8 @@ export interface IError {
 }
 
 export interface IJournalFetched {
+  images: JSX.Element;
   content: string;
   id: string;
   date: any;
-  images: string[];
 }

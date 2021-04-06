@@ -99,7 +99,7 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
 
   return isLoading ? (
     <Loader />
-  ) : moodsData?.length > 0 ? (
+  ) : moodsData && moodsData?.length > 0 ? (
     moodsContent
   ) : (
     noMoodsContent

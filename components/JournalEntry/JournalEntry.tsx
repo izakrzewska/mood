@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, Image } from 'react-native';
+import { View } from 'react-native';
 import { List, Text, Avatar, useTheme } from 'react-native-paper';
 import { IJournalFetched } from '../../types';
 import { useFormatDate } from '../../hooks';
@@ -35,26 +35,6 @@ export const JournalEntry: FC<JournalEntryProps> = ({
         <View style={{ marginBottom: 20 }}>
           <Text>{item.content}</Text>
         </View>
-        {item.images && (
-          <View
-            style={{
-              flexDirection: 'row',
-              paddingVertical: 10,
-            }}
-          >
-            {item.images.map((image) => (
-              <Image
-                style={{
-                  marginHorizontal: 2,
-                  width: 100,
-                  height: 100,
-                }}
-                key={image}
-                source={{ uri: image }}
-              />
-            ))}
-          </View>
-        )}
       </View>
     </List.Accordion>
   );

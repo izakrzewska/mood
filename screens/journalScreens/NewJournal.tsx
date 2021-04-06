@@ -25,7 +25,6 @@ export const NewJournal: FC<NewJournalScreenProps> = ({ navigation }) => {
         content: data.content,
         belongsTo: user.uid,
         createdAt: new Date(),
-        images: data.images,
       };
       const ref = db.collection('journals');
       await ref.add(journalData);
