@@ -41,7 +41,6 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
 
   useEffect(() => {
     const fetchData = () => {
-      console.log('fires');
       dispatch({ type: 'START_LOADING' });
       const ref = db
         .collection('journals')
