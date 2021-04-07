@@ -7,6 +7,7 @@ import { MainButton } from '../MainButton/MainButton';
 interface SwipeableCardProps {
   onEdit: any;
   onDelete: any;
+  enabled?: boolean;
 }
 
 const styles = StyleSheet.create({
@@ -21,6 +22,7 @@ export const SwipeableCard: FC<SwipeableCardProps> = ({
   onEdit,
   onDelete,
   children,
+  enabled = true,
 }) => {
   const onRightSwipe = () => {
     return (
@@ -33,7 +35,9 @@ export const SwipeableCard: FC<SwipeableCardProps> = ({
 
   return (
     <>
-      <Swipeable renderRightActions={onRightSwipe}>{children}</Swipeable>
+      <Swipeable enabled={enabled} renderRightActions={onRightSwipe}>
+        {children}
+      </Swipeable>
       <Divider />
     </>
   );

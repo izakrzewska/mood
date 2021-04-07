@@ -4,15 +4,28 @@ import Constants from 'expo-constants';
 const styles = StyleSheet.create({
   staticticsScreenContainer: {
     flex: 1,
-    justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight,
+    paddingVertical: 20,
     paddingHorizontal: 30,
   },
-  historyScreenContainer: {
+  noStatisticsContainer: {
     flex: 1,
-    justifyContent: 'flex-start',
-    paddingTop: Constants.statusBarHeight,
-    paddingHorizontal: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noStatisticsButton: {
+    marginTop: 50,
+  },
+  historyButton: {
+    alignSelf: 'flex-end',
+  },
+  moodChartContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  rateMoodButtonContainer: {
+    marginTop: 'auto',
+    marginHorizontal: 30,
+    marginBottom: 15,
   },
 });
 

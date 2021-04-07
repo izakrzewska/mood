@@ -21,6 +21,7 @@ import {
   EditPasswordFormData,
   EditUsernameFormData,
 } from '../../types';
+import { profileReducer, initialProfileState } from '../../reducers';
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   SettingsStackParamList,
@@ -29,55 +30,6 @@ type ProfileScreenNavigationProp = StackNavigationProp<
 
 type ProfileScreenProps = {
   navigation: ProfileScreenNavigationProp;
-};
-
-interface ProfileState {
-  isUsernameinEdit: boolean;
-  isEmailInEdit: boolean;
-  isPasswordInEdit: boolean;
-  isAccountRemoval: boolean;
-}
-
-const initialProfileState: ProfileState = {
-  isUsernameinEdit: false,
-  isEmailInEdit: false,
-  isPasswordInEdit: false,
-  isAccountRemoval: false,
-};
-
-const profileReducer = (state: ProfileState, action: any) => {
-  switch (action.type) {
-    case 'TOGGLE_USERNAME_EDIT':
-      return {
-        isUsernameinEdit: !state.isUsernameinEdit,
-        isEmailInEdit: false,
-        isPasswordInEdit: false,
-        isAccountRemoval: false,
-      };
-    case 'TOGGLE_EMAIL_EDIT':
-      return {
-        isUsernameinEdit: false,
-        isEmailInEdit: !state.isEmailInEdit,
-        isPasswordInEdit: false,
-        isAccountRemoval: false,
-      };
-    case 'TOGGLE_PASSWORD_EDIT':
-      return {
-        isUsernameinEdit: false,
-        isEmailInEdit: false,
-        isPasswordInEdit: !state.isPasswordInEdit,
-        isAccountRemoval: false,
-      };
-    case 'TOGGLE_ACCOUNT_REMOVAL':
-      return {
-        isUsernameinEdit: false,
-        isEmailInEdit: false,
-        isPasswordInEdit: false,
-        isAccountRemoval: !state.isAccountRemoval,
-      };
-    default:
-      return state;
-  }
 };
 
 export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
@@ -107,7 +59,12 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
       .catch((error) => {
         setError(error);
       })
-      .finally(() => dispatch({ type: 'TOGGLE_USERNAME_EDIT' }));
+      .finally(() =>
+        dispatch({
+          type: 'SET_OPEN',
+          payload: undefined,
+        })
+      );
   };
 
   const handleEmaileSave = (data: EditEmailFormData) => {
@@ -127,7 +84,12 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
       .catch((error) => {
         setError(error);
       })
-      .finally(() => dispatch({ type: 'TOGGLE_EMAIL_EDIT' }));
+      .finally(() =>
+        dispatch({
+          type: 'SET_OPEN',
+          payload: undefined,
+        })
+      );
   };
 
   const handlePasswordSave = (data: EditPasswordFormData) => {
@@ -147,13 +109,18 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
       .catch((error) => {
         setError(error);
       })
-      .finally(() => dispatch({ type: 'TOGGLE_PASSWORD_EDIT' }));
+      .finally(() =>
+        dispatch({
+          type: 'SET_OPEN',
+          payload: undefined,
+        })
+      );
   };
 
   const removeData = async () => {
-    const collectionRef = db.collection('moods');
+    const moodsRef = db.collection('moods');
     // TODO: remove from journals too
-    const query = collectionRef.where('belongsTo', '==', user.uid);
+    const query = moodsRef.where('belongsTo', '==', user.uid);
 
     return new Promise((resolve, reject) => {
       deleteQueryBatch(query, resolve).catch(reject);
@@ -183,6 +150,29 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
       });
   };
 
+  const accordionsData = [
+    {
+      id: 'username',
+      buttonText: 'Edit username',
+      content: <ChangeUsernameForm handleUsernameSave={handleUsernameSave} />,
+    },
+    {
+      id: 'email',
+      buttonText: 'Edit e-email',
+      content: <ChangeEmailForm handleEmailSave={handleEmaileSave} />,
+    },
+    {
+      id: 'password',
+      buttonText: 'Edit password',
+      content: <ChangePasswordForm handlePasswordSave={handlePasswordSave} />,
+    },
+    {
+      id: 'removal',
+      buttonText: 'Remove account',
+      content: <DeleteAccountForm handleDelete={handleDelete} />,
+    },
+  ];
+
   return (
     <>
       <ScrollView>
@@ -199,38 +189,27 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
             text='Sign out'
             extraStyles={{ marginLeft: 'auto', marginBottom: 15 }}
           />
-          <List.Accordion
-            title='Edit username'
-            expanded={state.isUsernameinEdit}
-            onPress={() => dispatch({ type: 'TOGGLE_USERNAME_EDIT' })}
-          >
-            <ChangeUsernameForm handleUsernameSave={handleUsernameSave} />
-          </List.Accordion>
-          <Divider />
-          <List.Accordion
-            title='Edit e-email'
-            expanded={state.isEmailInEdit}
-            onPress={() => dispatch({ type: 'TOGGLE_EMAIL_EDIT' })}
-          >
-            <ChangeEmailForm handleEmailSave={handleEmaileSave} />
-          </List.Accordion>
-          <Divider />
-          <List.Accordion
-            title='Edit password'
-            expanded={state.isPasswordInEdit}
-            onPress={() => dispatch({ type: 'TOGGLE_PASSWORD_EDIT' })}
-          >
-            <ChangePasswordForm handlePasswordSave={handlePasswordSave} />
-          </List.Accordion>
-          <Divider />
-          <List.Accordion
-            title='Remove account'
-            expanded={state.isAccountRemoval}
-            onPress={() => dispatch({ type: 'TOGGLE_ACCOUNT_REMOVAL' })}
-          >
-            <DeleteAccountForm handleDelete={handleDelete} />
-          </List.Accordion>
-          <Divider />
+          {accordionsData.map(({ id, buttonText, content }) => {
+            const isAccordionOpen = id === state.openId;
+            return (
+              <>
+                <List.Accordion
+                  id={id}
+                  title={buttonText}
+                  expanded={isAccordionOpen}
+                  onPress={() =>
+                    dispatch({
+                      type: 'SET_OPEN',
+                      payload: isAccordionOpen ? undefined : id,
+                    })
+                  }
+                >
+                  {content}
+                </List.Accordion>
+                <Divider />
+              </>
+            );
+          })}
         </View>
       </ScrollView>
       <ErrorNotification error={error} />

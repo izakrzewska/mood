@@ -17,7 +17,7 @@ import { FormError } from './components';
 import { useWindowDimensions } from 'react-native';
 interface JournalFormProps {
   onSubmit: (data: JournalFormData) => void;
-  defaultValues?: { content: string };
+  defaultValues?: { content?: string };
 }
 
 export const JournalForm: FC<JournalFormProps> = ({

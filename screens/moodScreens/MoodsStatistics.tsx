@@ -1,40 +1,13 @@
 import { useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC } from 'react';
-import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { TouchableWithoutFeedback, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { AddDataImage, Loader, MainButton, MoodChart } from '../../components';
 import { auth } from '../../firebase';
 import { useGetMoods } from '../../hooks';
 import { MoodStackParamList } from '../../navigation/MoodStack';
-
-const styles = StyleSheet.create({
-  staticticsScreenContainer: {
-    flex: 1,
-    paddingVertical: 20,
-    paddingHorizontal: 30,
-  },
-  noStatisticsContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  noStatisticsButton: {
-    marginTop: 50,
-  },
-  historyButton: {
-    alignSelf: 'flex-end',
-  },
-  moodChartContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  rateMoodButtonContainer: {
-    marginTop: 'auto',
-    marginHorizontal: 30,
-    marginBottom: 15,
-  },
-});
+import styles from './styles';
 
 type MoodStatisticsScreenNavigationProp = StackNavigationProp<
   MoodStackParamList,

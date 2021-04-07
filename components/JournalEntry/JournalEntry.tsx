@@ -1,13 +1,15 @@
 import React, { FC } from 'react';
 import { View } from 'react-native';
-import { List, Text, Avatar, useTheme } from 'react-native-paper';
+import { List, Text, Avatar, useTheme, IconButton } from 'react-native-paper';
 import { IJournalFetched } from '../../types';
 import { useFormatDate } from '../../hooks';
+import { MainButton } from '../MainButton/MainButton';
+import { Icon } from 'react-native-paper/lib/typescript/components/Avatar/Avatar';
 
 interface JournalEntryProps {
   item: IJournalFetched;
   isOpen: boolean;
-  setOpenId: (id: string | undefined) => void;
+  setOpenId: any;
 }
 
 export const JournalEntry: FC<JournalEntryProps> = ({
@@ -34,6 +36,13 @@ export const JournalEntry: FC<JournalEntryProps> = ({
       >
         <View style={{ marginBottom: 20 }}>
           <Text>{item.content}</Text>
+        </View>
+        <View>
+          <IconButton
+            style={{ alignSelf: 'flex-end' }}
+            icon='pencil'
+            color={colors.primary}
+          />
         </View>
       </View>
     </List.Accordion>

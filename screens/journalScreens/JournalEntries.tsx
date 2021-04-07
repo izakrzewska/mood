@@ -1,13 +1,7 @@
 import { useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { FC, useEffect, useState } from 'react';
-import {
-  Dimensions,
-  FlatList,
-  ListRenderItem,
-  StyleSheet,
-  View,
-} from 'react-native';
+import React, { FC, useEffect, useReducer, useState } from 'react';
+import { FlatList, ListRenderItem, View } from 'react-native';
 import { Divider } from 'react-native-paper';
 import {
   DeleteModal,
@@ -22,6 +16,7 @@ import {
 import { auth, db } from '../../firebase';
 import { useNotifySuccess } from '../../hooks';
 import { JournalStackParamList } from '../../navigation/JournalStack';
+import { initialJournalsState, journalsReducer } from '../../reducers';
 import { IError, IJournalFetched } from '../../types';
 
 type JournalEntriesNavigationProp = StackNavigationProp<
@@ -33,34 +28,21 @@ type JournalEntriesScreenProps = {
   navigation: JournalEntriesNavigationProp;
 };
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-
-const styles = StyleSheet.create({
-  card: {
-    marginVertical: 20,
-    marginHorizontal: 5,
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    width: 0.8 * SCREEN_WIDTH,
-    alignSelf: 'center',
-  },
-});
-
 export const JournalEntries: FC<JournalEntriesScreenProps> = ({
   navigation,
 }) => {
   const { openSuccess, isActive, message } = useNotifySuccess();
+  const [state, dispatch] = useReducer(journalsReducer, initialJournalsState);
   const isFocused = useIsFocused();
   const [error, setError] = useState<IError>();
-  const [openId, setOpenId] = useState<string>();
   const [itemToBeDeleted, setItemToBeDeleted] = useState<string>();
-  const [isLoading, setIsLoading] = useState(false);
-  const [journalsData, setJournalsData] = useState<IJournalFetched[]>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const user = auth.currentUser!;
+
   useEffect(() => {
     const fetchData = () => {
-      setIsLoading(true);
+      console.log('fires');
+      dispatch({ type: 'START_LOADING' });
       const ref = db
         .collection('journals')
         .where('belongsTo', '==', user.uid)
@@ -75,8 +57,7 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
             isOpen: false,
           });
         });
-        setJournalsData(journalsDataArray);
-        setIsLoading(false);
+        dispatch({ type: 'SET_JOURNALS', payload: journalsDataArray });
       });
     };
 
@@ -107,22 +88,31 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
       });
   };
 
+  const onEdit = ({ id, content }: IJournalFetched) => {
+    navigation.navigate('JournalEdit', {
+      content: content,
+      id: id,
+    });
+  };
+
   const renderItem: ListRenderItem<IJournalFetched> = ({ item }) => {
+    const isOpen = state.openId === item.id;
     return (
       <>
         <SwipeableCard
-          onEdit={() =>
-            navigation.navigate('JournalEdit', {
-              content: item.content,
-              id: item.id,
-            })
-          }
+          onEdit={() => onEdit(item)}
           onDelete={() => openModal(item.id)}
+          enabled={!isOpen}
         >
           <JournalEntry
-            isOpen={openId === item.id}
+            isOpen={isOpen}
             item={item}
-            setOpenId={setOpenId}
+            setOpenId={() =>
+              dispatch({
+                type: 'SET_OPEN',
+                payload: isOpen ? undefined : item.id,
+              })
+            }
           />
         </SwipeableCard>
         <Divider />
@@ -139,10 +129,10 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
           paddingHorizontal: 30,
         }}
       >
-        {isLoading ? (
+        {state.isLoading ? (
           <Loader />
-        ) : journalsData && journalsData?.length > 0 ? (
-          <FlatList data={journalsData} renderItem={renderItem} />
+        ) : state.journals && state.journals?.length > 0 ? (
+          <FlatList data={state.journals} renderItem={renderItem} />
         ) : (
           <NoData />
         )}

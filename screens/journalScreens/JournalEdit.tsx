@@ -1,6 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useReducer } from 'react';
 import { db, auth } from '../../firebase';
 import { View, Keyboard } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -12,7 +12,7 @@ import {
 } from '../../components';
 import { JournalFormData } from '../../types';
 import { useNotifySuccess } from '../../hooks';
-
+import { initialJournalsState, journalsReducer } from '../../reducers';
 type JournalEditNavigationProp = StackNavigationProp<
   JournalStackParamList,
   'JournalEdit'
@@ -30,7 +30,6 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
   route,
 }) => {
   const { content, id } = route.params;
-  const { isActive, openSuccess, message } = useNotifySuccess();
   const [error, setHasError] = useState();
 
   const onSubmit = (data: JournalFormData) => {
@@ -44,8 +43,7 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
         { merge: true }
       )
       .then(() => {
-        Keyboard.dismiss();
-        openSuccess('Updated successfuly');
+        navigation.navigate('JournalEntries');
       })
       .catch((error) => {
         setHasError(error);
@@ -71,7 +69,6 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
         </View>
       </View>
       <ErrorNotification error={error} />
-      <SuccessNotification success={isActive} notificationText={message} />
     </>
   );
 };
