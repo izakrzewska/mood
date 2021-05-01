@@ -19,6 +19,7 @@ export {
   ChangeEmailForm,
   DeleteAccountForm,
   JournalForm,
+  RemindersForm,
 } from './forms';
 export { AuthNavigationBox } from './AuthNavigationBox/AuthNavigationBox';
 export { DeleteModal } from './DeleteModal/DeleteModal';

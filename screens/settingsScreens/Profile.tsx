@@ -11,6 +11,7 @@ import {
   ErrorNotification,
   MainButton,
   SuccessNotification,
+  RemindersForm,
 } from '../../components';
 import { auth, db } from '../../firebase';
 import { useNotifySuccess } from '../../hooks';
@@ -171,6 +172,11 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
       buttonText: 'Remove account',
       content: <DeleteAccountForm handleDelete={handleDelete} />,
     },
+    {
+      id: 'reminders',
+      buttonText: 'Reminders',
+      content: <RemindersForm />,
+    },
   ];
 
   return (
@@ -192,7 +198,7 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
           {accordionsData.map(({ id, buttonText, content }) => {
             const isAccordionOpen = id === state.openId;
             return (
-              <>
+              <View key={id}>
                 <List.Accordion
                   id={id}
                   title={buttonText}
@@ -207,7 +213,7 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
                   {content}
                 </List.Accordion>
                 <Divider />
-              </>
+              </View>
             );
           })}
         </View>
