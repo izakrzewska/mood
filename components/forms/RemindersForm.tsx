@@ -1,9 +1,11 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Constants from 'expo-constants';
-import React, { FC, useState } from 'react';
-import { Button, View } from 'react-native';
+import React, { FC, useState, useEffect } from 'react';
+import { Alert, Button, View, Linking } from 'react-native';
 import { Switch, Text } from 'react-native-paper';
 import { colors } from '../../themes';
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
 
 interface RemindersFormProps {}
 
@@ -16,9 +18,47 @@ export const RemindersForm: FC<RemindersFormProps> = ({}) => {
     setTime(currentTime);
   };
 
+  const onNotificationPress = () => {
+    Notifications.scheduleNotificationAsync({
+      trigger: {
+        seconds: 10,
+      },
+      content: {
+        title: 'Rate your mood',
+        body: 'Keep going',
+      },
+    });
+  };
+
   const onNotificationsToggle = () => {
-    setNotificationsEnabled(!notificationsEnabled);
-    // ask for permissions here
+    Permissions.getAsync(Permissions.NOTIFICATIONS)
+      .then((response) => {
+        if (response.status !== 'granted') {
+          return Permissions.askAsync(Permissions.NOTIFICATIONS);
+        }
+        return response;
+      })
+      .then((response) => {
+        if (response?.status !== 'granted') {
+          Alert.alert(
+            'Allow notifications',
+            'Enable notifications to be able to get reminders',
+            [
+              {
+                text: 'Close',
+                style: 'default',
+                onPress: () => console.log('elo'),
+              },
+              {
+                text: 'Open settings',
+                style: 'default',
+                onPress: () => Linking.openSettings(),
+              },
+            ]
+          );
+          return;
+        }
+      });
   };
 
   return (
@@ -39,6 +79,7 @@ export const RemindersForm: FC<RemindersFormProps> = ({}) => {
           onValueChange={onNotificationsToggle}
         />
       </View>
+      <Button title='local notification' onPress={onNotificationPress} />
       {notificationsEnabled && (
         <View>
           <Text>Rate mood reminder</Text>

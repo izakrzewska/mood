@@ -1,7 +1,11 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { LoginScreen, RegisterScreen, ResetPasswordScreen } from '../screens';
+import {
+  LoginScreen,
+  RegisterScreen,
+  ResetPasswordScreen,
+} from '../screens/userManagementScreens';
 import { forFade } from '../screens/utils';
 
 export type UserManagementStackParamList = {

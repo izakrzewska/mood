@@ -1,7 +1,7 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import firebase from 'firebase';
 import React, { FC, useReducer, useState } from 'react';
-import { Keyboard, ScrollView, View } from 'react-native';
+import { Keyboard, ScrollView } from 'react-native';
 import { Divider, List } from 'react-native-paper';
 import {
   ChangeEmailForm,
@@ -11,7 +11,6 @@ import {
   ErrorNotification,
   MainButton,
   SuccessNotification,
-  RemindersForm,
 } from '../../components';
 import { auth, db } from '../../firebase';
 import { useNotifySuccess } from '../../hooks';
@@ -23,17 +22,18 @@ import {
   EditUsernameFormData,
 } from '../../types';
 import { profileReducer, initialProfileState } from '../../reducers';
+import { View, Text } from 'react-native';
 
-type ProfileScreenNavigationProp = StackNavigationProp<
+type UserSettingsScreenNavigationProp = StackNavigationProp<
   SettingsStackParamList,
-  'Profile'
+  'UserSettings'
 >;
 
-type ProfileScreenProps = {
-  navigation: ProfileScreenNavigationProp;
+type UserSettingsScreenProps = {
+  navigation: UserSettingsScreenNavigationProp;
 };
 
-export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
+export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
   const [state, dispatch] = useReducer(profileReducer, initialProfileState);
   const [error, setError] = useState();
   const { message, isActive, openSuccess } = useNotifySuccess();
@@ -172,13 +172,7 @@ export const Profile: FC<ProfileScreenProps> = ({ navigation }) => {
       buttonText: 'Remove account',
       content: <DeleteAccountForm handleDelete={handleDelete} />,
     },
-    {
-      id: 'reminders',
-      buttonText: 'Reminders',
-      content: <RemindersForm />,
-    },
   ];
-
   return (
     <>
       <ScrollView>
