@@ -1,16 +1,16 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC, useState } from 'react';
-import { Keyboard, View } from 'react-native';
+import { View } from 'react-native';
 import {
   AuthNavigationBox,
   ErrorNotification,
   LoginForm,
   LoginImage,
 } from '../../components';
-import { auth } from '../../firebase';
 import { UserManagementStackParamList } from '../../navigation/UserManagementStack';
 import { LoginFormData, IError } from '../../types';
 import styles from './styles';
+import { logIn } from '../../services/userService';
 
 type LoginScreenNavigationProp = StackNavigationProp<
   UserManagementStackParamList,
@@ -25,13 +25,8 @@ export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
   const [error, setError] = useState<IError>();
 
   const onSubmit = (data: LoginFormData) => {
-    Keyboard.dismiss();
     const { email, password } = data;
-    auth
-      .signInWithEmailAndPassword(email.trim().toLowerCase(), password)
-      .catch((error) => {
-        setError(error);
-      });
+    logIn(email, password);
   };
 
   return (

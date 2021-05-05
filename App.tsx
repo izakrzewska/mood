@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { auth } from './firebase';
-import { Provider as PaperProvider, Snackbar, Text } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
-import { paperTheme, navigationTheme } from './themes';
+import React, { useState } from 'react';
+import { Provider as PaperProvider } from 'react-native-paper';
+import { auth } from './firebase';
 import { TabNavigation, UserManagementStack } from './navigation';
+import { navigationTheme, paperTheme } from './themes';
 
 export default function App() {
   const [signedIn, setSignedIn] = useState(false);

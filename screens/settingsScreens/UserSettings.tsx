@@ -1,8 +1,9 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import firebase from 'firebase';
-import React, { FC, useReducer, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Keyboard, ScrollView } from 'react-native';
 import { Divider, List } from 'react-native-paper';
+import { signOut } from '../../services/userService';
 import {
   ChangeEmailForm,
   ChangePasswordForm,
@@ -21,8 +22,7 @@ import {
   EditPasswordFormData,
   EditUsernameFormData,
 } from '../../types';
-import { profileReducer, initialProfileState } from '../../reducers';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 type UserSettingsScreenNavigationProp = StackNavigationProp<
   SettingsStackParamList,
@@ -34,15 +34,11 @@ type UserSettingsScreenProps = {
 };
 
 export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
-  const [state, dispatch] = useReducer(profileReducer, initialProfileState);
+  const [openId, setOpenId] = useState<string>();
   const [error, setError] = useState();
   const { message, isActive, openSuccess } = useNotifySuccess();
 
   const user = auth.currentUser!;
-
-  const onSignOut = () => {
-    auth.signOut();
-  };
 
   const getCredentials = (password: string) => {
     return firebase.auth.EmailAuthProvider.credential(user.email!, password);
@@ -56,16 +52,11 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
       })
       .then(() => {
         openSuccess('Username updated successfully');
+        setOpenId(undefined);
       })
       .catch((error) => {
         setError(error);
-      })
-      .finally(() =>
-        dispatch({
-          type: 'SET_OPEN',
-          payload: undefined,
-        })
-      );
+      });
   };
 
   const handleEmaileSave = (data: EditEmailFormData) => {
@@ -77,6 +68,7 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
           .updateEmail(data.email)
           .then(() => {
             openSuccess('E-mail updated successfully');
+            setOpenId(undefined);
           })
           .catch((error) => {
             setError(error);
@@ -84,13 +76,7 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
       })
       .catch((error) => {
         setError(error);
-      })
-      .finally(() =>
-        dispatch({
-          type: 'SET_OPEN',
-          payload: undefined,
-        })
-      );
+      });
   };
 
   const handlePasswordSave = (data: EditPasswordFormData) => {
@@ -102,6 +88,7 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
           .updatePassword(data.password)
           .then(() => {
             openSuccess('Password updated successfully');
+            setOpenId(undefined);
           })
           .catch((error) => {
             setError(error);
@@ -109,13 +96,7 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
       })
       .catch((error) => {
         setError(error);
-      })
-      .finally(() =>
-        dispatch({
-          type: 'SET_OPEN',
-          payload: undefined,
-        })
-      );
+      });
   };
 
   const removeData = async () => {
@@ -173,6 +154,7 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
       content: <DeleteAccountForm handleDelete={handleDelete} />,
     },
   ];
+
   return (
     <>
       <ScrollView>
@@ -185,24 +167,19 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
         >
           <MainButton
             mode='text'
-            onPress={onSignOut}
+            onPress={signOut}
             text='Sign out'
             extraStyles={{ marginLeft: 'auto', marginBottom: 15 }}
           />
           {accordionsData.map(({ id, buttonText, content }) => {
-            const isAccordionOpen = id === state.openId;
+            const isAccordionOpen = id === openId;
             return (
               <View key={id}>
                 <List.Accordion
                   id={id}
                   title={buttonText}
                   expanded={isAccordionOpen}
-                  onPress={() =>
-                    dispatch({
-                      type: 'SET_OPEN',
-                      payload: isAccordionOpen ? undefined : id,
-                    })
-                  }
+                  onPress={() => setOpenId(isAccordionOpen ? undefined : id)}
                 >
                   {content}
                 </List.Accordion>
