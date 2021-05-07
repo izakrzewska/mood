@@ -1,24 +1,22 @@
-import React, { FC, useState } from 'react';
-import { View } from 'react-native';
+import React, { FC } from 'react';
 import {
   VictoryAxis,
   VictoryBar,
   VictoryChart,
   VictoryTheme,
-  VictoryTooltip,
   VictoryZoomContainer,
 } from 'victory-native';
+import { Mood } from '../../screens/moodScreens/types';
 import { colors } from '../../themes';
-import { IMoodFetched } from '../../types';
 
 interface MoodChartProps {
-  moods?: IMoodFetched[];
+  moods?: Mood[];
 }
 
 export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
   const getChartData = (): any => {
     const groupedData = moods?.reduce((acc: any, item: any): any => {
-      const shortDate = item.date.toDate().toLocaleDateString();
+      const shortDate = item.createdAt.toDate().toLocaleDateString();
       if (!acc[shortDate]) {
         acc[shortDate] = [];
       }
@@ -39,13 +37,6 @@ export const MoodChart: FC<MoodChartProps> = ({ moods }) => {
     });
     return chartData;
   };
-
-  // const chartData = moods.map((mood) => {
-  //   return {
-  //     x: mood.date && mood.date.toDate().setHours(0, 0, 0, 0),
-  //     y: mood.value,
-  //   };
-  // });
 
   return (
     <VictoryChart

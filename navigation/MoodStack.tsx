@@ -14,7 +14,7 @@ export type MoodStackParamList = {
   MoodsStatistics: undefined;
   History: undefined;
   NewMood: undefined;
-  EditMoodDetails: { moodId: string; value: number };
+  EditMoodDetails: { id: string };
 };
 
 export const MoodStack = () => {

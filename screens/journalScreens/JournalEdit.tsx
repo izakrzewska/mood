@@ -5,8 +5,8 @@ import { JournalForm, Loader } from '../../components';
 import {
   JournalEditScreenNavigationProps,
   JournalEditScreenRouteProp,
-  JournalFormDataType,
-  JournalType,
+  JournalFormData,
+  Journal,
 } from './types';
 
 type JournalEditScreenProps = {
@@ -27,11 +27,11 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
     .collection('journals')
     .doc(id);
 
-  const { status, data: journal } = useFirestoreDocData<JournalType>(
+  const { status, data: journal } = useFirestoreDocData<Journal>(
     editedJournalRef
   );
 
-  const onSubmit = (data: JournalFormDataType) => {
+  const editJournal = (data: JournalFormData) => {
     editedJournalRef.set(
       {
         content: data.content,
@@ -56,7 +56,7 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
     >
       <View style={{ flex: 1 }}>
         <JournalForm
-          onSubmit={onSubmit}
+          onSubmit={editJournal}
           defaultValues={{ content: journal.content, title: journal.title }}
         />
       </View>

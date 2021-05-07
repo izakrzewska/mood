@@ -2,10 +2,10 @@ import React, { FC } from 'react';
 import { View } from 'react-native';
 import { List, Text, useTheme } from 'react-native-paper';
 import { useFormatDate } from '../../hooks';
-import { JournalType } from '../../screens/journalScreens/types';
+import { Journal } from '../../screens/journalScreens/types';
 
 interface JournalEntryProps {
-  item: JournalType;
+  item: Journal;
   isOpen: boolean;
   setOpenId: any;
 }

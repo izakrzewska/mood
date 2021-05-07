@@ -11,12 +11,12 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../themes';
-import { JournalFormDataType } from '../../screens/journalScreens/types';
+import { JournalFormData } from '../../screens/journalScreens/types';
 import { MainButton } from '../MainButton/MainButton';
 import { FormError } from './components';
 import { useWindowDimensions } from 'react-native';
 interface JournalFormProps {
-  onSubmit: (data: JournalFormDataType) => void;
+  onSubmit: (data: JournalFormData) => void;
   defaultValues?: { content?: string; title?: string };
 }
 
@@ -31,9 +31,7 @@ export const JournalForm: FC<JournalFormProps> = ({
     windowHeight
   );
 
-  const { control, handleSubmit, errors, setValue } = useForm<
-    JournalFormDataType
-  >({
+  const { control, handleSubmit, errors, setValue } = useForm<JournalFormData>({
     reValidateMode: 'onChange',
   });
 

@@ -1,18 +1,10 @@
-import { useIsFocused } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC } from 'react';
 import { TouchableWithoutFeedback, View } from 'react-native';
 import { Text } from 'react-native-paper';
+import { useFirestore, useFirestoreCollectionData, useUser } from 'reactfire';
 import { AddDataImage, Loader, MainButton, MoodChart } from '../../components';
-import { auth } from '../../firebase';
-import { useGetMoods } from '../../hooks';
-import { MoodStackParamList } from '../../navigation/MoodStack';
 import styles from './styles';
-
-type MoodStatisticsScreenNavigationProp = StackNavigationProp<
-  MoodStackParamList,
-  'MoodsStatistics'
->;
+import { Mood, MoodStatisticsScreenNavigationProp } from './types';
 
 type MoodStatisticsScreenProps = {
   navigation: MoodStatisticsScreenNavigationProp;
@@ -21,9 +13,15 @@ type MoodStatisticsScreenProps = {
 export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
   navigation,
 }) => {
-  const isFocused = useIsFocused();
-  const user = auth.currentUser!;
-  const { moodsData, isLoading } = useGetMoods(isFocused, 'asc');
+  const { data: user } = useUser();
+  const userMoodsRef = useFirestore()
+    .collection('users')
+    .doc(user.uid)
+    .collection('moods');
+
+  const { status, data: moods } = useFirestoreCollectionData<Mood>(
+    userMoodsRef
+  );
 
   const showHistory = () => {
     navigation.push('History');
@@ -58,7 +56,7 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
         extraStyles={styles.historyButton}
       />
       <View style={styles.moodChartContainer}>
-        <MoodChart moods={moodsData} />
+        <MoodChart moods={moods} />
       </View>
       <View style={styles.rateMoodButtonContainer}>
         <MainButton
@@ -70,11 +68,9 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
     </View>
   );
 
-  return isLoading ? (
-    <Loader />
-  ) : moodsData && moodsData?.length > 0 ? (
-    moodsContent
-  ) : (
-    noMoodsContent
-  );
+  if (status === 'loading') {
+    return <Loader />;
+  }
+
+  return moods.length ? moodsContent : noMoodsContent;
 };

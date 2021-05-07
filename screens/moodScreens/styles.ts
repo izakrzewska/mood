@@ -1,7 +1,22 @@
 import { StyleSheet } from 'react-native';
-import Constants from 'expo-constants';
 
 const styles = StyleSheet.create({
+  historyScreenContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+  },
+  card: {
+    marginVertical: 20,
+    marginHorizontal: 5,
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    width: '80%',
+    alignSelf: 'center',
+  },
+  valueContainer: {
+    marginEnd: 20,
+    justifyContent: 'center',
+  },
   staticticsScreenContainer: {
     flex: 1,
     paddingVertical: 20,

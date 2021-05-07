@@ -1,23 +1,16 @@
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { FC, useState } from 'react';
-import { Keyboard, Text, View } from 'react-native';
+import React, { FC } from 'react';
+import { Keyboard, View } from 'react-native';
 import {
   AuthNavigationBox,
-  ErrorNotification,
   ForgotPasswordImage,
   ResetPasswordForm,
-  SuccessNotification,
 } from '../../components';
-import { auth } from '../../firebase';
-import { UserManagementStackParamList } from '../../navigation/UserManagementStack';
-import { ResetPasswordFormData, IError } from '../../types';
 import styles from './styles';
-import { useNotifySuccess } from '../../hooks';
-
-type ResetPasswordScreenNavigationProp = StackNavigationProp<
-  UserManagementStackParamList,
-  'ResetPassword'
->;
+import {
+  ResetPasswordScreenNavigationProp,
+  ResetPasswordFormData,
+} from './types';
+import { useAuth } from 'reactfire';
 
 type RegisterScreenProps = {
   navigation: ResetPasswordScreenNavigationProp;
@@ -26,38 +19,28 @@ type RegisterScreenProps = {
 export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
   navigation,
 }) => {
-  const [error, setError] = useState<IError>();
-  const { openSuccess, isActive, message } = useNotifySuccess();
-
-  const onSubmit = (data: ResetPasswordFormData) => {
+  const auth = useAuth();
+  const onSubmit = async (data: ResetPasswordFormData) => {
     Keyboard.dismiss();
     const { email } = data;
-
-    auth
-      .sendPasswordResetEmail(email.trim().toLowerCase())
-      .then(() => {
-        openSuccess('Reset password link sent. Check your inbox to proceed.');
-      })
-      .catch((error) => {
-        setError(error);
-      });
+    try {
+      await auth.sendPasswordResetEmail(email.trim().toLowerCase());
+    } catch (error) {
+      console.log('error');
+    }
   };
 
   return (
-    <>
-      <View style={styles.authFormContainer}>
-        <ResetPasswordForm onSubmit={onSubmit} />
-        <View style={styles.imageContainer}>
-          <ForgotPasswordImage />
-        </View>
-        <AuthNavigationBox
-          questionText='Back to login page?'
-          buttonText='Sign in'
-          onButtonPress={() => navigation.navigate('Login')}
-        />
+    <View style={styles.authFormContainer}>
+      <ResetPasswordForm onSubmit={onSubmit} />
+      <View style={styles.imageContainer}>
+        <ForgotPasswordImage />
       </View>
-      <ErrorNotification error={error} />
-      <SuccessNotification success={isActive} notificationText={message} />
-    </>
+      <AuthNavigationBox
+        questionText='Back to login page?'
+        buttonText='Sign in'
+        onButtonPress={() => navigation.navigate('Login')}
+      />
+    </View>
   );
 };

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { useFirestore, useUser } from 'reactfire';
 import { JournalForm } from '../../components';
 import {
-  JournalFormDataType,
+  JournalFormData,
   NewJournalScreenNavigationProps,
 } from '../../screens/journalScreens/types';
 
@@ -18,7 +18,7 @@ export const NewJournal: FC<NewJournalScreenProps> = ({ navigation }) => {
     .doc(user.uid)
     .collection('journals');
 
-  const addJournal = async (data: JournalFormDataType) => {
+  const addJournal = async (data: JournalFormData) => {
     try {
       const journalData = {
         title: data.title,

@@ -1,45 +1,36 @@
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { View } from 'react-native';
-import { ErrorNotification, MoodForm } from '../../components';
-import { auth, db } from '../../firebase';
-import { MoodStackParamList } from '../../navigation/MoodStack';
-import { IError, MoodFormData } from '../../types';
-
-type NewMoodScreenNavigationProp = StackNavigationProp<
-  MoodStackParamList,
-  'NewMood'
->;
+import { MoodForm } from '../../components';
+import { MoodFormData, NewMoodScreenNavigationProp } from './types';
+import { useUser, useFirestore } from 'reactfire';
 
 type NewMoodScreenProps = {
   navigation: NewMoodScreenNavigationProp;
 };
 
 export const NewMood: FC<NewMoodScreenProps> = ({ navigation }) => {
-  const [error, setError] = useState<IError>();
-  const onSubmit = async (data: MoodFormData) => {
-    const user = auth.currentUser!;
+  const { data: user } = useUser();
+  const userMoodsRef = useFirestore()
+    .collection('users')
+    .doc(user.uid)
+    .collection('moods');
 
+  const addMood = async (data: MoodFormData) => {
     try {
       const moodData = {
         value: Number(data.value),
-        belongsTo: user.uid,
         createdAt: new Date(),
       };
-      const ref = db.collection('moods');
-      await ref.add(moodData);
-      navigation.push('MoodsStatistics');
+      await userMoodsRef.add(moodData);
+      navigation.navigate('MoodsStatistics');
     } catch (error) {
-      setError(error);
+      console.log('error', error);
     }
   };
 
   return (
-    <>
-      <View style={{ flex: 1 }}>
-        <MoodForm onSubmit={onSubmit} />
-      </View>
-      <ErrorNotification error={error} />
-    </>
+    <View style={{ flex: 1 }}>
+      <MoodForm onSubmit={addMood} />
+    </View>
   );
 };

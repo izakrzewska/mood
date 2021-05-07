@@ -5,14 +5,14 @@ import { JournalStackParamList } from '../../navigation/JournalStack';
 
 import { TabParamList } from '../../navigation/TabNavigation';
 
-export type JournalType = {
+export type Journal = {
   NO_ID_FIELD: string;
   content: string;
   title: string;
   createdAt: any; // TODO: change type
 };
 
-export type JournalFormDataType = {
+export type JournalFormData = {
   title: string;
   content: string;
 };
@@ -32,6 +32,7 @@ export type JournalEditScreenRouteProp = RouteProp<
   JournalStackParamList,
   'JournalEdit'
 >;
+
 export type JournalEditScreenNavigationProps = CompositeNavigationProp<
   StackNavigationProp<JournalStackParamList, 'JournalEdit'>,
   BottomTabNavigationProp<TabParamList>

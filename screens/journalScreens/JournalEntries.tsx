@@ -10,7 +10,7 @@ import {
   NoData,
   SwipeableCard,
 } from '../../components';
-import { JournalEntriesScreenNavigationProps, JournalType } from './types';
+import { JournalEntriesScreenNavigationProps, Journal } from './types';
 
 type JournalEntriesScreenProps = {
   navigation: JournalEntriesScreenNavigationProps;
@@ -27,7 +27,7 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
     .collection('users')
     .doc(user.uid)
     .collection('journals');
-  const { status, data: journals } = useFirestoreCollectionData<JournalType>(
+  const { status, data: journals } = useFirestoreCollectionData<Journal>(
     userJournalsRef
   );
 
@@ -40,8 +40,12 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
     setItemToBeDeleted(journalId);
   };
 
-  const onEntryDelete = async () => {
-    await userJournalsRef.doc(itemToBeDeleted).delete();
+  const onJournalDelete = async () => {
+    try {
+      await userJournalsRef.doc(itemToBeDeleted).delete();
+    } catch (error) {
+      console.log('error');
+    }
     setIsModalVisible(false);
   };
 
@@ -51,7 +55,7 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
     });
   };
 
-  const renderItem: ListRenderItem<JournalType> = ({ item }) => {
+  const renderItem: ListRenderItem<Journal> = ({ item }) => {
     const isOpen = openId === item.NO_ID_FIELD;
     return (
       <>
@@ -84,7 +88,7 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
           paddingHorizontal: 30,
         }}
       >
-        {journals?.length > 0 ? (
+        {journals.length ? (
           <FlatList
             data={journals}
             keyExtractor={(item) => item.NO_ID_FIELD}
@@ -106,7 +110,7 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
       <DeleteModal
         isModalVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        onDelete={onEntryDelete}
+        onDelete={onJournalDelete}
       />
     </>
   );

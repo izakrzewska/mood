@@ -17,10 +17,6 @@ export interface RegisterFormData extends LoginFormData {
   passwordConf: string;
 }
 
-export interface MoodFormData {
-  value: number;
-}
-
 export interface EditEmailFormData {
   email: string;
   password: string;

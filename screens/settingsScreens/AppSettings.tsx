@@ -1,12 +1,11 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
-import React, { FC, useState, useEffect } from 'react';
-import { Alert, Button, Linking, ScrollView, View } from 'react-native';
-import { Switch, Text, List, Divider, Chip } from 'react-native-paper';
-import { colors } from '../../themes';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { SettingsStackParamList } from '../../navigation/SettingsStack';
+import React, { FC, useEffect, useState } from 'react';
+import { Button, ScrollView, View } from 'react-native';
+import { Divider, List } from 'react-native-paper';
 import { Reminders } from '../../components';
+import { SettingsStackParamList } from '../../navigation/SettingsStack';
 
 type AppSettingsScreenNavigationProp = StackNavigationProp<
   SettingsStackParamList,
