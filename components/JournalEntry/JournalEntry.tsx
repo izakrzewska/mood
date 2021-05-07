@@ -37,13 +37,6 @@ export const JournalEntry: FC<JournalEntryProps> = ({
         <View style={{ marginBottom: 20 }}>
           <Text>{item.content}</Text>
         </View>
-        <View>
-          <IconButton
-            style={{ alignSelf: 'flex-end' }}
-            icon='pencil'
-            color={colors.primary}
-          />
-        </View>
       </View>
     </List.Accordion>
   );

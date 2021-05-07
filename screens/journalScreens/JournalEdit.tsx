@@ -1,18 +1,15 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
-import React, { FC, useState, useReducer } from 'react';
-import { db, auth } from '../../firebase';
-import { View, Keyboard } from 'react-native';
-import { Text } from 'react-native-paper';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { FC, useState } from 'react';
+import { View } from 'react-native';
+import { ErrorNotification, JournalForm } from '../../components';
+import { db } from '../../firebase';
 import { JournalStackParamList } from '../../navigation/JournalStack';
-import {
-  ErrorNotification,
-  JournalForm,
-  SuccessNotification,
-} from '../../components';
 import { JournalFormData } from '../../types';
-import { useNotifySuccess } from '../../hooks';
-import { initialJournalsState, journalsReducer } from '../../reducers';
+import {
+  editJournal,
+  useJournals,
+} from '../../contexts/journals/journalsContext';
 type JournalEditNavigationProp = StackNavigationProp<
   JournalStackParamList,
   'JournalEdit'
@@ -30,26 +27,12 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
   route,
 }) => {
   const { content, id } = route.params;
+  const { state, dispatch } = useJournals();
   const [error, setHasError] = useState();
 
   const onSubmit = (data: JournalFormData) => {
-    const ref = db.collection('journals').doc(id);
-
-    ref
-      .set(
-        {
-          content: data.content,
-        },
-        { merge: true }
-      )
-      .then(() => {
-        navigation.navigate('JournalEntries');
-      })
-      .catch((error) => {
-        setHasError(error);
-      });
-
-    return () => {};
+    editJournal(data, id, dispatch);
+    navigation.navigate('JournalEntries');
   };
 
   return (

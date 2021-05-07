@@ -1,7 +1,6 @@
-import { useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC, useEffect, useReducer, useState } from 'react';
-import { FlatList, ListRenderItem, View } from 'react-native';
+import { FlatList, ListRenderItem, View, Text } from 'react-native';
 import { Divider } from 'react-native-paper';
 import {
   DeleteModal,
@@ -13,11 +12,15 @@ import {
   SuccessNotification,
   SwipeableCard,
 } from '../../components';
-import { auth, db } from '../../firebase';
+import { db } from '../../firebase';
 import { useNotifySuccess } from '../../hooks';
 import { JournalStackParamList } from '../../navigation/JournalStack';
-import { initialJournalsState, journalsReducer } from '../../reducers';
 import { IError, IJournalFetched } from '../../types';
+import {
+  useJournals,
+  fetchJournals,
+  deleteJournal,
+} from '../../contexts/journals/journalsContext';
 
 type JournalEntriesNavigationProp = StackNavigationProp<
   JournalStackParamList,
@@ -32,38 +35,14 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
   navigation,
 }) => {
   const { openSuccess, isActive, message } = useNotifySuccess();
-  const [state, dispatch] = useReducer(journalsReducer, initialJournalsState);
-  const isFocused = useIsFocused();
   const [error, setError] = useState<IError>();
   const [itemToBeDeleted, setItemToBeDeleted] = useState<string>();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const user = auth.currentUser!;
+  const { state: journalsState, dispatch: journalsDispatch } = useJournals();
 
   useEffect(() => {
-    const fetchData = () => {
-      dispatch({ type: 'START_LOADING' });
-      const ref = db
-        .collection('journals')
-        .where('belongsTo', '==', user.uid)
-        .orderBy('createdAt', 'desc');
-      ref.onSnapshot((query) => {
-        const journalsDataArray: any = [];
-        query.forEach((doc) => {
-          journalsDataArray.push({
-            id: doc.id,
-            date: doc.data().createdAt,
-            content: doc.data().content,
-            isOpen: false,
-          });
-        });
-        dispatch({ type: 'SET_JOURNALS', payload: journalsDataArray });
-      });
-    };
-
-    if (isFocused) {
-      fetchData();
-    }
-  }, [isFocused]);
+    fetchJournals(journalsDispatch);
+  }, []);
 
   const onNewEntry = () => {
     navigation.push('NewJournal');
@@ -75,16 +54,7 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
   };
 
   const onEntryDelete = () => {
-    const ref = db.collection('journals').doc(itemToBeDeleted);
-    ref
-      .delete()
-      .then(() => {
-        setIsModalVisible(false);
-        openSuccess('Deleted successfuly');
-      })
-      .catch((error) => {
-        setError(error);
-      });
+    deleteJournal(itemToBeDeleted as string, journalsDispatch);
   };
 
   const onEdit = ({ id, content }: IJournalFetched) => {
@@ -95,7 +65,7 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
   };
 
   const renderItem: ListRenderItem<IJournalFetched> = ({ item }) => {
-    const isOpen = state.openId === item.id;
+    const isOpen = journalsState.openId === item.id;
     return (
       <>
         <SwipeableCard
@@ -107,9 +77,9 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
             isOpen={isOpen}
             item={item}
             setOpenId={() =>
-              dispatch({
-                type: 'SET_OPEN',
-                payload: isOpen ? undefined : item.id,
+              journalsDispatch({
+                type: 'SET_OPEN_ID',
+                pyaload: isOpen ? undefined : item.id,
               })
             }
           />
@@ -128,22 +98,27 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
           paddingHorizontal: 30,
         }}
       >
-        {state.isLoading ? (
+        {journalsState.isLoading ? (
           <Loader />
-        ) : state.journals && state.journals?.length > 0 ? (
-          <FlatList data={state.journals} renderItem={renderItem} />
         ) : (
-          <NoData />
+          <>
+            {journalsState.journals && journalsState.journals?.length > 0 ? (
+              <FlatList data={journalsState.journals} renderItem={renderItem} />
+            ) : (
+              <NoData />
+            )}
+
+            <MainButton
+              mode='outlined'
+              text='New entry'
+              onPress={onNewEntry}
+              extraStyles={{
+                marginTop: 25,
+                marginHorizontal: 30,
+              }}
+            />
+          </>
         )}
-        <MainButton
-          mode='outlined'
-          text='New entry'
-          onPress={onNewEntry}
-          extraStyles={{
-            marginTop: 25,
-            marginHorizontal: 30,
-          }}
-        />
       </View>
       <DeleteModal
         isModalVisible={isModalVisible}
