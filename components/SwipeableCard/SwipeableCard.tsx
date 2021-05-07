@@ -5,8 +5,8 @@ import { Divider } from 'react-native-paper';
 import { MainButton } from '../MainButton/MainButton';
 
 interface SwipeableCardProps {
-  onEdit: any;
-  onDelete: any;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
   enabled?: boolean;
 }
 

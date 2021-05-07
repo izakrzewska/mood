@@ -1,13 +1,11 @@
 import React, { FC } from 'react';
 import { View } from 'react-native';
-import { List, Text, Avatar, useTheme, IconButton } from 'react-native-paper';
-import { IJournalFetched } from '../../types';
+import { List, Text, useTheme } from 'react-native-paper';
 import { useFormatDate } from '../../hooks';
-import { MainButton } from '../MainButton/MainButton';
-import { Icon } from 'react-native-paper/lib/typescript/components/Avatar/Avatar';
+import { JournalType } from '../../screens/journalScreens/types';
 
 interface JournalEntryProps {
-  item: IJournalFetched;
+  item: JournalType;
   isOpen: boolean;
   setOpenId: any;
 }
@@ -17,14 +15,14 @@ export const JournalEntry: FC<JournalEntryProps> = ({
   isOpen,
   setOpenId,
 }) => {
-  const { formattedDate, formattedTime } = useFormatDate(item.date);
+  const { formattedDate, formattedTime } = useFormatDate(item.createdAt);
   const { colors } = useTheme();
 
   return (
     <List.Accordion
-      title=''
+      title={item.title}
       expanded={isOpen}
-      onPress={() => setOpenId(isOpen ? undefined : item.id)}
+      onPress={() => setOpenId(isOpen ? undefined : item.NO_ID_FIELD)}
       description={`${formattedDate}, ${formattedTime}`}
       style={{ backgroundColor: colors.background }}
     >

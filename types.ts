@@ -21,10 +21,6 @@ export interface MoodFormData {
   value: number;
 }
 
-export interface JournalFormData {
-  content: string;
-}
-
 export interface EditEmailFormData {
   email: string;
   password: string;
@@ -51,11 +47,4 @@ export interface Mood {
 export interface IError {
   code: string;
   message: string;
-}
-
-export interface IJournalFetched {
-  images: JSX.Element;
-  content: string;
-  id: string;
-  date: any;
 }

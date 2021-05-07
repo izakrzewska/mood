@@ -1,28 +1,35 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC } from 'react';
 import { View } from 'react-native';
-import { JournalForm, Loader } from '../../components';
+import { useFirestore, useUser } from 'reactfire';
+import { JournalForm } from '../../components';
 import {
-  addJournal,
-  useJournals,
-} from '../../contexts/journals/journalsContext';
-import { JournalStackParamList } from '../../navigation/JournalStack';
-import { JournalFormData } from '../../types';
-
-type NewJournalNavigationProp = StackNavigationProp<
-  JournalStackParamList,
-  'NewJournal'
->;
+  JournalFormDataType,
+  NewJournalScreenNavigationProps,
+} from '../../screens/journalScreens/types';
 
 type NewJournalScreenProps = {
-  navigation: NewJournalNavigationProp;
+  navigation: NewJournalScreenNavigationProps;
 };
 
 export const NewJournal: FC<NewJournalScreenProps> = ({ navigation }) => {
-  const { state, dispatch } = useJournals();
-  const onSubmit = (data: JournalFormData) => {
-    addJournal(data, dispatch);
-    navigation.navigate('JournalEntries');
+  const { data: user } = useUser();
+  const userJournalsRef = useFirestore()
+    .collection('users')
+    .doc(user.uid)
+    .collection('journals');
+
+  const addJournal = async (data: JournalFormDataType) => {
+    try {
+      const journalData = {
+        title: data.title,
+        content: data.content,
+        createdAt: new Date(),
+      };
+      await userJournalsRef.add(journalData);
+      navigation.navigate('JournalEntries');
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   return (
@@ -33,7 +40,7 @@ export const NewJournal: FC<NewJournalScreenProps> = ({ navigation }) => {
         paddingHorizontal: 30,
       }}
     >
-      {state.isLoading ? <Loader /> : <JournalForm onSubmit={onSubmit} />}
+      <JournalForm onSubmit={addJournal} />
     </View>
   );
 };

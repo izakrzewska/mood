@@ -1,57 +1,65 @@
-import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { View } from 'react-native';
-import { ErrorNotification, JournalForm } from '../../components';
-import { db } from '../../firebase';
-import { JournalStackParamList } from '../../navigation/JournalStack';
-import { JournalFormData } from '../../types';
+import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
+import { JournalForm, Loader } from '../../components';
 import {
-  editJournal,
-  useJournals,
-} from '../../contexts/journals/journalsContext';
-type JournalEditNavigationProp = StackNavigationProp<
-  JournalStackParamList,
-  'JournalEdit'
->;
-
-type JournalDetailsRouteProp = RouteProp<JournalStackParamList, 'JournalEdit'>;
+  JournalEditScreenNavigationProps,
+  JournalEditScreenRouteProp,
+  JournalFormDataType,
+  JournalType,
+} from './types';
 
 type JournalEditScreenProps = {
-  navigation: JournalEditNavigationProp;
-  route: JournalDetailsRouteProp;
+  navigation: JournalEditScreenNavigationProps;
+  route: JournalEditScreenRouteProp;
 };
 
 export const JournalEdit: FC<JournalEditScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { content, id } = route.params;
-  const { state, dispatch } = useJournals();
-  const [error, setHasError] = useState();
+  const { id } = route.params;
+  const { data: user } = useUser();
 
-  const onSubmit = (data: JournalFormData) => {
-    editJournal(data, id, dispatch);
+  const editedJournalRef = useFirestore()
+    .collection('users')
+    .doc(user.uid)
+    .collection('journals')
+    .doc(id);
+
+  const { status, data: journal } = useFirestoreDocData<JournalType>(
+    editedJournalRef
+  );
+
+  const onSubmit = (data: JournalFormDataType) => {
+    editedJournalRef.set(
+      {
+        content: data.content,
+        title: data.title,
+      },
+      { merge: true }
+    );
     navigation.navigate('JournalEntries');
   };
 
+  if (status === 'loading') {
+    return <Loader />;
+  }
+
   return (
-    <>
-      <View
-        style={{
-          flex: 1,
-          paddingVertical: 20,
-          paddingHorizontal: 30,
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <JournalForm
-            onSubmit={onSubmit}
-            defaultValues={{ content: content }}
-          />
-        </View>
+    <View
+      style={{
+        flex: 1,
+        paddingVertical: 20,
+        paddingHorizontal: 30,
+      }}
+    >
+      <View style={{ flex: 1 }}>
+        <JournalForm
+          onSubmit={onSubmit}
+          defaultValues={{ content: journal.content, title: journal.title }}
+        />
       </View>
-      <ErrorNotification error={error} />
-    </>
+    </View>
   );
 };

@@ -12,7 +12,6 @@ export type JournalStackParamList = {
   JournalEntries: undefined;
   NewJournal: undefined;
   JournalEdit: {
-    content: string;
     id: string;
   };
 };

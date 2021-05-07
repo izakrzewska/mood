@@ -11,13 +11,13 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../themes';
-import { JournalFormData } from '../../types';
+import { JournalFormDataType } from '../../screens/journalScreens/types';
 import { MainButton } from '../MainButton/MainButton';
 import { FormError } from './components';
 import { useWindowDimensions } from 'react-native';
 interface JournalFormProps {
-  onSubmit: (data: JournalFormData) => void;
-  defaultValues?: { content?: string };
+  onSubmit: (data: JournalFormDataType) => void;
+  defaultValues?: { content?: string; title?: string };
 }
 
 export const JournalForm: FC<JournalFormProps> = ({
@@ -31,7 +31,9 @@ export const JournalForm: FC<JournalFormProps> = ({
     windowHeight
   );
 
-  const { control, handleSubmit, errors, setValue } = useForm<JournalFormData>({
+  const { control, handleSubmit, errors, setValue } = useForm<
+    JournalFormDataType
+  >({
     reValidateMode: 'onChange',
   });
 
@@ -67,6 +69,24 @@ export const JournalForm: FC<JournalFormProps> = ({
           flex: 1,
         }}
       >
+        <Controller
+          control={control}
+          render={({ onChange, onBlur, value }) => (
+            <TextInput
+              label='Title'
+              mode='outlined'
+              onBlur={onBlur}
+              onChangeText={(value) => onChange(value)}
+              value={value}
+            />
+          )}
+          name='title'
+          rules={{
+            required: { value: true, message: 'This field is required' },
+          }}
+          defaultValue={defaultValues ? defaultValues.title : ''}
+        />
+        <FormError error={errors.title} />
         <Controller
           control={control}
           render={({ onChange, onBlur, value }) => (
