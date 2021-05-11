@@ -31,10 +31,8 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
     navigation.push('NewMood');
   };
 
-  const greeting = <Text>{`Hello, ${user.displayName}`}</Text>;
   const noMoodsContent = (
     <View style={styles.noStatisticsContainer}>
-      <View style={{ marginBottom: 50 }}>{greeting}</View>
       <TouchableWithoutFeedback onPress={onNewMoodPress}>
         <AddDataImage />
       </TouchableWithoutFeedback>
@@ -72,5 +70,9 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
     return <Loader />;
   }
 
-  return moods.length ? moodsContent : noMoodsContent;
+  return (
+    <View style={{ flex: 1 }}>
+      {moods.length ? moodsContent : noMoodsContent}
+    </View>
+  );
 };

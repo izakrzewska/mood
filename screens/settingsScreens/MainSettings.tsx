@@ -1,15 +1,8 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import React, { FC } from 'react';
 import { View } from 'react-native';
 import { List } from 'react-native-paper';
 import { colors } from '../../themes';
-import { SettingsStackParamList } from '../../navigation/SettingsStack';
-import { color } from 'react-native-reanimated';
-
-type MainSettingsScreenNavigationProp = StackNavigationProp<
-  SettingsStackParamList,
-  'MainSettings'
->;
+import { MainSettingsScreenNavigationProp } from './types';
 
 type MainSettingsScreenProps = {
   navigation: MainSettingsScreenNavigationProp;

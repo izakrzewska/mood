@@ -1,16 +1,10 @@
-import { StackNavigationProp } from '@react-navigation/stack';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import React, { FC, useEffect, useState } from 'react';
 import { Button, ScrollView, View } from 'react-native';
 import { Divider, List } from 'react-native-paper';
 import { Reminders } from '../../components';
-import { SettingsStackParamList } from '../../navigation/SettingsStack';
-
-type AppSettingsScreenNavigationProp = StackNavigationProp<
-  SettingsStackParamList,
-  'AppSettings'
->;
+import { AppSettingsScreenNavigationProp } from './types';
 
 type AppSettingsScreenProps = {
   navigation: AppSettingsScreenNavigationProp;
@@ -52,8 +46,8 @@ export const AppSettings: FC<AppSettingsScreenProps> = ({ navigation }) => {
       buttonText: 'Reminders',
       content: (
         <View>
-          <Reminders title='Journal' />
-          <Reminders title='Mood' />
+          <Reminders title='Journal' id='journals' />
+          <Reminders title='Mood' id='moods' />
         </View>
       ),
     },

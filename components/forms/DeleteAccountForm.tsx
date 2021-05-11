@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
-import { auth } from '../../firebase';
 import { DeleteAccountFormData } from '../../types';
 import { MainButton } from '../MainButton/MainButton';
 import { PasswordController } from './components';
@@ -13,7 +12,6 @@ interface DeleteAccountFormProps {
 export const DeleteAccountForm: FC<DeleteAccountFormProps> = ({
   handleDelete,
 }) => {
-  const user = auth.currentUser!;
   const { handleSubmit, errors, control } = useForm<DeleteAccountFormData>();
   return (
     <View>

@@ -1,19 +1,17 @@
-import { NavigationContainer } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { Provider as PaperProvider } from 'react-native-paper';
-import { auth } from './firebase';
-import { TabNavigation, UserManagementStack } from './navigation';
-import { navigationTheme, paperTheme } from './themes';
-
 import {
   API_KEY,
+  APP_ID,
   AUTH_DOMAIN,
+  MESSAGING_SENDER_ID,
   PROJECT_ID,
   STORAGE_BUCKET,
-  MESSAGING_SENDER_ID,
-  APP_ID,
 } from '@env';
-import { FirebaseAppProvider } from 'reactfire';
+import { NavigationContainer } from '@react-navigation/native';
+import React from 'react';
+import { Provider as PaperProvider } from 'react-native-paper';
+import { AuthCheck, FirebaseAppProvider } from 'reactfire';
+import { TabNavigation, UserManagementStack } from './navigation';
+import { navigationTheme, paperTheme } from './themes';
 
 const firebaseConfig = {
   apiKey: API_KEY,
@@ -25,21 +23,13 @@ const firebaseConfig = {
 };
 
 export default function App() {
-  const [signedIn, setSignedIn] = useState(false);
-
-  auth.onAuthStateChanged((user: any) => {
-    if (user) {
-      setSignedIn(true);
-    } else {
-      setSignedIn(false);
-    }
-  });
-
   return (
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
       <PaperProvider theme={paperTheme}>
         <NavigationContainer theme={navigationTheme}>
-          {signedIn ? <TabNavigation /> : <UserManagementStack />}
+          <AuthCheck fallback={<UserManagementStack />}>
+            <TabNavigation />
+          </AuthCheck>
         </NavigationContainer>
       </PaperProvider>
     </FirebaseAppProvider>

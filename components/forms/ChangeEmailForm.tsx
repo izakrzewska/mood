@@ -3,23 +3,23 @@ import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import { EditEmailFormData } from '../../types';
 import { EmailController, PasswordController } from './components';
-import { auth } from '../../firebase';
 import { MainButton } from '../MainButton/MainButton';
 
 interface ChangeEmailFormProps {
+  email: string;
   handleEmailSave: (data: EditEmailFormData) => void;
 }
 
 export const ChangeEmailForm: FC<ChangeEmailFormProps> = ({
   handleEmailSave,
+  email,
 }) => {
-  const user = auth.currentUser!;
   const { handleSubmit, errors, control } = useForm<EditEmailFormData>();
   return (
     <View>
       <EmailController
         control={control}
-        defaultValue={user.email!}
+        defaultValue={email!}
         error={errors.email}
       />
       <PasswordController

@@ -1,44 +1,45 @@
-import React, { FC, useState, useEffect } from 'react';
-import { View, Button, Alert, Linking } from 'react-native';
-import { Text, Chip, Switch } from 'react-native-paper';
-import { auth, db } from '../../firebase';
-import { colors } from '../../themes';
-import * as Notifications from 'expo-notifications';
-import { ErrorNotification } from '../ErrorNotification/ErrorNotification';
-import * as Permissions from 'expo-permissions';
-import { IError } from '../../types';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import * as Permissions from 'expo-permissions';
+import React, { FC, useEffect, useState } from 'react';
+import { Alert, Linking, View } from 'react-native';
+import { Switch, Text } from 'react-native-paper';
+import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
+import { colors } from '../../themes';
 
 interface RemindersProps {
   title: string;
+  id: string;
 }
 
-export const Reminders: FC<RemindersProps> = ({ title }) => {
-  const user = auth.currentUser!;
-  const [error, setError] = useState<IError>();
+export const Reminders: FC<RemindersProps> = ({ title, id }) => {
   const [time, setTime] = useState(new Date(1598051730000));
+  const [remindersEnabled, setRemindersEnabled] = useState<boolean>();
+
+  const { data: user } = useUser();
+
+  const userRemindersSettings = useFirestore()
+    .collection('users')
+    .doc(user.uid)
+    .collection('settings')
+    .doc(id);
+
+  const { status: status, data: settings } = useFirestoreDocData<{
+    reminders: boolean;
+    remindersTIme: any[];
+  }>(userRemindersSettings);
 
   useEffect(() => {
-    Permissions.getAsync(Permissions.NOTIFICATIONS).then((response) => {
-      if (response.status === 'granted') {
-        const getSetting = async () => {
-          const userSettings = db.collection('users').doc(user.uid);
-          const doc = await userSettings.get();
-          if (!doc.exists) {
-            setRemindersEnabled(false);
-          } else {
-            setRemindersEnabled(doc.data()?.[`${title}Reminders`]);
-          }
-        };
-        getSetting();
-      } else {
-        setRemindersEnabled(false);
-        onRemindersSubmit(false);
-      }
-    });
-  }, []);
-
-  const [remindersEnabled, setRemindersEnabled] = useState<boolean>();
+    if (status === 'success') {
+      Permissions.getAsync(Permissions.NOTIFICATIONS).then((response) => {
+        if (response.status === 'granted') {
+          setRemindersEnabled(settings.reminders);
+        } else {
+          setRemindersEnabled(false);
+          onRemindersSubmit(false);
+        }
+      });
+    }
+  }, [status]);
 
   const onRemindersToggle = () => {
     if (remindersEnabled) {
@@ -69,17 +70,12 @@ export const Reminders: FC<RemindersProps> = ({ title }) => {
 
   const onRemindersSubmit = async (value: boolean) => {
     try {
-      const ref = db.collection('users');
-      await ref.doc(user.uid).set(
-        {
-          [`${title}Reminders`]: value,
-        },
-        {
-          mergeFields: [`${title}Reminders`],
-        }
-      );
+      await userRemindersSettings.set({
+        reminders: value,
+        remindersTime: [],
+      });
     } catch (error) {
-      setError(error);
+      console.log('error');
     }
   };
 
@@ -89,35 +85,32 @@ export const Reminders: FC<RemindersProps> = ({ title }) => {
   };
 
   return (
-    <>
-      <View style={{ marginVertical: 10 }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Text>{title}</Text>
-          <Switch
-            color={colors.main}
-            value={remindersEnabled}
-            onValueChange={onRemindersToggle}
+    <View style={{ marginVertical: 10 }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Text>{title}</Text>
+        <Switch
+          color={colors.main}
+          value={remindersEnabled}
+          onValueChange={onRemindersToggle}
+        />
+      </View>
+      {remindersEnabled && (
+        <View>
+          <DateTimePicker
+            value={time}
+            mode='time'
+            is24Hour={true}
+            display='default'
+            onChange={onChange}
           />
         </View>
-        {remindersEnabled && (
-          <View>
-            <DateTimePicker
-              value={time}
-              mode='time'
-              is24Hour={true}
-              display='default'
-              onChange={onChange}
-            />
-          </View>
-        )}
-      </View>
-      <ErrorNotification error={error} />
-    </>
+      )}
+    </View>
   );
 };
