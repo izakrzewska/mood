@@ -1,4 +1,4 @@
-import * as Notifications from 'expo-notifications';
+// import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import React, { FC, useEffect, useState } from 'react';
 import { Button, ScrollView, View } from 'react-native';
@@ -29,15 +29,15 @@ export const AppSettings: FC<AppSettingsScreenProps> = ({ navigation }) => {
   }, []);
 
   const onNotificationPress = () => {
-    Notifications.scheduleNotificationAsync({
-      trigger: {
-        seconds: 10,
-      },
-      content: {
-        title: 'Rate your mood',
-        body: 'Keep going',
-      },
-    });
+    // Notifications.scheduleNotificationAsync({
+    //   trigger: {
+    //     seconds: 10,
+    //   },
+    //   content: {
+    //     title: 'Rate your mood',
+    //     body: 'Keep going',
+    //   },
+    // });
   };
 
   const accordionsData = [

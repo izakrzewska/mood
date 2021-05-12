@@ -1,14 +1,14 @@
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { View } from 'react-native';
 import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
 import { Loader, MoodForm } from '../../components';
+import { useNotificationContext } from '../../context';
 import {
   EditMoodScreenNavigationProp,
   EditMoodScreenRouteProp,
   Mood,
   MoodFormData,
 } from './types';
-import { NotificationContext, NotificationContextType } from '../../context';
 
 type EditMoodScreenProps = {
   navigation: EditMoodScreenNavigationProp;
@@ -21,9 +21,7 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
 }) => {
   const { id } = route.params;
   const { data: user } = useUser();
-  const { showNotification } = useContext(
-    NotificationContext
-  ) as NotificationContextType;
+  const { showNotification } = useNotificationContext();
   const editedMoodRef = useFirestore()
     .collection('users')
     .doc(user.uid)

@@ -1,10 +1,10 @@
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useAuth } from 'reactfire';
 import { AuthNavigationBox, LoginForm, LoginImage } from '../../components';
+import { useNotificationContext } from '../../context';
 import styles from './styles';
-import { LoginScreenNavigationProp, LoginFormData } from './types';
-import { NotificationContext, NotificationContextType } from '../../context';
+import { LoginFormData, LoginScreenNavigationProp } from './types';
 
 interface LoginScreenProps {
   navigation: LoginScreenNavigationProp;
@@ -12,9 +12,7 @@ interface LoginScreenProps {
 
 export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
   const auth = useAuth();
-  const { showNotification } = useContext(
-    NotificationContext
-  ) as NotificationContextType;
+  const { showNotification } = useNotificationContext();
 
   const onSubmit = async (data: LoginFormData) => {
     Keyboard.dismiss();

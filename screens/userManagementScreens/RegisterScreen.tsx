@@ -1,10 +1,10 @@
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useAuth } from 'reactfire';
 import { AuthNavigationBox, LoginImage, RegisterForm } from '../../components';
+import { useNotificationContext } from '../../context';
 import styles from './styles';
 import { RegisterFormData, RegisterScreenNavigationProp } from './types';
-import { NotificationContext, NotificationContextType } from '../../context';
 
 type RegisterScreenProps = {
   navigation: RegisterScreenNavigationProp;
@@ -12,9 +12,7 @@ type RegisterScreenProps = {
 
 export const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
   const auth = useAuth();
-  const { showNotification } = useContext(
-    NotificationContext
-  ) as NotificationContextType;
+  const { showNotification } = useNotificationContext();
 
   const onSubmit = async (data: RegisterFormData) => {
     Keyboard.dismiss();

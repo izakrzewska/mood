@@ -1,4 +1,4 @@
 export {
   NotificationContext,
-  NotificationContextType,
+  useNotificationContext,
 } from './NotificationContext';

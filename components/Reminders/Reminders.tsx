@@ -1,11 +1,11 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Permissions from 'expo-permissions';
-import React, { FC, useEffect, useState, useContext } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Alert, Linking, View } from 'react-native';
 import { Switch, Text } from 'react-native-paper';
 import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
+import { useNotificationContext } from '../../context';
 import { colors } from '../../themes';
-import { NotificationContext, NotificationContextType } from '../../context';
 
 interface RemindersProps {
   title: string;
@@ -17,9 +17,7 @@ export const Reminders: FC<RemindersProps> = ({ title, id }) => {
   const [remindersEnabled, setRemindersEnabled] = useState<boolean>();
 
   const { data: user } = useUser();
-  const { showNotification } = useContext(
-    NotificationContext
-  ) as NotificationContextType;
+  const { showNotification } = useNotificationContext();
 
   const userRemindersSettings = useFirestore()
     .collection('users')

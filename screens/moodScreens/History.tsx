@@ -1,12 +1,12 @@
-import React, { FC, useState, useContext } from 'react';
-import { ListRenderItem, View, FlatList } from 'react-native';
+import React, { FC, useState } from 'react';
+import { FlatList, ListRenderItem, View } from 'react-native';
 import { Text } from 'react-native-paper';
+import { useFirestore, useFirestoreCollectionData, useUser } from 'reactfire';
 import { DeleteModal, Loader, NoData, SwipeableCard } from '../../components';
+import { useNotificationContext } from '../../context';
 import { useFormatDate } from '../../hooks';
 import styles from './styles';
 import { HistoryScreenNavigationProp, Mood } from './types';
-import { useUser, useFirestore, useFirestoreCollectionData } from 'reactfire';
-import { NotificationContext, NotificationContextType } from '../../context';
 
 type HistoryScreenProps = {
   navigation: HistoryScreenNavigationProp;
@@ -17,9 +17,7 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
   const [toBeDeletedItemId, setToBeDeletedItemId] = useState<string>();
 
   const { data: user } = useUser();
-  const { showNotification } = useContext(
-    NotificationContext
-  ) as NotificationContextType;
+  const { showNotification } = useNotificationContext();
   const userMoodsRef = useFirestore()
     .collection('users')
     .doc(user.uid)

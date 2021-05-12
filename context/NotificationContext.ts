@@ -1,6 +1,6 @@
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 
-export type NotificationContextType = {
+type NotificationContextType = {
   isNotificationVisible: boolean;
   showNotification: (
     message: string,
@@ -12,3 +12,8 @@ export type NotificationContextType = {
 export const NotificationContext = createContext<NotificationContextType | null>(
   null
 );
+
+export const useNotificationContext = () =>
+  useContext<NotificationContextType | null>(
+    NotificationContext
+  ) as NotificationContextType;

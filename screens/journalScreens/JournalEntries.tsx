@@ -1,4 +1,4 @@
-import React, { FC, useState, useContext } from 'react';
+import React, { FC, useState } from 'react';
 import { FlatList, ListRenderItem, View } from 'react-native';
 import { Divider } from 'react-native-paper';
 import { useFirestore, useFirestoreCollectionData, useUser } from 'reactfire';
@@ -10,8 +10,8 @@ import {
   NoData,
   SwipeableCard,
 } from '../../components';
-import { JournalEntriesScreenNavigationProps, Journal } from './types';
-import { NotificationContext, NotificationContextType } from '../../context';
+import { useNotificationContext } from '../../context';
+import { Journal, JournalEntriesScreenNavigationProps } from './types';
 
 type JournalEntriesScreenProps = {
   navigation: JournalEntriesScreenNavigationProps;
@@ -24,9 +24,7 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
   const [openId, setOpenId] = useState<string>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { data: user } = useUser();
-  const { showNotification } = useContext(
-    NotificationContext
-  ) as NotificationContextType;
+  const { showNotification } = useNotificationContext();
 
   const userJournalsRef = useFirestore()
     .collection('users')

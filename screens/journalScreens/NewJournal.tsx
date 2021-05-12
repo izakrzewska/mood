@@ -1,12 +1,12 @@
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { View } from 'react-native';
 import { useFirestore, useUser } from 'reactfire';
 import { JournalForm } from '../../components';
+import { useNotificationContext } from '../../context';
 import {
   JournalFormData,
   NewJournalScreenNavigationProps,
 } from '../../screens/journalScreens/types';
-import { NotificationContext, NotificationContextType } from '../../context';
 
 type NewJournalScreenProps = {
   navigation: NewJournalScreenNavigationProps;
@@ -14,9 +14,7 @@ type NewJournalScreenProps = {
 
 export const NewJournal: FC<NewJournalScreenProps> = ({ navigation }) => {
   const { data: user } = useUser();
-  const { showNotification } = useContext(
-    NotificationContext
-  ) as NotificationContextType;
+  const { showNotification } = useNotificationContext();
   const userJournalsRef = useFirestore()
     .collection('users')
     .doc(user.uid)

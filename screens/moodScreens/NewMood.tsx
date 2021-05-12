@@ -1,9 +1,9 @@
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { View } from 'react-native';
+import { useFirestore, useUser } from 'reactfire';
 import { MoodForm } from '../../components';
+import { useNotificationContext } from '../../context';
 import { MoodFormData, NewMoodScreenNavigationProp } from './types';
-import { useUser, useFirestore } from 'reactfire';
-import { NotificationContext, NotificationContextType } from '../../context';
 
 type NewMoodScreenProps = {
   navigation: NewMoodScreenNavigationProp;
@@ -11,9 +11,7 @@ type NewMoodScreenProps = {
 
 export const NewMood: FC<NewMoodScreenProps> = ({ navigation }) => {
   const { data: user } = useUser();
-  const { showNotification } = useContext(
-    NotificationContext
-  ) as NotificationContextType;
+  const { showNotification } = useNotificationContext();
 
   const userMoodsRef = useFirestore()
     .collection('users')

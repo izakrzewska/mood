@@ -1,5 +1,5 @@
 import firebase from 'firebase/app';
-import React, { FC, useState, useContext } from 'react';
+import React, { FC, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Divider, List } from 'react-native-paper';
 import { useAuth, useUser } from 'reactfire';
@@ -10,6 +10,7 @@ import {
   DeleteAccountForm,
   MainButton,
 } from '../../components';
+import { useNotificationContext } from '../../context';
 import {
   DeleteAccountFormData,
   EditEmailFormData,
@@ -17,7 +18,6 @@ import {
   EditUsernameFormData,
 } from '../../types';
 import { UserSettingsScreenNavigationProp } from './types';
-import { NotificationContext, NotificationContextType } from '../../context';
 
 type UserSettingsScreenProps = {
   navigation: UserSettingsScreenNavigationProp;
@@ -25,9 +25,7 @@ type UserSettingsScreenProps = {
 
 export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
   const auth = useAuth();
-  const { showNotification } = useContext(
-    NotificationContext
-  ) as NotificationContextType;
+  const { showNotification } = useNotificationContext();
   const { data: user } = useUser();
   const [openId, setOpenId] = useState<string>();
 
