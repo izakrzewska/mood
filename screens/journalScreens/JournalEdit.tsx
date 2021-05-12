@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { View } from 'react-native';
 import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
 import { JournalForm, Loader } from '../../components';
@@ -8,6 +8,7 @@ import {
   JournalFormData,
   Journal,
 } from './types';
+import { NotificationContext, NotificationContextType } from '../../context';
 
 type JournalEditScreenProps = {
   navigation: JournalEditScreenNavigationProps;
@@ -20,6 +21,9 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
 }) => {
   const { id } = route.params;
   const { data: user } = useUser();
+  const { showNotification } = useContext(
+    NotificationContext
+  ) as NotificationContextType;
 
   const editedJournalRef = useFirestore()
     .collection('users')
@@ -32,14 +36,19 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
   );
 
   const editJournal = (data: JournalFormData) => {
-    editedJournalRef.set(
-      {
-        content: data.content,
-        title: data.title,
-      },
-      { merge: true }
-    );
-    navigation.navigate('JournalEntries');
+    editedJournalRef
+      .set(
+        {
+          content: data.content,
+          title: data.title,
+        },
+        { merge: true }
+      )
+      .then(() => {
+        navigation.navigate('JournalEntries');
+        showNotification('Journal updated', 'success');
+      })
+      .catch(({ message }) => showNotification(message, 'error'));
   };
 
   if (status === 'loading') {

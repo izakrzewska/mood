@@ -1,25 +1,3 @@
-import React from 'react';
-
-export const useNotifySuccess = () => {
-  const [isActive, setIsActive] = React.useState(false);
-  const [message, setMessage] = React.useState('');
-
-  React.useEffect(() => {
-    if (isActive === true) {
-      setTimeout(() => {
-        setIsActive(false);
-      }, 3000);
-    }
-  }, [isActive]);
-
-  const openSuccess = (text = 'Success') => {
-    setMessage(text);
-    setIsActive(true);
-  };
-
-  return { isActive, message, openSuccess };
-};
-
 export const useFormatDate = (date: any) => {
   // TODO: change type to timestamp
   const formattedTime = date.toDate().toLocaleTimeString([], {

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { View } from 'react-native';
 import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
 import { Loader, MoodForm } from '../../components';
@@ -8,6 +8,7 @@ import {
   Mood,
   MoodFormData,
 } from './types';
+import { NotificationContext, NotificationContextType } from '../../context';
 
 type EditMoodScreenProps = {
   navigation: EditMoodScreenNavigationProp;
@@ -20,7 +21,9 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
 }) => {
   const { id } = route.params;
   const { data: user } = useUser();
-
+  const { showNotification } = useContext(
+    NotificationContext
+  ) as NotificationContextType;
   const editedMoodRef = useFirestore()
     .collection('users')
     .doc(user.uid)
@@ -37,9 +40,10 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
         },
         { merge: true }
       );
+      showNotification('Mood updated', 'success');
       navigation.navigate('History');
-    } catch (error) {
-      console.log('error');
+    } catch ({ message }) {
+      showNotification(message, 'error');
     }
   };
 

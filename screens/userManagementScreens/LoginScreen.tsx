@@ -1,9 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useAuth } from 'reactfire';
 import { AuthNavigationBox, LoginForm, LoginImage } from '../../components';
 import styles from './styles';
 import { LoginScreenNavigationProp, LoginFormData } from './types';
+import { NotificationContext, NotificationContextType } from '../../context';
 
 interface LoginScreenProps {
   navigation: LoginScreenNavigationProp;
@@ -11,15 +12,21 @@ interface LoginScreenProps {
 
 export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
   const auth = useAuth();
+  const { showNotification } = useContext(
+    NotificationContext
+  ) as NotificationContextType;
 
   const onSubmit = async (data: LoginFormData) => {
     Keyboard.dismiss();
     const { email, password } = data;
 
     try {
-      auth.signInWithEmailAndPassword(email.trim().toLowerCase(), password);
-    } catch (error) {
-      console.log('error');
+      await auth.signInWithEmailAndPassword(
+        email.trim().toLowerCase(),
+        password
+      );
+    } catch ({ message }) {
+      showNotification(message, 'error');
     }
   };
 

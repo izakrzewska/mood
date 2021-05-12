@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { View } from 'react-native';
 import { useFirestore, useUser } from 'reactfire';
 import { JournalForm } from '../../components';
@@ -6,6 +6,7 @@ import {
   JournalFormData,
   NewJournalScreenNavigationProps,
 } from '../../screens/journalScreens/types';
+import { NotificationContext, NotificationContextType } from '../../context';
 
 type NewJournalScreenProps = {
   navigation: NewJournalScreenNavigationProps;
@@ -13,6 +14,9 @@ type NewJournalScreenProps = {
 
 export const NewJournal: FC<NewJournalScreenProps> = ({ navigation }) => {
   const { data: user } = useUser();
+  const { showNotification } = useContext(
+    NotificationContext
+  ) as NotificationContextType;
   const userJournalsRef = useFirestore()
     .collection('users')
     .doc(user.uid)
@@ -27,8 +31,8 @@ export const NewJournal: FC<NewJournalScreenProps> = ({ navigation }) => {
       };
       await userJournalsRef.add(journalData);
       navigation.navigate('JournalEntries');
-    } catch (error) {
-      console.log('error', error);
+    } catch ({ message }) {
+      showNotification(message, 'error');
     }
   };
 

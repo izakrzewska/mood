@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useContext } from 'react';
 import { FlatList, ListRenderItem, View } from 'react-native';
 import { Divider } from 'react-native-paper';
 import { useFirestore, useFirestoreCollectionData, useUser } from 'reactfire';
@@ -11,6 +11,7 @@ import {
   SwipeableCard,
 } from '../../components';
 import { JournalEntriesScreenNavigationProps, Journal } from './types';
+import { NotificationContext, NotificationContextType } from '../../context';
 
 type JournalEntriesScreenProps = {
   navigation: JournalEntriesScreenNavigationProps;
@@ -23,6 +24,10 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
   const [openId, setOpenId] = useState<string>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { data: user } = useUser();
+  const { showNotification } = useContext(
+    NotificationContext
+  ) as NotificationContextType;
+
   const userJournalsRef = useFirestore()
     .collection('users')
     .doc(user.uid)
@@ -43,10 +48,12 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
   const onJournalDelete = async () => {
     try {
       await userJournalsRef.doc(itemToBeDeleted).delete();
-    } catch (error) {
-      console.log('error');
+      setIsModalVisible(false);
+      showNotification('Journal deleted', 'success');
+    } catch ({ message }) {
+      setIsModalVisible(false);
+      showNotification(message, 'error');
     }
-    setIsModalVisible(false);
   };
 
   const onEdit = (id: string) => {

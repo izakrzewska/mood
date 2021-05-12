@@ -1,13 +1,8 @@
 import firebase from 'firebase/app';
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useContext } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Divider, List } from 'react-native-paper';
-import {
-  useAuth,
-  useFirestore,
-  useFirestoreCollectionData,
-  useUser,
-} from 'reactfire';
+import { useAuth, useUser } from 'reactfire';
 import {
   ChangeEmailForm,
   ChangePasswordForm,
@@ -22,6 +17,7 @@ import {
   EditUsernameFormData,
 } from '../../types';
 import { UserSettingsScreenNavigationProp } from './types';
+import { NotificationContext, NotificationContextType } from '../../context';
 
 type UserSettingsScreenProps = {
   navigation: UserSettingsScreenNavigationProp;
@@ -29,6 +25,9 @@ type UserSettingsScreenProps = {
 
 export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
   const auth = useAuth();
+  const { showNotification } = useContext(
+    NotificationContext
+  ) as NotificationContextType;
   const { data: user } = useUser();
   const [openId, setOpenId] = useState<string>();
 
@@ -39,10 +38,11 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
   const handleUsernameSave = async (data: EditUsernameFormData) => {
     try {
       await user.updateProfile({ displayName: data.username }).then(() => {
+        showNotification('Username updated', 'success');
         setOpenId(undefined);
       });
-    } catch (error) {
-      console.log('error', error);
+    } catch ({ message }) {
+      showNotification(message, 'error');
     }
   };
 
@@ -53,14 +53,15 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
         user
           .updateEmail(data.email)
           .then(() => {
+            showNotification('E-mail updated', 'success');
             setOpenId(undefined);
           })
-          .catch((error) => {
-            console.log('error');
+          .catch(({ message }) => {
+            showNotification(message, 'error');
           });
       })
-      .catch((error) => {
-        console.log('error');
+      .catch(({ message }) => {
+        showNotification(message, 'error');
       });
   };
 
@@ -71,14 +72,15 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
         user
           .updatePassword(data.password)
           .then(() => {
+            showNotification('Password updated', 'success');
             setOpenId(undefined);
           })
-          .catch((error) => {
-            console.log('error');
+          .catch(({ message }) => {
+            showNotification(message, 'error');
           });
       })
-      .catch((error) => {
-        console.log('error');
+      .catch(({ message }) => {
+        showNotification(message, 'error');
       });
   };
 
@@ -91,9 +93,11 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
           .then(() => {
             // TODO: remove user data
           })
-          .catch((error) => console.log('error'));
+          .catch(({ message }) => {
+            showNotification(message, 'error');
+          });
       })
-      .catch((error) => console.log('error', error));
+      .catch(({ message }) => showNotification(message, 'error'));
   };
 
   const accordionsData = [

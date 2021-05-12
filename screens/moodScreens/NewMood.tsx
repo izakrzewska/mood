@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { View } from 'react-native';
 import { MoodForm } from '../../components';
 import { MoodFormData, NewMoodScreenNavigationProp } from './types';
 import { useUser, useFirestore } from 'reactfire';
+import { NotificationContext, NotificationContextType } from '../../context';
 
 type NewMoodScreenProps = {
   navigation: NewMoodScreenNavigationProp;
@@ -10,6 +11,10 @@ type NewMoodScreenProps = {
 
 export const NewMood: FC<NewMoodScreenProps> = ({ navigation }) => {
   const { data: user } = useUser();
+  const { showNotification } = useContext(
+    NotificationContext
+  ) as NotificationContextType;
+
   const userMoodsRef = useFirestore()
     .collection('users')
     .doc(user.uid)
@@ -23,8 +28,8 @@ export const NewMood: FC<NewMoodScreenProps> = ({ navigation }) => {
       };
       await userMoodsRef.add(moodData);
       navigation.navigate('MoodsStatistics');
-    } catch (error) {
-      console.log('error', error);
+    } catch ({ message }) {
+      showNotification(message, 'error');
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { Keyboard, View } from 'react-native';
 import {
   AuthNavigationBox,
@@ -11,6 +11,7 @@ import {
   ResetPasswordFormData,
 } from './types';
 import { useAuth } from 'reactfire';
+import { NotificationContext, NotificationContextType } from '../../context';
 
 type RegisterScreenProps = {
   navigation: ResetPasswordScreenNavigationProp;
@@ -20,13 +21,17 @@ export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
   navigation,
 }) => {
   const auth = useAuth();
+  const { showNotification } = useContext(
+    NotificationContext
+  ) as NotificationContextType;
+
   const onSubmit = async (data: ResetPasswordFormData) => {
     Keyboard.dismiss();
     const { email } = data;
     try {
       await auth.sendPasswordResetEmail(email.trim().toLowerCase());
-    } catch (error) {
-      console.log('error');
+    } catch ({ message }) {
+      showNotification(message, 'error');
     }
   };
 
