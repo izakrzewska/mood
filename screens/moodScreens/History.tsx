@@ -35,7 +35,7 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
     try {
       await userMoodsRef.doc(toBeDeletedItemId).delete();
     } catch ({ message }) {
-      showNotification(message, 'error');
+      showNotification({ message, type: 'error' });
     }
     setIsModalVisible(false);
   };

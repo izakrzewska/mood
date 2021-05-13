@@ -30,7 +30,7 @@ export const NewJournal: FC<NewJournalScreenProps> = ({ navigation }) => {
       await userJournalsRef.add(journalData);
       navigation.navigate('JournalEntries');
     } catch ({ message }) {
-      showNotification(message, 'error');
+      showNotification({ message, type: 'error' });
     }
   };
 

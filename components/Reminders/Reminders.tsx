@@ -77,7 +77,7 @@ export const Reminders: FC<RemindersProps> = ({ title, id }) => {
         remindersTime: [],
       });
     } catch ({ message }) {
-      showNotification(message, 'error');
+      showNotification({ message, type: 'error' });
     }
   };
 

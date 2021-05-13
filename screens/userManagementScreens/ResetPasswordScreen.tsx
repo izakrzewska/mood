@@ -29,7 +29,7 @@ export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
     try {
       await auth.sendPasswordResetEmail(email.trim().toLowerCase());
     } catch ({ message }) {
-      showNotification(message, 'error');
+      showNotification({ message, type: 'error' });
     }
   };
 

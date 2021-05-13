@@ -27,7 +27,7 @@ export const NewMood: FC<NewMoodScreenProps> = ({ navigation }) => {
       await userMoodsRef.add(moodData);
       navigation.navigate('MoodsStatistics');
     } catch ({ message }) {
-      showNotification(message, 'error');
+      showNotification({ message, type: 'error' });
     }
   };
 

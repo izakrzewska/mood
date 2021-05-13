@@ -38,10 +38,10 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
         },
         { merge: true }
       );
-      showNotification('Mood updated', 'success');
+      showNotification({ message: 'Mood updated', type: 'success' });
       navigation.navigate('History');
     } catch ({ message }) {
-      showNotification(message, 'error');
+      showNotification({ message, type: 'error' });
     }
   };
 

@@ -47,10 +47,10 @@ export const JournalEntries: FC<JournalEntriesScreenProps> = ({
     try {
       await userJournalsRef.doc(itemToBeDeleted).delete();
       setIsModalVisible(false);
-      showNotification('Journal deleted', 'success');
+      showNotification({ message: 'Journal deleted', type: 'success' });
     } catch ({ message }) {
       setIsModalVisible(false);
-      showNotification(message, 'error');
+      showNotification({ message, type: 'error' });
     }
   };
 

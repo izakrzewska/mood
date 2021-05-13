@@ -36,11 +36,11 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
   const handleUsernameSave = async (data: EditUsernameFormData) => {
     try {
       await user.updateProfile({ displayName: data.username }).then(() => {
-        showNotification('Username updated', 'success');
+        showNotification({ message: 'Username updated', type: 'success' });
         setOpenId(undefined);
       });
     } catch ({ message }) {
-      showNotification(message, 'error');
+      showNotification({ message, type: 'error' });
     }
   };
 
@@ -51,15 +51,15 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
         user
           .updateEmail(data.email)
           .then(() => {
-            showNotification('E-mail updated', 'success');
+            showNotification({ message: 'E-mail updated', type: 'success' });
             setOpenId(undefined);
           })
           .catch(({ message }) => {
-            showNotification(message, 'error');
+            showNotification({ message, type: 'error' });
           });
       })
       .catch(({ message }) => {
-        showNotification(message, 'error');
+        showNotification({ message, type: 'error' });
       });
   };
 
@@ -70,15 +70,15 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
         user
           .updatePassword(data.password)
           .then(() => {
-            showNotification('Password updated', 'success');
+            showNotification({ message: 'Password updated', type: 'success' });
             setOpenId(undefined);
           })
           .catch(({ message }) => {
-            showNotification(message, 'error');
+            showNotification({ message, type: 'error' });
           });
       })
       .catch(({ message }) => {
-        showNotification(message, 'error');
+        showNotification({ message, type: 'error' });
       });
   };
 
@@ -92,10 +92,10 @@ export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
             // TODO: remove user data
           })
           .catch(({ message }) => {
-            showNotification(message, 'error');
+            showNotification({ message, type: 'error' });
           });
       })
-      .catch(({ message }) => showNotification(message, 'error'));
+      .catch(({ message }) => showNotification({ message, type: 'error' }));
   };
 
   const accordionsData = [

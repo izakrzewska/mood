@@ -24,10 +24,12 @@ export const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
           const user = response.user;
           user
             ?.updateProfile({ displayName: data.username })
-            .catch(({ message }) => showNotification(message, 'error'));
+            .catch(({ message }) =>
+              showNotification({ message, type: 'error' })
+            );
         });
     } catch ({ message }) {
-      showNotification(message, 'error');
+      showNotification({ message, type: 'error' });
     }
   };
 

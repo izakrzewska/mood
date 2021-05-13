@@ -44,9 +44,9 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
       )
       .then(() => {
         navigation.navigate('JournalEntries');
-        showNotification('Journal updated', 'success');
+        showNotification({ message: 'Journal updated', type: 'success' });
       })
-      .catch(({ message }) => showNotification(message, 'error'));
+      .catch(({ message }) => showNotification({ message, type: 'error' }));
   };
 
   if (status === 'loading') {

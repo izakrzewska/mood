@@ -1,17 +1,12 @@
-import React, {
-  FC,
-  SetStateAction,
-  Dispatch,
-  useEffect,
-  useState,
-} from 'react';
+import React, { FC } from 'react';
 import { Snackbar } from 'react-native-paper';
+import { NotificationType } from '../../context/Notification/types';
 import { colors } from '../../themes';
 
 interface NotificationProps {
   isNotificationVisible: boolean;
-  notificationType: 'success' | 'error' | 'info';
-  notificationMessage: string;
+  notificationType?: NotificationType;
+  notificationMessage?: string;
   hideNotification: () => void;
 }
 

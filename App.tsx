@@ -7,13 +7,18 @@ import {
   STORAGE_BUCKET,
 } from '@env';
 import { NavigationContainer } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { AuthCheck, FirebaseAppProvider } from 'reactfire';
 import { Notification } from './components';
 import { TabNavigation, UserManagementStack } from './navigation';
 import { navigationTheme, paperTheme } from './themes';
-import { NotificationContext } from './context';
+import {
+  NotificationContext,
+  notificationReducer,
+  initialNotificationState,
+} from './context';
+import { ShowNotificationPayloadType } from './context/Notification/types';
 
 const firebaseConfig = {
   apiKey: API_KEY,
@@ -25,25 +30,17 @@ const firebaseConfig = {
 };
 
 export default function App() {
-  const [isNotificationVisible, setIsNotificationVisible] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState('');
-  const [notificationType, setNotificationType] = useState<
-    'info' | 'success' | 'error'
-  >('info');
+  const [state, dispatch] = useReducer(
+    notificationReducer,
+    initialNotificationState
+  );
 
-  const showNotification = (
-    message: string,
-    type: 'success' | 'error' | 'info' = 'info'
-  ) => {
-    setIsNotificationVisible(true);
-    setNotificationMessage(message);
-    setNotificationType(type);
+  const showNotification = (payload: ShowNotificationPayloadType) => {
+    dispatch({ type: 'SHOW_NOTIFICATION', payload });
   };
 
   const hideNotification = () => {
-    setIsNotificationVisible(false);
-    setNotificationType('info');
-    setNotificationMessage('');
+    dispatch({ type: 'HIDE_NOTIFICATION' });
   };
 
   return (
@@ -52,7 +49,7 @@ export default function App() {
         <NavigationContainer theme={navigationTheme}>
           <NotificationContext.Provider
             value={{
-              isNotificationVisible: isNotificationVisible,
+              isNotificationVisible: state.isNotificationVisible,
               showNotification: showNotification,
               hideNotification: hideNotification,
             }}
@@ -62,9 +59,9 @@ export default function App() {
             </AuthCheck>
           </NotificationContext.Provider>
           <Notification
-            isNotificationVisible={isNotificationVisible}
-            notificationMessage={notificationMessage}
-            notificationType={notificationType}
+            isNotificationVisible={state.isNotificationVisible}
+            notificationMessage={state.notificationMessage}
+            notificationType={state.notificationType}
             hideNotification={hideNotification}
           />
         </NavigationContainer>

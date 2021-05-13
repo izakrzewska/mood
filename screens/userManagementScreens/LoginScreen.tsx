@@ -24,7 +24,7 @@ export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
         password
       );
     } catch ({ message }) {
-      showNotification(message, 'error');
+      showNotification({ message, type: 'error' });
     }
   };
 

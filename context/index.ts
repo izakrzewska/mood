@@ -1,4 +1,6 @@
 export {
   NotificationContext,
   useNotificationContext,
-} from './NotificationContext';
+  notificationReducer,
+  initialNotificationState,
+} from './Notification/NotificationContext';
