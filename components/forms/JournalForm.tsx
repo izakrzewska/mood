@@ -11,7 +11,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../themes';
-import { JournalFormData } from '../../screens/journalScreens/types';
+import { JournalFormData } from '../../reducers/journals/types';
 import { MainButton } from '../MainButton/MainButton';
 import { FormError } from './components';
 import { useWindowDimensions } from 'react-native';

@@ -1,18 +1,20 @@
+import { useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import {
+  JournalEdit,
   JournalEntries,
   NewJournal,
-  JournalEdit,
 } from '../screens/journalScreens';
 import { forFade } from '../screens/utils';
-import { useTheme } from '@react-navigation/native';
 
 export type JournalStackParamList = {
   JournalEntries: undefined;
   NewJournal: undefined;
   JournalEdit: {
     id: string;
+    title: string;
+    content: string;
   };
 };
 

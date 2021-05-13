@@ -7,12 +7,13 @@ import {
   STORAGE_BUCKET,
 } from '@env';
 import { NavigationContainer } from '@react-navigation/native';
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { AuthCheck, FirebaseAppProvider } from 'reactfire';
 import { Notification } from './components';
 import { TabNavigation, UserManagementStack } from './navigation';
 import { navigationTheme, paperTheme } from './themes';
+import { auth } from './firebase';
 import {
   NotificationContext,
   notificationReducer,
@@ -34,6 +35,15 @@ export default function App() {
     notificationReducer,
     initialNotificationState
   );
+  const [signedIn, setSignedIn] = useState(false);
+
+  auth.onAuthStateChanged((user: any) => {
+    if (user) {
+      setSignedIn(true);
+    } else {
+      setSignedIn(false);
+    }
+  });
 
   const showNotification = (payload: ShowNotificationPayloadType) => {
     dispatch({ type: 'SHOW_NOTIFICATION', payload });
@@ -54,9 +64,10 @@ export default function App() {
               hideNotification: hideNotification,
             }}
           >
-            <AuthCheck fallback={<UserManagementStack />}>
+            {signedIn ? <TabNavigation /> : <UserManagementStack />}
+            {/* <AuthCheck fallback={<UserManagementStack />}>
               <TabNavigation />
-            </AuthCheck>
+            </AuthCheck> */}
           </NotificationContext.Provider>
           <Notification
             isNotificationVisible={state.isNotificationVisible}

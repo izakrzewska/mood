@@ -1,57 +1,31 @@
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { FC } from 'react';
 import { View } from 'react-native';
-import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
-import { JournalForm, Loader } from '../../components';
+import { JournalForm } from '../../components';
 import { useNotificationContext } from '../../context';
 import {
-  Journal,
+  editJournal,
+  useJournalsReducer,
+} from '../../reducers/journals/journalsReducer';
+import { JournalFormData } from '../../reducers/journals/types';
+import {
   JournalEditScreenNavigationProps,
   JournalEditScreenRouteProp,
-  JournalFormData,
 } from './types';
 
-type JournalEditScreenProps = {
-  navigation: JournalEditScreenNavigationProps;
-  route: JournalEditScreenRouteProp;
-};
-
-export const JournalEdit: FC<JournalEditScreenProps> = ({
-  navigation,
-  route,
-}) => {
-  const { id } = route.params;
-  const { data: user } = useUser();
+export const JournalEdit: FC = () => {
+  const navigation = useNavigation<JournalEditScreenNavigationProps>();
+  const {
+    params: { id, title, content },
+  } = useRoute<JournalEditScreenRouteProp>();
+  const [_, dispatch] = useJournalsReducer();
   const { showNotification } = useNotificationContext();
 
-  const editedJournalRef = useFirestore()
-    .collection('users')
-    .doc(user.uid)
-    .collection('journals')
-    .doc(id);
-
-  const { status, data: journal } = useFirestoreDocData<Journal>(
-    editedJournalRef
-  );
-
-  const editJournal = (data: JournalFormData) => {
-    editedJournalRef
-      .set(
-        {
-          content: data.content,
-          title: data.title,
-        },
-        { merge: true }
-      )
-      .then(() => {
-        navigation.navigate('JournalEntries');
-        showNotification({ message: 'Journal updated', type: 'success' });
-      })
-      .catch(({ message }) => showNotification({ message, type: 'error' }));
+  const onSubmit = (journal: JournalFormData) => {
+    editJournal(id, journal, dispatch, showNotification).then(() => {
+      navigation.navigate('JournalEntries');
+    });
   };
-
-  if (status === 'loading') {
-    return <Loader />;
-  }
 
   return (
     <View
@@ -63,8 +37,8 @@ export const JournalEdit: FC<JournalEditScreenProps> = ({
     >
       <View style={{ flex: 1 }}>
         <JournalForm
-          onSubmit={editJournal}
-          defaultValues={{ content: journal.content, title: journal.title }}
+          onSubmit={onSubmit}
+          defaultValues={{ content: content, title: title }}
         />
       </View>
     </View>

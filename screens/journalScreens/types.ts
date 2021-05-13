@@ -5,18 +5,6 @@ import { JournalStackParamList } from '../../navigation/JournalStack';
 
 import { TabParamList } from '../../navigation/TabNavigation';
 
-export type Journal = {
-  NO_ID_FIELD: string;
-  content: string;
-  title: string;
-  createdAt: any; // TODO: change type
-};
-
-export type JournalFormData = {
-  title: string;
-  content: string;
-};
-
 // TODO: create generic type
 export type JournalEntriesScreenNavigationProps = CompositeNavigationProp<
   StackNavigationProp<JournalStackParamList, 'JournalEntries'>,
