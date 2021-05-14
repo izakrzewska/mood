@@ -1,8 +1,7 @@
-import firebase from 'firebase/app';
 import React, { FC, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Divider, List } from 'react-native-paper';
-import { useAuth, useUser } from 'reactfire';
+import { auth } from '../../firebase';
 import {
   ChangeEmailForm,
   ChangePasswordForm,
@@ -11,6 +10,12 @@ import {
   MainButton,
 } from '../../components';
 import { useNotificationContext } from '../../context';
+import {
+  deleteAccount,
+  updateEmail,
+  updatePassword,
+  updateUsername,
+} from '../../reducers/user/userReducer';
 import {
   DeleteAccountFormData,
   EditEmailFormData,
@@ -24,78 +29,24 @@ type UserSettingsScreenProps = {
 };
 
 export const UserSettings: FC<UserSettingsScreenProps> = ({ navigation }) => {
-  const auth = useAuth();
   const { showNotification } = useNotificationContext();
-  const { data: user } = useUser();
   const [openId, setOpenId] = useState<string>();
+  const user = auth.currentUser!;
 
-  const getCredentials = (password: string) => {
-    return firebase.auth.EmailAuthProvider.credential(user.email!, password);
-  };
-
-  const handleUsernameSave = async (data: EditUsernameFormData) => {
-    try {
-      await user.updateProfile({ displayName: data.username }).then(() => {
-        showNotification({ message: 'Username updated', type: 'success' });
-        setOpenId(undefined);
-      });
-    } catch ({ message }) {
-      showNotification({ message, type: 'error' });
-    }
+  const handleUsernameSave = (data: EditUsernameFormData) => {
+    updateUsername(data, showNotification).then(() => setOpenId(undefined));
   };
 
   const handleEmaileSave = (data: EditEmailFormData) => {
-    user
-      .reauthenticateWithCredential(getCredentials(data.password))
-      .then(() => {
-        user
-          .updateEmail(data.email)
-          .then(() => {
-            showNotification({ message: 'E-mail updated', type: 'success' });
-            setOpenId(undefined);
-          })
-          .catch(({ message }) => {
-            showNotification({ message, type: 'error' });
-          });
-      })
-      .catch(({ message }) => {
-        showNotification({ message, type: 'error' });
-      });
+    updateEmail(data, showNotification).then(() => setOpenId(undefined));
   };
 
   const handlePasswordSave = (data: EditPasswordFormData) => {
-    user
-      .reauthenticateWithCredential(getCredentials(data.oldPassword))
-      .then(() => {
-        user
-          .updatePassword(data.password)
-          .then(() => {
-            showNotification({ message: 'Password updated', type: 'success' });
-            setOpenId(undefined);
-          })
-          .catch(({ message }) => {
-            showNotification({ message, type: 'error' });
-          });
-      })
-      .catch(({ message }) => {
-        showNotification({ message, type: 'error' });
-      });
+    updatePassword(data, showNotification).then(() => setOpenId(undefined));
   };
 
   const handleDelete = (data: DeleteAccountFormData) => {
-    user
-      .reauthenticateWithCredential(getCredentials(data.password))
-      .then(() => {
-        user
-          .delete()
-          .then(() => {
-            // TODO: remove user data
-          })
-          .catch(({ message }) => {
-            showNotification({ message, type: 'error' });
-          });
-      })
-      .catch(({ message }) => showNotification({ message, type: 'error' }));
+    deleteAccount(data, showNotification);
   };
 
   const accordionsData = [

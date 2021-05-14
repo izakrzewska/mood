@@ -1,16 +1,14 @@
-// import * as Notifications from 'expo-notifications';
+import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import React, { FC, useEffect, useState } from 'react';
 import { Button, ScrollView, View } from 'react-native';
 import { Divider, List } from 'react-native-paper';
 import { Reminders } from '../../components';
 import { AppSettingsScreenNavigationProp } from './types';
+import { useNavigation } from '@react-navigation/native';
 
-type AppSettingsScreenProps = {
-  navigation: AppSettingsScreenNavigationProp;
-};
-
-export const AppSettings: FC<AppSettingsScreenProps> = ({ navigation }) => {
+export const AppSettings: FC = () => {
+  const navigation = useNavigation<AppSettingsScreenNavigationProp>();
   const [openId, setOpenId] = useState<string>();
 
   useEffect(() => {
@@ -29,15 +27,15 @@ export const AppSettings: FC<AppSettingsScreenProps> = ({ navigation }) => {
   }, []);
 
   const onNotificationPress = () => {
-    // Notifications.scheduleNotificationAsync({
-    //   trigger: {
-    //     seconds: 10,
-    //   },
-    //   content: {
-    //     title: 'Rate your mood',
-    //     body: 'Keep going',
-    //   },
-    // });
+    Notifications.scheduleNotificationAsync({
+      trigger: {
+        seconds: 10,
+      },
+      content: {
+        title: 'Rate your mood',
+        body: 'Keep going',
+      },
+    });
   };
 
   const accordionsData = [

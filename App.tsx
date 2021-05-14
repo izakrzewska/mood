@@ -9,7 +9,6 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useReducer, useState } from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { AuthCheck, FirebaseAppProvider } from 'reactfire';
 import { Notification } from './components';
 import { TabNavigation, UserManagementStack } from './navigation';
 import { navigationTheme, paperTheme } from './themes';
@@ -54,29 +53,24 @@ export default function App() {
   };
 
   return (
-    <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-      <PaperProvider theme={paperTheme}>
-        <NavigationContainer theme={navigationTheme}>
-          <NotificationContext.Provider
-            value={{
-              isNotificationVisible: state.isNotificationVisible,
-              showNotification: showNotification,
-              hideNotification: hideNotification,
-            }}
-          >
-            {signedIn ? <TabNavigation /> : <UserManagementStack />}
-            {/* <AuthCheck fallback={<UserManagementStack />}>
-              <TabNavigation />
-            </AuthCheck> */}
-          </NotificationContext.Provider>
-          <Notification
-            isNotificationVisible={state.isNotificationVisible}
-            notificationMessage={state.notificationMessage}
-            notificationType={state.notificationType}
-            hideNotification={hideNotification}
-          />
-        </NavigationContainer>
-      </PaperProvider>
-    </FirebaseAppProvider>
+    <PaperProvider theme={paperTheme}>
+      <NavigationContainer theme={navigationTheme}>
+        <NotificationContext.Provider
+          value={{
+            isNotificationVisible: state.isNotificationVisible,
+            showNotification: showNotification,
+            hideNotification: hideNotification,
+          }}
+        >
+          {signedIn ? <TabNavigation /> : <UserManagementStack />}
+        </NotificationContext.Provider>
+        <Notification
+          isNotificationVisible={state.isNotificationVisible}
+          notificationMessage={state.notificationMessage}
+          notificationType={state.notificationType}
+          hideNotification={hideNotification}
+        />
+      </NavigationContainer>
+    </PaperProvider>
   );
 }

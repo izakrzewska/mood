@@ -1,31 +1,22 @@
-import React, { FC } from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { FC, useEffect } from 'react';
 import { TouchableWithoutFeedback, View } from 'react-native';
-import { Text } from 'react-native-paper';
-import { useFirestore, useFirestoreCollectionData, useUser } from 'reactfire';
 import { AddDataImage, Loader, MainButton, MoodChart } from '../../components';
+import { useNotificationContext } from '../../context';
+import { getMoods, useMoodsReducer } from '../../reducers/moods/moodsReducer';
 import styles from './styles';
-import { Mood, MoodStatisticsScreenNavigationProp } from './types';
+import { MoodStatisticsScreenNavigationProp } from './types';
 
-type MoodStatisticsScreenProps = {
-  navigation: MoodStatisticsScreenNavigationProp;
-};
-
-export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
-  navigation,
-}) => {
-  const { data: user } = useUser();
-  const userMoodsRef = useFirestore()
-    .collection('users')
-    .doc(user.uid)
-    .collection('moods');
-
-  const { status, data: moods } = useFirestoreCollectionData<Mood>(
-    userMoodsRef
-  );
-
-  const showHistory = () => {
-    navigation.push('History');
-  };
+export const MoodsStatistics: FC = () => {
+  const [state, dispatch] = useMoodsReducer();
+  const { showNotification } = useNotificationContext();
+  const navigation = useNavigation<MoodStatisticsScreenNavigationProp>();
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      getMoods(dispatch, showNotification);
+    }
+  }, [isFocused]);
 
   const onNewMoodPress = () => {
     navigation.push('NewMood');
@@ -50,11 +41,11 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
       <MainButton
         text='History'
         mode='text'
-        onPress={showHistory}
+        onPress={() => navigation.push('History')}
         extraStyles={styles.historyButton}
       />
       <View style={styles.moodChartContainer}>
-        <MoodChart moods={moods} />
+        <MoodChart moods={state.moods} />
       </View>
       <View style={styles.rateMoodButtonContainer}>
         <MainButton
@@ -66,13 +57,13 @@ export const MoodsStatistics: FC<MoodStatisticsScreenProps> = ({
     </View>
   );
 
-  if (status === 'loading') {
+  if (state.isLoading) {
     return <Loader />;
   }
 
   return (
     <View style={{ flex: 1 }}>
-      {moods.length ? moodsContent : noMoodsContent}
+      {state.moods.length ? moodsContent : noMoodsContent}
     </View>
   );
 };

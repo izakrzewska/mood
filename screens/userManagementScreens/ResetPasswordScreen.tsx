@@ -1,36 +1,27 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { FC } from 'react';
 import { Keyboard, View } from 'react-native';
-import { useAuth } from 'reactfire';
 import {
   AuthNavigationBox,
   ForgotPasswordImage,
   ResetPasswordForm,
 } from '../../components';
 import { useNotificationContext } from '../../context';
+import { resetPassword, useUserReducer } from '../../reducers/user/userReducer';
 import styles from './styles';
 import {
   ResetPasswordFormData,
   ResetPasswordScreenNavigationProp,
 } from './types';
 
-type RegisterScreenProps = {
-  navigation: ResetPasswordScreenNavigationProp;
-};
-
-export const ResetPasswordScreen: FC<RegisterScreenProps> = ({
-  navigation,
-}) => {
-  const auth = useAuth();
+export const ResetPasswordScreen: FC = () => {
+  const navigation = useNavigation<ResetPasswordScreenNavigationProp>();
+  const [state, dispatch] = useUserReducer();
   const { showNotification } = useNotificationContext();
 
-  const onSubmit = async (data: ResetPasswordFormData) => {
+  const onSubmit = (data: ResetPasswordFormData) => {
     Keyboard.dismiss();
-    const { email } = data;
-    try {
-      await auth.sendPasswordResetEmail(email.trim().toLowerCase());
-    } catch ({ message }) {
-      showNotification({ message, type: 'error' });
-    }
+    resetPassword(data, dispatch, showNotification);
   };
 
   return (

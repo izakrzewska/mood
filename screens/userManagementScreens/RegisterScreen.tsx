@@ -1,36 +1,20 @@
 import React, { FC } from 'react';
 import { Keyboard, View } from 'react-native';
-import { useAuth } from 'reactfire';
 import { AuthNavigationBox, LoginImage, RegisterForm } from '../../components';
 import { useNotificationContext } from '../../context';
+import { register, useUserReducer } from '../../reducers/user/userReducer';
 import styles from './styles';
 import { RegisterFormData, RegisterScreenNavigationProp } from './types';
+import { useNavigation } from '@react-navigation/native';
 
-type RegisterScreenProps = {
-  navigation: RegisterScreenNavigationProp;
-};
-
-export const RegisterScreen: FC<RegisterScreenProps> = ({ navigation }) => {
-  const auth = useAuth();
+export const RegisterScreen: FC = () => {
+  const [state, dispatch] = useUserReducer();
+  const navigation = useNavigation<RegisterScreenNavigationProp>();
   const { showNotification } = useNotificationContext();
 
-  const onSubmit = async (data: RegisterFormData) => {
+  const onSubmit = (data: RegisterFormData) => {
     Keyboard.dismiss();
-    const { email, password } = data;
-    try {
-      await auth
-        .createUserWithEmailAndPassword(email.trim().toLowerCase(), password)
-        .then((response) => {
-          const user = response.user;
-          user
-            ?.updateProfile({ displayName: data.username })
-            .catch(({ message }) =>
-              showNotification({ message, type: 'error' })
-            );
-        });
-    } catch ({ message }) {
-      showNotification({ message, type: 'error' });
-    }
+    register(data, dispatch, showNotification);
   };
 
   return (

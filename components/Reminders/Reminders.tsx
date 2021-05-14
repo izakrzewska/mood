@@ -3,9 +3,9 @@ import * as Permissions from 'expo-permissions';
 import React, { FC, useEffect, useState } from 'react';
 import { Alert, Linking, View } from 'react-native';
 import { Switch, Text } from 'react-native-paper';
-import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
 import { useNotificationContext } from '../../context';
 import { colors } from '../../themes';
+import { auth, db } from '../../firebase';
 
 interface RemindersProps {
   title: string;
@@ -15,33 +15,44 @@ interface RemindersProps {
 export const Reminders: FC<RemindersProps> = ({ title, id }) => {
   const [time, setTime] = useState(new Date(1598051730000));
   const [remindersEnabled, setRemindersEnabled] = useState<boolean>();
-
-  const { data: user } = useUser();
-  const { showNotification } = useNotificationContext();
-
-  const userRemindersSettings = useFirestore()
-    .collection('users')
-    .doc(user.uid)
-    .collection('settings')
-    .doc(id);
-
-  const { status: status, data: settings } = useFirestoreDocData<{
-    reminders: boolean;
-    remindersTIme: any[];
-  }>(userRemindersSettings);
+  const [databaseValue, setDatabaseValue] = useState<boolean>();
+  const user = auth.currentUser!;
 
   useEffect(() => {
-    if (status === 'success') {
-      Permissions.getAsync(Permissions.NOTIFICATIONS).then((response) => {
-        if (response.status === 'granted') {
-          setRemindersEnabled(settings.reminders);
+    const settingsRef = db
+      .collection('users')
+      .doc(user.uid)
+      .collection('settings')
+      .doc(id);
+
+    const getSettings = async () => {
+      try {
+        const settingsSnapshot = await settingsRef.get();
+        if (!settingsSnapshot.exists) {
+          setDatabaseValue(false);
         } else {
-          setRemindersEnabled(false);
-          onRemindersSubmit(false);
+          const value = settingsSnapshot?.data()?.reminders;
+          setDatabaseValue(value);
         }
-      });
-    }
-  }, [status]);
+      } catch ({ message }) {
+        showNotification({ message, type: 'error' });
+      }
+    };
+    getSettings();
+  }, [setDatabaseValue]);
+
+  const { showNotification } = useNotificationContext();
+
+  useEffect(() => {
+    Permissions.getAsync(Permissions.NOTIFICATIONS).then((response) => {
+      if (response.status === 'granted') {
+        setRemindersEnabled(databaseValue);
+      } else {
+        setRemindersEnabled(false);
+        onRemindersSubmit(false);
+      }
+    });
+  }, [databaseValue]);
 
   const onRemindersToggle = () => {
     if (remindersEnabled) {
@@ -71,8 +82,13 @@ export const Reminders: FC<RemindersProps> = ({ title, id }) => {
   };
 
   const onRemindersSubmit = async (value: boolean) => {
+    const settingsRef = db
+      .collection('users')
+      .doc(user.uid)
+      .collection('settings')
+      .doc(id);
     try {
-      await userRemindersSettings.set({
+      await settingsRef.set({
         reminders: value,
         remindersTime: [],
       });

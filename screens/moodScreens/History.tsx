@@ -1,43 +1,44 @@
-import React, { FC, useState } from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { FC, useEffect, useState } from 'react';
 import { FlatList, ListRenderItem, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { useFirestore, useFirestoreCollectionData, useUser } from 'reactfire';
 import { DeleteModal, Loader, NoData, SwipeableCard } from '../../components';
 import { useNotificationContext } from '../../context';
 import { useFormatDate } from '../../hooks';
+import {
+  deleteMood,
+  getMoods,
+  useMoodsReducer,
+} from '../../reducers/moods/moodsReducer';
 import styles from './styles';
 import { HistoryScreenNavigationProp, Mood } from './types';
 
-type HistoryScreenProps = {
-  navigation: HistoryScreenNavigationProp;
-};
-
-export const History: FC<HistoryScreenProps> = ({ navigation }) => {
+export const History: FC = () => {
+  const navigation = useNavigation<HistoryScreenNavigationProp>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [toBeDeletedItemId, setToBeDeletedItemId] = useState<string>();
-
-  const { data: user } = useUser();
+  const [state, dispatch] = useMoodsReducer();
   const { showNotification } = useNotificationContext();
-  const userMoodsRef = useFirestore()
-    .collection('users')
-    .doc(user.uid)
-    .collection('moods');
-  const { status, data: moods } = useFirestoreCollectionData<Mood>(
-    userMoodsRef
-  );
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      getMoods(dispatch, showNotification);
+    }
+  }, [isFocused]);
 
   const openModal = (id: string) => {
     setIsModalVisible(true);
     setToBeDeletedItemId(id);
   };
 
-  const onMoodDelete = async () => {
-    try {
-      await userMoodsRef.doc(toBeDeletedItemId).delete();
-    } catch ({ message }) {
-      showNotification({ message, type: 'error' });
-    }
-    setIsModalVisible(false);
+  const onMoodDelete = () => {
+    deleteMood(
+      toBeDeletedItemId!,
+      dispatch,
+      () => setIsModalVisible(false),
+      showNotification
+    ).then(() => navigation.push('History'));
   };
 
   const renderItem: ListRenderItem<Mood> = ({ item }) => {
@@ -48,10 +49,11 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
       <SwipeableCard
         onEdit={() =>
           navigation.navigate('EditMoodDetails', {
-            id: item.NO_ID_FIELD,
+            id: item.id,
+            value: item.value,
           })
         }
-        onDelete={() => openModal(item.NO_ID_FIELD)}
+        onDelete={() => openModal(item.id)}
       >
         <View style={styles.card}>
           <View style={{ flexGrow: 1 }}>
@@ -68,17 +70,17 @@ export const History: FC<HistoryScreenProps> = ({ navigation }) => {
     );
   };
 
-  if (status === 'loading') {
+  if (state.isLoading) {
     return <Loader />;
   }
 
   return (
     <>
       <View style={styles.historyScreenContainer}>
-        {moods.length ? (
+        {state.moods.length ? (
           <FlatList
-            keyExtractor={(item) => item.NO_ID_FIELD}
-            data={moods}
+            keyExtractor={(item) => item.id}
+            data={state.moods}
             renderItem={renderItem}
           />
         ) : (

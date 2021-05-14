@@ -1,51 +1,30 @@
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { FC } from 'react';
 import { View } from 'react-native';
-import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
 import { Loader, MoodForm } from '../../components';
 import { useNotificationContext } from '../../context';
+import { editMood, useMoodsReducer } from '../../reducers/moods/moodsReducer';
 import {
   EditMoodScreenNavigationProp,
   EditMoodScreenRouteProp,
-  Mood,
   MoodFormData,
 } from './types';
 
-type EditMoodScreenProps = {
-  navigation: EditMoodScreenNavigationProp;
-  route: EditMoodScreenRouteProp;
-};
-
-export const EditMoodDetails: FC<EditMoodScreenProps> = ({
-  navigation,
-  route,
-}) => {
-  const { id } = route.params;
-  const { data: user } = useUser();
+export const EditMoodDetails: FC = () => {
+  const {
+    params: { id, value },
+  } = useRoute<EditMoodScreenRouteProp>();
+  const navigation = useNavigation<EditMoodScreenNavigationProp>();
+  const [state, dispatch] = useMoodsReducer();
   const { showNotification } = useNotificationContext();
-  const editedMoodRef = useFirestore()
-    .collection('users')
-    .doc(user.uid)
-    .collection('moods')
-    .doc(id);
 
-  const { status, data: mood } = useFirestoreDocData<Mood>(editedMoodRef);
-
-  const editMood = async (data: MoodFormData) => {
-    try {
-      await editedMoodRef.set(
-        {
-          value: Number(data.value),
-        },
-        { merge: true }
-      );
-      showNotification({ message: 'Mood updated', type: 'success' });
-      navigation.navigate('History');
-    } catch ({ message }) {
-      showNotification({ message, type: 'error' });
-    }
+  const onSubmit = (data: MoodFormData) => {
+    editMood(id, data, dispatch, showNotification).then(() =>
+      navigation.push('History')
+    );
   };
 
-  if (status === 'loading') {
+  if (state.isLoading) {
     return <Loader />;
   }
 
@@ -55,7 +34,7 @@ export const EditMoodDetails: FC<EditMoodScreenProps> = ({
         flex: 1,
       }}
     >
-      <MoodForm onSubmit={editMood} defaultValues={{ value: mood.value }} />
+      <MoodForm onSubmit={onSubmit} defaultValues={{ value: value }} />
     </View>
   );
 };

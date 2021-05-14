@@ -1,31 +1,20 @@
 import React, { FC } from 'react';
 import { Keyboard, View } from 'react-native';
-import { useAuth } from 'reactfire';
 import { AuthNavigationBox, LoginForm, LoginImage } from '../../components';
 import { useNotificationContext } from '../../context';
+import { login, useUserReducer } from '../../reducers/user/userReducer';
 import styles from './styles';
+import { useNavigation } from '@react-navigation/native';
 import { LoginFormData, LoginScreenNavigationProp } from './types';
 
-interface LoginScreenProps {
-  navigation: LoginScreenNavigationProp;
-}
-
-export const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
-  const auth = useAuth();
+export const LoginScreen: FC = () => {
+  const [state, dispatch] = useUserReducer();
+  const navigation = useNavigation<LoginScreenNavigationProp>();
   const { showNotification } = useNotificationContext();
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = (data: LoginFormData) => {
     Keyboard.dismiss();
-    const { email, password } = data;
-
-    try {
-      await auth.signInWithEmailAndPassword(
-        email.trim().toLowerCase(),
-        password
-      );
-    } catch ({ message }) {
-      showNotification({ message, type: 'error' });
-    }
+    login(data, dispatch, showNotification);
   };
 
   return (

@@ -11,7 +11,7 @@ export type MoodFormData = {
 
 export type Mood = {
   value: number;
-  NO_ID_FIELD: string;
+  id: string;
   createdAt: any; // TODO: add type
 };
 
